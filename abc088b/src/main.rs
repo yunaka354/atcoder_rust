@@ -78,6 +78,24 @@ fn find_sum_of_digits(mut n: usize) -> usize {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        mut a: [isize; n],
     }
+    
+    a.sort();
+    a.reverse();
+
+    let mut alice = 0;
+    let mut bob = 0;
+
+    for i in 0..n {
+        if i % 2 == 0 {
+            alice += a[i];
+        } else {
+            bob += a[i];
+        }
+    }
+
+    let ans = (alice - bob).abs();
+
+    println!("{}", ans);
 }

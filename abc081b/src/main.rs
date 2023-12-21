@@ -3,6 +3,7 @@ use itertools::Itertools;
 use proconio::{fastout, input, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
+use std::i32::MAX;
 
 #[allow(unused_macros)]
 macro_rules! chmin {
@@ -53,7 +54,7 @@ macro_rules! max {
     }};
 }
 
-// Euclidean algorithm for finding the greatest common divisor.
+// ユークリッドの互除法
 #[allow(dead_code)]
 fn gcd(x: usize, y: usize) -> usize {
     if y == 0 {
@@ -63,21 +64,23 @@ fn gcd(x: usize, y: usize) -> usize {
     }
 }
 
-// Function to calculate the sum of each digit
-#[allow(dead_code)]
-fn find_sum_of_digits(mut n: usize) -> usize {
-    let mut sum = 0;
-    while n > 0 {
-        sum += n % 10;
-        n /= 10;
-    }
-    sum
-}
-
 #[fastout]
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        a: [usize; n],
     }
+
+    let mut ans = MAX;
+
+    for mut i in a {
+        let mut count = 0;
+        while i % 2 == 0 {
+            count += 1;
+            i /= 2;
+        }
+        ans = min(ans, count);
+    }
+
+    println!("{}", ans);
 }

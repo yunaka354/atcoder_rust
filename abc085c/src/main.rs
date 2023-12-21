@@ -78,6 +78,19 @@ fn find_sum_of_digits(mut n: usize) -> usize {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        y: usize,
     }
+
+    for i in 0..=n {
+        for j in 0..=(n-i) {
+            let k = n - i - j;
+            let tmp = i * 10000 + j * 5000 + k * 1000;
+            if tmp == y {
+                println!("{} {} {}", i, j, k);
+                return;
+            }
+        }
+    }
+
+    println!("-1 -1 -1");
 }

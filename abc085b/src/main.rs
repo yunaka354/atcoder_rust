@@ -78,6 +78,14 @@ fn find_sum_of_digits(mut n: usize) -> usize {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        d: [usize; n],
     }
+
+    let mut set = HashSet::new();
+
+    for i in d {
+        set.insert(i);
+    }
+
+    println!("{}", set.len());
 }

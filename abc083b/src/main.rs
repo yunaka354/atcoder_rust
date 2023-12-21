@@ -53,7 +53,7 @@ macro_rules! max {
     }};
 }
 
-// Euclidean algorithm for finding the greatest common divisor.
+// ユークリッドの互除法
 #[allow(dead_code)]
 fn gcd(x: usize, y: usize) -> usize {
     if y == 0 {
@@ -63,7 +63,7 @@ fn gcd(x: usize, y: usize) -> usize {
     }
 }
 
-// Function to calculate the sum of each digit
+// 各桁の和を計算する関数
 #[allow(dead_code)]
 fn find_sum_of_digits(mut n: usize) -> usize {
     let mut sum = 0;
@@ -78,6 +78,18 @@ fn find_sum_of_digits(mut n: usize) -> usize {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        a: usize,
+        b: usize,
     }
+
+    let mut ans = 0;
+
+    for i in 1..=n {
+        let sum_of_digit = find_sum_of_digits(i);
+        if (sum_of_digit >= a) & (sum_of_digit <= b) {
+            ans += i;
+        }
+    }
+
+    println!("{}", ans);
 }
