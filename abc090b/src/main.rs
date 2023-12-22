@@ -7,9 +7,19 @@ use std::collections::{HashMap, HashSet, VecDeque};
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        a: usize,
+        b: usize,
     }
+
+    let mut ans = 0;
+    for i in a..=b {
+        let s = i.to_string();
+        if (&s[..1] == &s[4..5]) & (&s[1..2] == &s[3..4]) {
+            ans += 1;
+        }
+    }
+
+    println!("{}", ans);
 }
 
 #[allow(unused_macros)]
@@ -95,28 +105,4 @@ fn is_square(n: isize) -> bool {
     }
     let root = (n as f64).sqrt() as isize;
     root * root == n
-}
-
-#[allow(dead_code)]
-// function to convert decimal to a given base
-fn convert_to_base(num: usize, base: usize) -> String {
-    if base < 2 {
-        panic!("Base must be at least 2");
-    }
-
-    let mut result = String::new();
-    let mut n = num;
-
-    while n > 0 {
-        let digit = n % base;
-        let char = if digit < 10 {
-            (digit as u8 + b'0') as char
-        } else {
-            (digit as u8 - 10 + b'a') as char
-        };
-        result.push(char);
-        n /= base;
-    }
-
-    result.chars().rev().collect()
 }

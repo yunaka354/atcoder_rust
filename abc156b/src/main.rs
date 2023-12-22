@@ -7,9 +7,13 @@ use std::collections::{HashMap, HashSet, VecDeque};
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        n: u32,
+        k: u32,
     }
+
+    let s = convert_to_base(n, k);
+
+    println!("{}", s.len());
 }
 
 #[allow(unused_macros)]
@@ -99,7 +103,7 @@ fn is_square(n: isize) -> bool {
 
 #[allow(dead_code)]
 // function to convert decimal to a given base
-fn convert_to_base(num: usize, base: usize) -> String {
+fn convert_to_base(num: u32, base: u32) -> String {
     if base < 2 {
         panic!("Base must be at least 2");
     }

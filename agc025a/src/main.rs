@@ -3,13 +3,23 @@ use itertools::Itertools;
 use proconio::{fastout, input, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
+use std::usize::MAX;
 
 #[fastout]
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
     }
+
+    let mut ans = MAX;
+    for a in 1..=n/2 {
+        let b = n - a;
+        let n = find_sum_of_digits(a);
+        let m = find_sum_of_digits(b);
+        ans = min(ans, n+m);
+    }
+
+    println!("{}", ans);
 }
 
 #[allow(unused_macros)]
@@ -95,28 +105,4 @@ fn is_square(n: isize) -> bool {
     }
     let root = (n as f64).sqrt() as isize;
     root * root == n
-}
-
-#[allow(dead_code)]
-// function to convert decimal to a given base
-fn convert_to_base(num: usize, base: usize) -> String {
-    if base < 2 {
-        panic!("Base must be at least 2");
-    }
-
-    let mut result = String::new();
-    let mut n = num;
-
-    while n > 0 {
-        let digit = n % base;
-        let char = if digit < 10 {
-            (digit as u8 + b'0') as char
-        } else {
-            (digit as u8 - 10 + b'a') as char
-        };
-        result.push(char);
-        n /= base;
-    }
-
-    result.chars().rev().collect()
 }

@@ -8,8 +8,16 @@ use std::collections::{HashMap, HashSet, VecDeque};
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        _l: usize,
+        mut s: [String; n],
     }
+    
+    s.sort();
+    let mut ans = String::new();
+    for i in s {
+        ans.push_str(&i);
+    }
+    println!("{}", ans);
 }
 
 #[allow(unused_macros)]

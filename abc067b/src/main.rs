@@ -8,8 +8,18 @@ use std::collections::{HashMap, HashSet, VecDeque};
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        k: usize,
+        mut l: [usize; n],
     }
+    l.sort();
+    l.reverse();
+    
+    let mut ans = 0;
+    for i in 0..k {
+        ans += l[i];
+    }
+    println!("{}", ans);
+    
 }
 
 #[allow(unused_macros)]

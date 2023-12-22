@@ -8,8 +8,29 @@ use std::collections::{HashMap, HashSet, VecDeque};
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        mut x: usize,
+        mut a: [usize; n],
     }
+    a.sort();
+
+    let sum: usize = a.iter().sum();
+    if sum == x {
+        println!("{}", n);
+        return;
+    }
+
+    let mut ans = 0;
+    for kid in a {
+        if kid > x {
+            break;
+        }
+        ans += 1;
+        x -= kid;
+    }
+    if ans == n {
+        ans -= 1;
+    }
+    println!("{}", ans);
 }
 
 #[allow(unused_macros)]
