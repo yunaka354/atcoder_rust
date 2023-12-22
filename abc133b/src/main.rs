@@ -79,8 +79,6 @@ fn round_up(dividend: usize, divisor: usize) -> usize {
     (dividend + divisor - 1) / divisor
 }
 
-// Function to determine if the given number is a perfect square
-#[allow(dead_code)]
 fn is_square(n: isize) -> bool {
     if n < 0 {
         return false;
@@ -93,6 +91,21 @@ fn is_square(n: isize) -> bool {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        d: usize,
+        x: [[isize; d]; n],
     }
+    let mut ans = 0;
+    for i in 0..n-1 {
+        for j in i+1..n {
+            let mut distance = 0;
+            for k in 0..d {
+                distance += (x[i][k] - x[j][k]).pow(2);
+            }
+
+            if is_square(distance) {
+                ans += 1;
+            }
+        }
+    }
+    println!("{}", ans);
 }

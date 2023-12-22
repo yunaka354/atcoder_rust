@@ -4,6 +4,33 @@ use proconio::{fastout, input, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
 
+#[fastout]
+fn main() {
+    input! {
+        n: usize,
+        mut l: [usize; n],
+    }
+    let mut ans = 0;
+    l.sort();
+    
+    for (i, &a) in l.iter().enumerate() {
+        for (j, &b) in l.iter().enumerate().take(i) {
+            for &c in l.iter().take(j) {
+                if (a == b) | (b == c) | (a == c) {
+                    continue;
+                }
+
+                if a < b + c {
+                    ans += 1;
+                }
+            }
+        }
+    }
+
+    println!("{}", ans);
+
+}
+
 #[allow(unused_macros)]
 macro_rules! chmin {
     ($base:expr, $($cmps:expr),+ $(,)*) => {{
@@ -87,12 +114,4 @@ fn is_square(n: isize) -> bool {
     }
     let root = (n as f64).sqrt() as isize;
     root * root == n
-}
-
-#[fastout]
-fn main() {
-    input! {
-        n: usize,
-        _a: [usize; n],
-    }
 }

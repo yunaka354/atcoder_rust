@@ -3,6 +3,7 @@ use itertools::Itertools;
 use proconio::{fastout, input, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
+use std::f64::MAX;
 
 #[allow(unused_macros)]
 macro_rules! chmin {
@@ -79,20 +80,26 @@ fn round_up(dividend: usize, divisor: usize) -> usize {
     (dividend + divisor - 1) / divisor
 }
 
-// Function to determine if the given number is a perfect square
-#[allow(dead_code)]
-fn is_square(n: isize) -> bool {
-    if n < 0 {
-        return false;
-    }
-    let root = (n as f64).sqrt() as isize;
-    root * root == n
-}
-
 #[fastout]
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        t: f64,
+        a: f64,
+        h: [f64; n],
     }
+
+    let mut ans = 0;
+    let mut delta = MAX;
+
+    for i in 0..n {
+        let temp = t - h[i] * 0.006;
+        let d = (a - temp).abs();
+        if d < delta {
+            delta = d;
+            ans = i;
+        }
+    }
+
+    println!("{}", ans+1);
 }

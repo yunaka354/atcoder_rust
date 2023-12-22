@@ -79,20 +79,16 @@ fn round_up(dividend: usize, divisor: usize) -> usize {
     (dividend + divisor - 1) / divisor
 }
 
-// Function to determine if the given number is a perfect square
-#[allow(dead_code)]
-fn is_square(n: isize) -> bool {
-    if n < 0 {
-        return false;
-    }
-    let root = (n as f64).sqrt() as isize;
-    root * root == n
-}
-
 #[fastout]
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        mut x: usize,
+        mut m: [usize; n],
     }
+    m.sort();
+    let sum: usize = m.iter().sum();
+    x -= sum;
+    let ans = n + x / m[0];
+    println!("{}", ans);
 }
