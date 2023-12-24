@@ -4,22 +4,8 @@ use proconio::{fastout, input, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
 
-#[fastout]
-fn main() {
-    input! {
-        _n: usize,
-        s: String,
-    }
-
-    let ans1 = s.contains("ab");
-    let ans2 = s.contains("ba");
-
-    if ans1 | ans2 {
-        println!("Yes");
-    } else {
-        println!("No");
-    }
-}
+#[allow(dead_code)]
+const MOD: usize = 1_000_000_000 + 7;
 
 #[allow(unused_macros)]
 macro_rules! chmin {
@@ -128,4 +114,36 @@ fn convert_to_base(num: usize, base: usize) -> String {
     }
 
     result.chars().rev().collect()
+}
+
+#[fastout]
+fn main() {
+    input! {
+        v: String,
+    }
+
+    let v: Vec<isize> = v.chars().map(|c| c.to_digit(10).unwrap() as isize).collect();
+
+    for bit in 0..(1 << 3) {
+        let mut ans = String::new();
+        let mut sum = v[0];
+        ans.push_str(&v[0].to_string());
+
+        for i in 0..3 {
+            if bit & (1 << i) != 0 {
+                sum += v[i+1];
+                ans.push_str("+");
+            } else {
+                sum -= v[i+1];
+                ans.push_str("-");
+            }
+            ans.push_str(&v[i+1].to_string());
+        }
+
+        if sum == 7 {
+            ans.push_str("=7");
+            println!("{}", ans);
+            return;
+        }
+    }
 }

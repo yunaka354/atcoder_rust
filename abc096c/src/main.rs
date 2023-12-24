@@ -7,18 +7,48 @@ use std::collections::{HashMap, HashSet, VecDeque};
 #[fastout]
 fn main() {
     input! {
-        _n: usize,
-        s: String,
+        h: usize,
+        w: usize,
+        s: [Chars; h],
     }
 
-    let ans1 = s.contains("ab");
-    let ans2 = s.contains("ba");
+    let d = [
+        (-1, 0),
+        (1, 0),
+        (0, -1),
+        (0, 1),
+    ];
+    for cy in 0..h {
+        for cx in 0..w {
+            if s[cy][cx] == '.' {
+                continue;
+            }
 
-    if ans1 | ans2 {
-        println!("Yes");
-    } else {
-        println!("No");
+            let mut can = false;
+            for (dy, dx) in d {
+                if dx == 0 && dy == 0 {
+                    continue;
+                }
+
+                let ny = cy as isize - dy as isize;
+                let nx = cx as isize - dx as isize;
+                
+                if ny < 0 || ny >= h as isize || nx < 0 || nx >= w as isize{
+                    continue;
+                }
+
+                if s[ny as usize][nx as usize] == '#' {
+                    can = true;
+                }
+            }
+
+            if !can {
+                println!("No");
+                return;
+            }
+        }
     }
+    println!("Yes");
 }
 
 #[allow(unused_macros)]

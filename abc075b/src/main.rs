@@ -7,17 +7,51 @@ use std::collections::{HashMap, HashSet, VecDeque};
 #[fastout]
 fn main() {
     input! {
-        _n: usize,
-        s: String,
+        h: usize,
+        w: usize,
+        mut s: [Chars; h],
     }
 
-    let ans1 = s.contains("ab");
-    let ans2 = s.contains("ba");
+    let mut ans = vec![vec!['.'; w]; h];
 
-    if ans1 | ans2 {
-        println!("Yes");
-    } else {
-        println!("No");
+    let x: [isize; 3] = [0, 1, -1];
+    let y: [isize; 3] = [0, 1, -1];
+    
+    for cx in 0..w {
+        for cy in 0..h {
+            if s[cy][cx] == '#' {
+                ans[cy][cx] = '#';
+                continue;
+            }
+
+            let mut count = 0;
+            for dx in x {
+                for dy in y {
+                    // その場はチェックしない。
+                    if dx == 0 && dy == 0 {
+                        continue;
+                    }
+
+                    let nx = cx as isize + dx;
+                    let ny = cy as isize + dy;
+
+                    // フィールドから飛び出る場合
+                    if nx < 0 || nx >= w as isize || ny < 0 || ny >= h as isize {
+                        continue;
+                    }
+                    
+                    if s[ny as usize][nx as usize] == '#' {
+                        count += 1;
+                    }
+                }
+            }
+            ans[cy][cx] = count.to_string().chars().next().unwrap();
+        }
+    }
+
+    for i in ans {
+        let line: String = i.iter().collect();
+        println!("{}", line);
     }
 }
 

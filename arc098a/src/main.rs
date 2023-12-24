@@ -3,23 +3,10 @@ use itertools::Itertools;
 use proconio::{fastout, input, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
+use std::usize::MAX;
 
-#[fastout]
-fn main() {
-    input! {
-        _n: usize,
-        s: String,
-    }
-
-    let ans1 = s.contains("ab");
-    let ans2 = s.contains("ba");
-
-    if ans1 | ans2 {
-        println!("Yes");
-    } else {
-        println!("No");
-    }
-}
+#[allow(dead_code)]
+const MOD: usize = 1_000_000_000 + 7;
 
 #[allow(unused_macros)]
 macro_rules! chmin {
@@ -128,4 +115,38 @@ fn convert_to_base(num: usize, base: usize) -> String {
     }
 
     result.chars().rev().collect()
+}
+
+#[fastout]
+fn main() {
+    input! {
+        n: usize,
+        s: Chars,
+    }
+
+    let mut e = vec![0; n];
+    let mut w = vec![0; n];
+
+    for i in 0..n {
+        if s[i] == 'E' { e[i] = 1 }
+        else {w[i] = 1;}
+    }
+
+    for i in 1..n {
+        e[i] += e[i-1];
+        w[i] += w[i-1];
+    }
+
+    let mut ans = MAX;
+    for i in 0..n {
+        let mut tmp = 0;
+        if i > 0 {
+            tmp += w[i-1];
+        }
+        tmp += e[n-1] - e[i];
+        chmin!(ans, tmp) ;
+    }
+
+    println!("{}", ans);
+
 }

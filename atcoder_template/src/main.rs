@@ -4,13 +4,8 @@ use proconio::{fastout, input, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
 
-#[fastout]
-fn main() {
-    input! {
-        n: usize,
-        _a: [usize; n],
-    }
-}
+#[allow(dead_code)]
+const MOD: usize = 1_000_000_000 + 7;
 
 #[allow(unused_macros)]
 macro_rules! chmin {
@@ -119,4 +114,12 @@ fn convert_to_base(num: usize, base: usize) -> String {
     }
 
     result.chars().rev().collect()
+}
+
+#[fastout]
+fn main() {
+    input! {
+        n: usize,
+        _a: [usize; n],
+    }
 }

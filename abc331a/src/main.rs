@@ -5,6 +5,7 @@ use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
 
 #[fastout]
+#[allow(non_snake_case)]
 fn main() {
     input! {
         M: usize,

@@ -4,23 +4,6 @@ use proconio::{fastout, input, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
 
-#[fastout]
-fn main() {
-    input! {
-        _n: usize,
-        s: String,
-    }
-
-    let ans1 = s.contains("ab");
-    let ans2 = s.contains("ba");
-
-    if ans1 | ans2 {
-        println!("Yes");
-    } else {
-        println!("No");
-    }
-}
-
 #[allow(unused_macros)]
 macro_rules! chmin {
     ($base:expr, $($cmps:expr),+ $(,)*) => {{
@@ -112,10 +95,10 @@ fn convert_to_base(num: usize, base: usize) -> String {
     if base < 2 {
         panic!("Base must be at least 2");
     }
-
+    
     let mut result = String::new();
     let mut n = num;
-
+    
     while n > 0 {
         let digit = n % base;
         let char = if digit < 10 {
@@ -128,4 +111,19 @@ fn convert_to_base(num: usize, base: usize) -> String {
     }
 
     result.chars().rev().collect()
+}
+
+#[fastout]
+fn main() {
+    input! {
+        a: isize,
+        b: isize,
+        c: isize,
+        d: isize,
+    }
+
+    let s = max!(a, c);
+    let e = min!(b, d);
+
+    println!("{}", max!(0, e - s));
 }
