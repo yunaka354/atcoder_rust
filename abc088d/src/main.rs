@@ -3,17 +3,10 @@ use itertools::Itertools;
 use proconio::{fastout, input, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
+use std::usize::MAX;
 
 #[allow(dead_code)]
 const MOD: usize = 1_000_000_000 + 7;
-
-#[allow(dead_code)]
-const DIRECTION_4: [(isize, isize); 4] = [
-    (-1, 0),
-    (1, 0),
-    (0, -1),
-    (0, 1),
-];
 
 #[allow(unused_macros)]
 macro_rules! chmin {
@@ -127,7 +120,55 @@ fn convert_to_base(num: usize, base: usize) -> String {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        mut h: usize,
+        mut w: usize,
+        maze: [Chars; h],
     }
+
+    let mut q = VecDeque::new();
+    q.push_back((0, 0));
+
+    let mut counts = vec![vec![MAX; w]; h];
+    counts[0][0] = 0;
+    let d: [(isize, isize); 4] = [
+        (-1, 0),
+        (1, 0),
+        (0, -1),
+        (0, 1),
+    ];
+    
+    while let Some((cy, cx)) = q.pop_front() {
+        for (dy, dx) in d {
+            let ny = cy + dy;
+            let nx = cx + dx;
+
+            if ny < 0 || ny >= h as isize || nx < 0 || nx >= w as isize {
+                continue;
+            }
+            if maze[ny as usize][nx as usize] == '#' {
+                continue;
+            }
+            if counts[ny as usize][nx as usize] != MAX {
+                continue;
+            }
+            counts[ny as usize][nx as usize] = counts[cy as usize][cx as usize] + 1;
+            q.push_back((ny, nx));
+        }
+    }
+
+    if counts[h-1][w-1] == MAX {
+        println!("-1");
+        return;
+    }
+
+    let mut black_counts = 0;
+    for i in 0..h {
+        for j in 0..w {
+            if maze[i][j] == '#' {
+                black_counts += 1;
+            }
+        }
+    }
+
+    println!("{}", h * w - counts[h-1][w-1] - black_counts - 1);    
 }

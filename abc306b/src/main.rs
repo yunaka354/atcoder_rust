@@ -127,7 +127,13 @@ fn convert_to_base(num: usize, base: usize) -> String {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        a: [usize; 64],
     }
+
+    let mut ans = 0;
+    let base: usize = 2;
+    for i in 0..64 {
+        ans += a[i] * base.pow(i as u32);
+    }
+    println!("{}", ans);
 }

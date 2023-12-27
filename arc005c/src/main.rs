@@ -3,6 +3,7 @@ use itertools::Itertools;
 use proconio::{fastout, input, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
+use std::usize::MAX;
 
 #[allow(dead_code)]
 const MOD: usize = 1_000_000_000 + 7;
@@ -127,7 +128,59 @@ fn convert_to_base(num: usize, base: usize) -> String {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        h: usize,
+        w: usize,
+        maze: [Chars; h],
+    }
+
+    let mut sx = 0;
+    let mut sy = 0;
+    let mut gx = 0;
+    let mut gy = 0;
+    for i in 0..h {
+        for j in 0..w {
+            if maze[i][j] == 's' {
+                sy = i;
+                sx = j;
+            }
+            if maze[i][j] == 'g' {
+                gy = i;
+                gx = j;
+            }
+        }
+    }
+    let mut costs = vec![vec![MAX; w];h];
+    costs[sy][sx] = 0;
+    let mut q = VecDeque::new();
+    q.push_back((sy, sx));
+
+    while let Some((cy, cx)) = q.pop_front() {
+        for (dy, dx) in DIRECTION_4 {
+            let ny = cy as isize + dy;
+            let nx = cx as isize + dx;
+            
+            if ny < 0 || ny >= h as isize || nx < 0 || nx >= w as isize{
+                continue;
+            }
+
+            let ny = ny as usize;
+            let nx = nx as usize;
+
+            if maze[ny][nx] == '#' && costs[ny][nx] == MAX {
+                costs[ny][nx] = costs[cy][cx] + 1;
+                q.push_back((ny, nx)); // 後回し
+            }
+            
+            if maze[ny][nx] != '#' && costs[ny][nx] == MAX {
+                costs[ny][nx] = costs[cy][cx];
+                q.push_front((ny, nx)); // コストなしで行けるところは先に移動する
+            }
+        }
+    }
+
+    if costs[gy][gx] <= 2 {
+        println!("YES");
+    } else {
+        println!("NO");
     }
 }

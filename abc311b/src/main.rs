@@ -128,6 +128,29 @@ fn convert_to_base(num: usize, base: usize) -> String {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        d: usize,
+        s: [Chars; n],
     }
+
+    let mut open = vec![0; d];
+
+    for i in 0..n {
+        for j in 0..d {
+            if s[i][j] == 'o' {
+                open[j] += 1;
+            }
+        }
+    }
+
+    let mut ans = 0;
+    let mut count = 0;
+    for i in 0..d {
+        if open[i] == n {
+            count += 1;
+            chmax!(ans, count);
+        } else {
+            count = 0;
+        }
+    }
+    println!("{}", ans);
 }

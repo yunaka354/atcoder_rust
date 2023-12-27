@@ -127,7 +127,29 @@ fn convert_to_base(num: usize, base: usize) -> String {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        a: usize,
+        b: usize,
+    }
+
+    let v = [
+        (1,2),
+        (2,3),
+        (4,5),
+        (5,6),
+        (7,8),
+        (8,9),
+    ];
+
+    let mut graph = vec![vec![false; 9]; 9];
+
+    for i in v {
+        graph[i.0 - 1][i.1 - 1] = true;
+        graph[i.1 - 1][i.0 - 1] = true;
+    }
+
+    if graph[a-1][b-1] {
+        println!("Yes");
+    } else {
+        println!("No");
     }
 }

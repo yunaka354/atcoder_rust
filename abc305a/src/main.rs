@@ -128,6 +128,6 @@ fn convert_to_base(num: usize, base: usize) -> String {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
     }
+    println!("{}", (n+2) / 5 * 5)
 }

@@ -127,7 +127,15 @@ fn convert_to_base(num: usize, base: usize) -> String {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        _n: usize,
+        s: Chars,
     }
+
+    let mut ans = String::new();
+    
+    for c in s {
+        ans.push_str(&c.to_string());
+        ans.push_str(&c.to_string());
+    }
+    println!("{}", ans)
 }

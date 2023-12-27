@@ -128,6 +128,20 @@ fn convert_to_base(num: usize, base: usize) -> String {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        a: [usize; 7*n],
     }
+
+    let mut sum = 0;
+    let mut days = 0;
+    let mut ans = Vec::new();
+    for i in 0..7*n {
+        sum += a[i];
+        days += 1;
+        if days == 7 {
+            ans.push(sum.to_string());
+            sum = 0;
+            days = 0;
+        }
+    }
+    println!("{}", ans.join(" "))
 }

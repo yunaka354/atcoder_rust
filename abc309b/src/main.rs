@@ -128,6 +128,52 @@ fn convert_to_base(num: usize, base: usize) -> String {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        a: [Chars; n],
+    }
+
+    let mut ans = vec![vec!['.'; n];n];
+
+    for i in 0..n {
+        for j in 0..n {
+            // right top corner
+            if i == 0 && j == n-1 {
+                ans[i+1][j] = a[i][j];
+            }
+            // right bottom
+            else if i == n-1 && j == n-1 {
+                ans[i][j-1] = a[i][j];
+            }
+            // left bottom
+            else if i == n-1 && j == 0 {
+                ans[i-1][j] = a[i][j];
+            }
+            // left top
+            else if i == 0 && j == 0 {
+                ans[i][j+1] = a[i][j];
+            }
+            // top
+            else if i == 0 {
+                ans[i][j+1] = a[i][j];
+            }
+            // right
+            else if j == n-1 {
+                ans[i+1][j] = a[i][j];
+            }
+            // bottom
+            else if i == n-1 {
+                ans[i][j-1] = a[i][j];
+            }
+            // left
+            else if j == 0 {
+                ans[i-1][j] = a[i][j];
+            } else {
+                ans[i][j] = a[i][j];
+            }
+        }
+    }
+
+    for i in ans {
+        let i: String = i.iter().collect();
+        println!("{}", i);
     }
 }

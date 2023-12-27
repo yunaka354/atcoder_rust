@@ -128,6 +128,22 @@ fn convert_to_base(num: usize, base: usize) -> String {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        s: [String; n],
     }
+
+    for i in 0..n {
+        for j in 0..n {
+            if i == j {continue;}
+            let mut concat = s[i].clone();
+            concat.push_str(&s[j]);
+
+            let reverse: String = concat.chars().rev().collect();
+
+            if concat == reverse {
+                println!("Yes");
+                return;
+            }
+        }
+    }
+    println!("No");
 }

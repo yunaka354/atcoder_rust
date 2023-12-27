@@ -3,6 +3,7 @@ use itertools::Itertools;
 use proconio::{fastout, input, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
+use std::usize::MAX;
 
 #[allow(dead_code)]
 const MOD: usize = 1_000_000_000 + 7;
@@ -127,7 +128,68 @@ fn convert_to_base(num: usize, base: usize) -> String {
 #[fastout]
 fn main() {
     input! {
+        h: usize,
+        w: usize,
         n: usize,
-        _a: [usize; n],
+        maze: [Chars; h],
     }
+
+    let mut locations = VecDeque::new();
+    let mut sy = 0;
+    let mut sx = 0;
+
+    for factory in 0..n {
+        for i in 0..h {
+            for j in 0..w {
+                let c = maze[i][j];
+                let oc = c.to_digit(10);
+
+                if let Some(d) = oc {
+                    if d - 1 == factory as u32 {
+                        locations.push_back((i, j));
+                    }
+                }
+
+                if c == 'S' {
+                    sy = i;
+                    sx = j;
+                }
+            }
+        }
+    }
+
+    let mut ans = 0;
+    while let Some((gy, gx)) = locations.pop_front() {
+        ans += bfs(&maze, h, w, sy, sx, gy, gx);
+        sy = gy;
+        sx = gx;
+    }
+
+    println!("{}", ans);
+}
+
+fn bfs(maze: &Vec<Vec<char>>, h: usize, w:usize, sy: usize, sx: usize, gy: usize, gx: usize) -> usize {
+    let mut costs = vec![vec![MAX; w]; h];
+    costs[sy][sx] = 0;
+    let mut q = VecDeque::new();
+    q.push_back((sy, sx));
+
+    while let Some((cy, cx)) = q.pop_front() {
+        for (dy, dx) in DIRECTION_4 {
+            let ny = cy as isize + dy;
+            let nx = cx as isize + dx;
+            if ny < 0 || ny >= h as isize|| nx < 0 || nx >= w as isize {
+                continue;
+            }
+
+            let ny = ny as usize;
+            let nx = nx as usize;
+
+            if maze[ny][nx] != 'X' && costs[ny][nx] == MAX {
+                costs[ny][nx] = costs[cy][cx] + 1;
+                q.push_back((ny, nx));
+            }
+        }
+    }
+    costs[gy][gx]
 }

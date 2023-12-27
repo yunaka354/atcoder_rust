@@ -128,6 +128,48 @@ fn convert_to_base(num: usize, base: usize) -> String {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        m: usize,
+        s: [Chars; n],
+    }
+
+    let tak_code_tmp = vec![
+        "###.?????",
+        "###.?????",
+        "###.?????",
+        "....?????",
+        "?????????",
+        "?????....",
+        "?????.###",
+        "?????.###",
+        "?????.###",
+    ];
+
+    let mut tak_code = Vec::<Vec<char>>::new();
+    for i in tak_code_tmp {
+        let tmp: Vec<char> = i.chars().collect();
+        tak_code.push(tmp);
+    }
+    let mut ans: Vec<(usize, usize)> = Vec::new();
+    for i in 0..n-8 {
+        for j in 0..m-8 {
+            let mut can = true;
+            for y in 0..9 {
+                for x in 0..9 {
+                    if tak_code[y][x] == '?' {
+                        continue;
+                    }
+
+                    if tak_code[y][x] != s[i+y][j+x] {
+                        can = false;
+                    }
+                }
+            }
+            if can {
+                ans.push((i, j));
+            }
+        }
+    }
+    for p in ans {
+        println!("{} {}", p.0 + 1, p.1 + 1);
     }
 }

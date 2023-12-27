@@ -128,6 +128,26 @@ fn convert_to_base(num: usize, base: usize) -> String {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        m: usize,
+        c: [String; n],
+        d: [String; m],
+        other: usize,
     }
+
+    let mut map = HashMap::new();
+    for i in 0..m{
+        input! { p: usize }
+        map.entry(&d[i]).or_insert(p);
+    }
+
+    let mut ans = 0;
+
+    for dish in c {
+        let result = map.get(&dish);
+        match result {
+            Some(price) => ans += price,
+            None => ans += other
+        }
+    }
+    println!("{:?}", ans);
 }

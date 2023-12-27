@@ -127,7 +127,26 @@ fn convert_to_base(num: usize, base: usize) -> String {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        s: [isize; 8],
     }
+
+    let mut num: isize = -1;
+    for n in s {
+        if n < 100 || n > 675 {
+            println!("No");
+            return;
+        }
+        if n % 25 != 0 {
+            println!("No");
+            return;
+        }
+
+        if n < num {
+            println!("No");
+            return;
+        }
+
+        num = n;
+    }
+    println!("Yes");
 }

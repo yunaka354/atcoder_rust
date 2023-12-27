@@ -128,6 +128,32 @@ fn convert_to_base(num: usize, base: usize) -> String {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        mut s: Chars,
+        mut t: Chars,
     }
+
+    for i in 0..n {
+        if s[i] == '1' {
+            s[i] = 'l'
+        }
+        if s[i] == '0' {
+            s[i] = 'o'
+        }
+    }
+
+    for i in 0..n {
+        if t[i] == '1' {
+            t[i] = 'l'
+        }
+        if t[i] == '0' {
+            t[i] = 'o'
+        }
+    }
+
+    if s == t {
+        println!("Yes");
+    } else {
+        println!("No");
+    }
+    
 }

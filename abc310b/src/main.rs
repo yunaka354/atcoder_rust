@@ -128,6 +128,38 @@ fn convert_to_base(num: usize, base: usize) -> String {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        _m: usize,
     }
+    let mut p = Vec::new();
+    let mut c = Vec::new();
+    let mut f = Vec::new();
+
+    for _ in 0..n {
+        input! {
+            tmp_p: usize,
+            tmp_c: usize
+        }
+        p.push(tmp_p);
+        c.push(tmp_c);
+        let mut st = HashSet::new();
+        for _ in 0..tmp_c {
+            input! {
+                tmp_f: usize
+            }
+            st.insert(tmp_f);
+        }
+        f.push(st);
+    }
+
+    for i in 0..n {
+        for j in 0..n {
+            if i == j { continue }
+            if p[i] >= p[j] && f[j].is_superset(&f[i]) && (p[i] > p[j] || f[j].len() > f[i].len()){
+                println!("Yes");
+                return;
+            }
+        }
+    }
+    println!("No");
+
 }

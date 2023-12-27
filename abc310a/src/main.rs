@@ -128,6 +128,11 @@ fn convert_to_base(num: usize, base: usize) -> String {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        p: usize,
+        q: usize,
+        mut d: [usize; n],
     }
+    d.sort();
+
+    println!("{}", min(p, q + d[0]));
 }

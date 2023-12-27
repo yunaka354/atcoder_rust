@@ -128,6 +128,39 @@ fn convert_to_base(num: usize, base: usize) -> String {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        m: usize,
+        ab: [(usize, usize); m],
     }
+
+    let mut graph = vec![vec![false; n];n];
+
+    for (a, b) in ab {
+        graph[a-1][b-1] = true;
+        graph[b-1][a-1] = true;
+    }
+
+    let mut v = Vec::new();
+    for i in 1..n {
+        v.push(i);
+    }
+
+    let mut permutations = v.iter().permutations(v.len());
+    let mut ans = 0;
+    while let Some(root) = permutations.next() {
+        let mut can = true;
+        let mut from = 0;
+        
+        for to in root.iter() {
+            if !graph[from][**to] {
+                can = false;
+            }
+            from = **to;
+        }
+
+        if can {
+            ans += 1;
+        }
+    }
+
+    println!("{}", ans);
 }

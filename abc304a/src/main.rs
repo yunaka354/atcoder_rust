@@ -3,6 +3,7 @@ use itertools::Itertools;
 use proconio::{fastout, input, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
+use std::usize::MAX;
 
 #[allow(dead_code)]
 const MOD: usize = 1_000_000_000 + 7;
@@ -128,6 +129,29 @@ fn convert_to_base(num: usize, base: usize) -> String {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
     }
+    let mut q = VecDeque::new();
+    let mut min_age = MAX;
+
+    for _ in 0..n {
+        input! {
+            person: (String, usize)
+        }
+        chmin!(min_age, person.1);
+        q.push_back(person);
+    }
+    let mut found = false;
+
+    while let Some(person) = q.pop_front() {
+        if min_age == person.1 {
+            found = true;
+        }
+        if found {
+            println!("{}", person.0);
+        } else {
+            q.push_back(person);
+        }
+        
+    }
+
 }
