@@ -180,6 +180,19 @@ impl UnionFind {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        m: usize,
+        ab: [(usize, usize); m],
     }
+
+    let mut uf = UnionFind::new(n);
+    for (a, b) in ab {
+        uf.unite(a-1, b-1);
+    }
+
+    let mut st = HashSet::new();
+    for i in 0..n {
+        st.insert(uf.root(i));
+    }
+
+    println!("{:?}", st.len() - 1);
 }

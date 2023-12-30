@@ -180,6 +180,17 @@ impl UnionFind {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        m: usize,
+        s: [String; n],
+        t: [String; m],
     }
+
+    let mut count = 0;
+    for e in s {
+        let sub = &e[3..6];
+        if t.contains(&sub.to_string()) {
+            count += 1;
+        }
+    }
+    println!("{}", count);
 }

@@ -180,6 +180,13 @@ impl UnionFind {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        k: usize,
+        mut s: [String; n],
+    }
+    let mut s = s[0..k].to_vec();
+    s.sort();
+
+    for i in 0..k {
+        println!("{}", s[i]);
     }
 }

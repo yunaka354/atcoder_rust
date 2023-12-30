@@ -124,62 +124,37 @@ fn convert_to_base(num: usize, base: usize) -> String {
     result.chars().rev().collect()
 }
 
-#[allow(dead_code)]
-struct UnionFind {
-    par: Vec<usize>,
-    siz: Vec<usize>
-}
-
-#[allow(dead_code)]
-impl UnionFind {
-
-    /// generate UnionFind. nodes = number of nodes (0-index)
-    fn new(nodes: usize) -> Self {
-        Self {
-            par: (0..nodes).collect(),
-            siz: vec![1; nodes],
-        }
-    }
-
-    fn root(&mut self, x: usize) -> usize {
-        if self.par[x] == x {
-            return x;
-        }
-        self.par[x] = self.root(self.par[x]);
-        self.par[x]
-    }
-
-    fn is_same(&mut self, x: usize, y: usize) -> bool {
-        self.root(x) == self.root(y)
-    }
-
-    fn unite(&mut self, mut parent: usize, mut child: usize) -> bool {
-        parent = self.root(parent);
-        child = self.root(child);
-
-        if parent == child {
-            return false;
-        }
-
-        if self.siz[parent] < self.siz[child] {
-            std::mem::swap(&mut parent, &mut child);
-        }
-
-        self.par[child] = parent;
-        self.siz[parent] += self.siz[child];
-        true
-    }
-
-    fn size(&mut self, x: usize) -> usize {
-        let root = self.root(x);
-        self.siz[root]
-    }
-}
-
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        s: Chars,
+        t: Chars,
     }
+    let sl = s.len();
+    let tl = t.len();
+    let mut dp = vec![vec![0; tl+1]; sl+1];
+    for i in 1..=sl {
+        for j in 1..=tl {
+            if s[i-1] == t[j-1] {
+                chmax!(dp[i][j], dp[i-1][j-1] + 1);
+            } else {
+                dp[i][j] = max(dp[i-1][j], dp[i][j-1]);
+            }
+        }
+    }
+
+    let mut ans = Vec::new();
+    let mut i = sl; let mut j = tl;
+    while i > 0 && j > 0 {
+        if dp[i][j] == dp[i-1][j] {
+            i -= 1;
+        } else if dp[i][j] == dp[i][j-1] {
+            j -= 1;
+        } else {
+            i -= 1;
+            j -= 1;
+            ans.push(s[i]);
+        }
+    }
+    println!("{}", ans.iter().rev().join(""));
 }

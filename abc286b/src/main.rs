@@ -179,7 +179,9 @@ impl UnionFind {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        _n: usize,
+        s: String,
     }
+    let replaced = s.replace("na", "nya");
+    println!("{}", replaced);
 }

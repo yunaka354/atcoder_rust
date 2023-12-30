@@ -180,6 +180,26 @@ impl UnionFind {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        q: usize,
+    }
+
+    let mut uf = UnionFind::new(n);
+
+    for _ in 0..q {
+        input! {
+            p: usize,
+            a: usize,
+            b: usize,
+        }
+
+        if p == 0 {
+            uf.unite(a, b);
+        } else {
+            if uf.is_same(a, b) {
+                println!("Yes");
+            } else {
+                println!("No");
+            }
+        }
     }
 }

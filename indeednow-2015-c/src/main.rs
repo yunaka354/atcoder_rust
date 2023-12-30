@@ -124,62 +124,40 @@ fn convert_to_base(num: usize, base: usize) -> String {
     result.chars().rev().collect()
 }
 
-#[allow(dead_code)]
-struct UnionFind {
-    par: Vec<usize>,
-    siz: Vec<usize>
-}
-
-#[allow(dead_code)]
-impl UnionFind {
-
-    /// generate UnionFind. nodes = number of nodes (0-index)
-    fn new(nodes: usize) -> Self {
-        Self {
-            par: (0..nodes).collect(),
-            siz: vec![1; nodes],
-        }
-    }
-
-    fn root(&mut self, x: usize) -> usize {
-        if self.par[x] == x {
-            return x;
-        }
-        self.par[x] = self.root(self.par[x]);
-        self.par[x]
-    }
-
-    fn is_same(&mut self, x: usize, y: usize) -> bool {
-        self.root(x) == self.root(y)
-    }
-
-    fn unite(&mut self, mut parent: usize, mut child: usize) -> bool {
-        parent = self.root(parent);
-        child = self.root(child);
-
-        if parent == child {
-            return false;
-        }
-
-        if self.siz[parent] < self.siz[child] {
-            std::mem::swap(&mut parent, &mut child);
-        }
-
-        self.par[child] = parent;
-        self.siz[parent] += self.siz[child];
-        true
-    }
-
-    fn size(&mut self, x: usize) -> usize {
-        let root = self.root(x);
-        self.siz[root]
-    }
-}
-
 #[fastout]
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        m: usize,
+        companies: [(usize, usize, usize, usize); n],
+        candidates: [(usize, usize, usize); m],
+    }
+
+    // dp[a][b][c] = 年収の最大値
+    let mut dp = vec![vec![vec![0; 105];105];105];
+
+    for company in companies {
+        let tech = company.0;
+        let lang = company.1;
+        let comm = company.2;
+        let income = company.3;
+        chmax!(dp[tech][lang][comm], income);
+    }
+
+    for i in 0..=100 {
+        for j in 0..=100 {
+            for k in 0..=100 {
+                chmax!(dp[i+1][j][k], dp[i][j][k]);
+                chmax!(dp[i][j+1][k], dp[i][j][k]);
+                chmax!(dp[i][j][k+1], dp[i][j][k]);
+            }
+        }
+    }
+
+    for candidate in candidates {
+        let tech = candidate.0;
+        let lang = candidate.1;
+        let comm = candidate.2;
+        println!("{}", dp[tech][lang][comm]);
     }
 }

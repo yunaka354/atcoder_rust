@@ -1,6 +1,7 @@
 #![allow(unused_imports)]
 use itertools::Itertools;
 use proconio::{fastout, input, marker::Chars};
+use core::slice;
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
 
@@ -180,6 +181,19 @@ impl UnionFind {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        p: usize,
+        q: usize,
+        r: usize,
+        s: usize,
+        a: [usize; n],
     }
+
+    let mut b = a.clone();
+
+    let slice1 = a[p-1..=q-1].to_vec();
+    let slice2 = a[r-1..=s-1].to_vec();
+
+    b.splice(r-1..=s-1, slice1);
+    b.splice(p-1..=q-1, slice2);
+    println!("{}", b.iter().join(" "));
 }

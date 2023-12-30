@@ -180,6 +180,22 @@ impl UnionFind {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        m: usize,
+        a: [usize; m],
     }
+
+    let mut tmp = Vec::new();
+    let mut ans = Vec::new();
+
+    for i in 1..=n {
+        tmp.push(i);
+        if !a.contains(&i) {   
+            tmp.reverse();
+            ans.extend(tmp.clone());
+            tmp.clear();
+        }
+    }
+    tmp.reverse();
+    ans.extend(tmp.clone());
+    println!("{}", ans.iter().join(" "));
 }

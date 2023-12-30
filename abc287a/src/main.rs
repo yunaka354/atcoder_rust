@@ -180,6 +180,19 @@ impl UnionFind {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        s: [String; n],
+    }
+
+    let mut count = 0;
+    for e in s {
+        if e == "For".to_string() {
+            count += 1;
+        }
+    }
+
+    if count > n / 2 {
+        println!("Yes");
+    } else {
+        println!("No");
     }
 }

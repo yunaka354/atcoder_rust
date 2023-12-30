@@ -180,6 +180,13 @@ impl UnionFind {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+    }
+
+    for _ in 0..n {
+        input! {
+            a: isize,
+            b: isize
+        }
+        println!("{}", a + b);
     }
 }

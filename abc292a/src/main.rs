@@ -124,62 +124,14 @@ fn convert_to_base(num: usize, base: usize) -> String {
     result.chars().rev().collect()
 }
 
-#[allow(dead_code)]
-struct UnionFind {
-    par: Vec<usize>,
-    siz: Vec<usize>
-}
-
-#[allow(dead_code)]
-impl UnionFind {
-
-    /// generate UnionFind. nodes = number of nodes (0-index)
-    fn new(nodes: usize) -> Self {
-        Self {
-            par: (0..nodes).collect(),
-            siz: vec![1; nodes],
-        }
-    }
-
-    fn root(&mut self, x: usize) -> usize {
-        if self.par[x] == x {
-            return x;
-        }
-        self.par[x] = self.root(self.par[x]);
-        self.par[x]
-    }
-
-    fn is_same(&mut self, x: usize, y: usize) -> bool {
-        self.root(x) == self.root(y)
-    }
-
-    fn unite(&mut self, mut parent: usize, mut child: usize) -> bool {
-        parent = self.root(parent);
-        child = self.root(child);
-
-        if parent == child {
-            return false;
-        }
-
-        if self.siz[parent] < self.siz[child] {
-            std::mem::swap(&mut parent, &mut child);
-        }
-
-        self.par[child] = parent;
-        self.siz[parent] += self.siz[child];
-        true
-    }
-
-    fn size(&mut self, x: usize) -> usize {
-        let root = self.root(x);
-        self.siz[root]
-    }
-}
-
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        s: Chars,
     }
+
+    for c in s {
+        print!("{}", c.to_ascii_uppercase());
+    }
+    println!("");
 }
