@@ -192,7 +192,43 @@ fn binary_search<T: PartialOrd+PartialEq>(vector: Vec<T>, lookup: T) -> isize {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        s: String,
     }
+
+    if s.len() != 8 {
+        println!("No");
+        return;
+    }
+
+    let cond1 = {
+        let c = &s[..1];
+        c.chars().all(|c| c.is_uppercase())
+    };
+
+    let cond2 = {
+        let sub = &s[1..7];
+        let result = sub.parse::<i32>();
+        match result {
+            Ok(n) => {
+                if n < 100000 || n > 999999 {
+                    false
+                } else {
+                    true
+                }
+            },
+            Err(_) => false
+        }
+    };
+    
+    let cond3 = {
+        let c = &s[7..];
+        c.chars().all(|c| c.is_uppercase())
+    };
+
+    if cond1 && cond2 && cond3 {
+        println!("Yes");
+    } else {
+        println!("No");
+    }
+
 }

@@ -192,7 +192,15 @@ fn binary_search<T: PartialOrd+PartialEq>(vector: Vec<T>, lookup: T) -> isize {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        t: usize,
+    }
+
+    for _ in 0..t {
+        input! {
+            n: usize,
+            a: [usize; n]
+        }
+        let ans = a.iter().filter(|num| **num % 2 == 1).count();
+        println!("{}", ans);
     }
 }

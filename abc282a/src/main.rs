@@ -192,7 +192,15 @@ fn binary_search<T: PartialOrd+PartialEq>(vector: Vec<T>, lookup: T) -> isize {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        k: usize,
     }
+
+    let mut ans = Vec::new();
+
+    for i in 0..k {
+        ans.push(std::char::from_u32(i as u32 + 65).unwrap());
+    }
+
+    let ans: String = ans.iter().join("");
+    println!("{}", ans);
 }

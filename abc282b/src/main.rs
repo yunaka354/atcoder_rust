@@ -193,6 +193,25 @@ fn binary_search<T: PartialOrd+PartialEq>(vector: Vec<T>, lookup: T) -> isize {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        m: usize,
+        s: [Chars; n],
     }
+    let mut ans = 0;
+
+    for i in 0..n {
+        for j in (0..n).take(i) {
+            if i == j {continue;}
+            let mut answer = vec![false; m];
+            for k in 0..m {
+                if s[i][k] == 'o' || s[j][k] == 'o' {
+                    answer[k] = true;
+                }
+            }
+            let count = answer.iter().filter(|b| **b).count();
+            if count == m {
+                ans += 1;
+            }
+        }
+    }
+    println!("{}", ans);
 }

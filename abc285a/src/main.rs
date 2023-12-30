@@ -192,7 +192,13 @@ fn binary_search<T: PartialOrd+PartialEq>(vector: Vec<T>, lookup: T) -> isize {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        a: usize,
+        b: usize,
+    }
+
+    if a * 2 == b || a * 2 + 1 == b {
+        println!("Yes");
+    } else {
+        println!("No");
     }
 }

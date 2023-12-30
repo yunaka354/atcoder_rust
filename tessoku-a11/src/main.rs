@@ -3,6 +3,7 @@ use itertools::Itertools;
 use proconio::{fastout, input, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
+use std::vec;
 
 #[allow(dead_code)]
 const MOD: usize = 1_000_000_000 + 7;
@@ -193,6 +194,9 @@ fn binary_search<T: PartialOrd+PartialEq>(vector: Vec<T>, lookup: T) -> isize {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        x: usize,
+        a: [usize; n],
     }
+
+    println!("{}", binary_search(a, x)+1);
 }

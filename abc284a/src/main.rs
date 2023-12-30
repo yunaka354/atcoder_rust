@@ -193,6 +193,12 @@ fn binary_search<T: PartialOrd+PartialEq>(vector: Vec<T>, lookup: T) -> isize {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        mut s: [String; n],
+    }
+
+    s.reverse();
+
+    for e in s {
+        println!("{}", e);
     }
 }

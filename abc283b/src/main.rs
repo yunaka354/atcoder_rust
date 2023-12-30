@@ -193,6 +193,25 @@ fn binary_search<T: PartialOrd+PartialEq>(vector: Vec<T>, lookup: T) -> isize {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        mut a: [usize; n],
+        q: usize,
+    }
+
+    for _ in 0..q {
+        input!{
+            q_type: usize,
+        }
+        if q_type == 1 {
+            input! {
+                k: usize,
+                x: usize,
+            }
+            a[k-1] = x;
+        } else {
+            input! {
+                k: usize
+            }
+            println!("{}", a[k-1]);
+        }
     }
 }

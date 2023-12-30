@@ -176,23 +176,29 @@ impl UnionFind {
     }
 }
 
-#[allow(dead_code)]
-fn binary_search<T: PartialOrd+PartialEq>(vector: Vec<T>, lookup: T) -> isize {
-    let mut l = 1;
-    let mut r = vector.len();
-    while l <= r {
-        let index = (l + r) / 2;
-        if lookup < vector[index] { r = index - 1 };
-        if lookup == vector[index] { return index as isize };
-        if lookup > vector[index] { l = index + 1 };
-    }
-    return -1;
-}
-
 #[fastout]
 fn main() {
     input! {
+        d: usize,
         n: usize,
-        _a: [usize; n],
     }
+    let mut diff = vec![0 as isize; 100005];
+
+    for _ in 0..n {
+        input! {
+            l: usize,
+            r: usize
+        }
+        diff[l] += 1;
+        diff[r+1] -= 1;
+    }
+    
+    let mut accum = vec![0; 100005];
+    for i in 1..=d+1 {
+        accum[i] = accum[i-1] + diff[i];
+    }
+
+    for i in 1..=d {
+        println!("{}", accum[i]);
+    } 
 }

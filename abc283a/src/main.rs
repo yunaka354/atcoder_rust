@@ -192,7 +192,9 @@ fn binary_search<T: PartialOrd+PartialEq>(vector: Vec<T>, lookup: T) -> isize {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        a: usize,
+        b: usize,
     }
+
+    println!("{}", a.pow(b as u32));
 }

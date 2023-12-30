@@ -193,6 +193,28 @@ fn binary_search<T: PartialOrd+PartialEq>(vector: Vec<T>, lookup: T) -> isize {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        k: usize,
+        a: [usize; n],
     }
+
+    let mut left = 1;
+    let mut right = 1_000_000_000;
+    while left < right {
+        let mid = (left + right) / 2;
+        let answer = check(&a, k, mid);
+        if answer {
+            right = mid;
+        } else {
+            left = mid + 1;
+        }
+    }
+    println!("{}", left);
+}
+
+fn check(a: &Vec<usize>, target: usize, time: usize) -> bool {
+    let mut sum = 0;
+    for e in a {
+        sum += time / *e;
+    }
+    sum >= target 
 }
