@@ -180,7 +180,14 @@ impl UnionFind {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        h: usize,
+        _w: usize,
     }
+
+    let mut ans = 0;
+    for _ in 0..h {
+        input! { s: Chars }
+        ans += s.iter().filter(|c| **c == '#').count();
+    }
+    println!("{}", ans);
 }

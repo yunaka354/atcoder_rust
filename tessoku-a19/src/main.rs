@@ -176,11 +176,49 @@ impl UnionFind {
     }
 }
 
+#[allow(dead_code)]
+fn binary_search<T: PartialOrd+PartialEq>(vector: Vec<T>, lookup: T) -> isize {
+    let mut l = 1;
+    let mut r = vector.len();
+    while l <= r {
+        let index = (l + r) / 2;
+        if lookup < vector[index] { r = index - 1 };
+        if lookup == vector[index] { return index as isize };
+        if lookup > vector[index] { l = index + 1 };
+    }
+    return -1;
+}
+
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        N: usize,
+        W: usize,
     }
+
+    let mut w = vec![0; 105];
+    let mut v = vec![0; 105];
+    let mut dp = vec![vec![0; 100005]; 105];
+
+    for i in 1..=N {
+        input! {
+            tw: usize,
+            tv: usize,
+        }
+        w[i] = tw;
+        v[i] = tv;
+    }
+
+    for i in 1..=N {
+        for j in 0..=W {
+            // erabu
+            if j+w[i] <= W {
+                chmax!(dp[i][j+w[i]], dp[i-1][j] + v[i]);
+            }
+            // erabanai
+            chmax!(dp[i][j], dp[i-1][j]);
+        }
+    }
+    println!("{}", dp[N][W]);
 }

@@ -176,11 +176,36 @@ impl UnionFind {
     }
 }
 
-#[allow(non_snake_case)]
+#[allow(dead_code)]
+fn binary_search<T: PartialOrd+PartialEq>(vector: Vec<T>, lookup: T) -> isize {
+    let mut l = 1;
+    let mut r = vector.len();
+    while l <= r {
+        let index = (l + r) / 2;
+        if lookup < vector[index] { r = index - 1 };
+        if lookup == vector[index] { return index as isize };
+        if lookup > vector[index] { l = index + 1 };
+    }
+    return -1;
+}
+
 #[fastout]
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        a: [usize; n],
     }
+    let mut set = HashSet::new();
+    for e in &a {
+        set.insert(*e);
+    }
+    let mut v = set.into_iter().collect::<Vec<usize>>();
+    v.sort();
+
+    let mut ans = vec![0; n];
+    for i in 0..n {
+        ans[i] = v.binary_search(&a[i]).unwrap() + 1;
+    }
+
+    println!("{}", ans.iter().join(" "));
 }

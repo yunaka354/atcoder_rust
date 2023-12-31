@@ -180,7 +180,11 @@ impl UnionFind {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        a: f64,
+        b: f64,
     }
+
+    let ans = b / a;
+    let rounded = (ans * 1000.0).round() / 1000.0;
+    println!("{:.3}", rounded);
 }

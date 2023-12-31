@@ -3,6 +3,7 @@ use itertools::Itertools;
 use proconio::{fastout, input, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
+use std::usize::MAX;
 
 #[allow(dead_code)]
 const MOD: usize = 1_000_000_000 + 7;
@@ -176,11 +177,62 @@ impl UnionFind {
     }
 }
 
-#[allow(non_snake_case)]
+#[allow(dead_code)]
+fn binary_search<T: PartialOrd+PartialEq>(vector: Vec<T>, lookup: T) -> isize {
+    let mut l = 1;
+    let mut r = vector.len();
+    while l <= r {
+        let index = (l + r) / 2;
+        if lookup < vector[index] { r = index - 1 };
+        if lookup == vector[index] { return index as isize };
+        if lookup > vector[index] { l = index + 1 };
+    }
+    return -1;
+}
+
 #[fastout]
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
     }
+    let mut a = vec![0; 100005];
+    let mut b = vec![0; 100005];
+    let mut dp = vec![MAX; 100005];
+
+    for i in 2..=n {
+        input! { e: usize }
+        a[i] = e;
+    }
+
+    for i in 3..=n {
+        input! { e: usize }
+        b[i] = e;
+    }
+    dp[0] = 0;
+    dp[1] = 0;
+    dp[2] = a[2];
+    for i in 3..=n {
+        chmin!(dp[i], dp[i-1] + a[i]);
+        chmin!(dp[i], dp[i-2] + b[i]);
+    }
+
+    let mut now = n;
+    let mut ans = Vec::new();
+    loop {
+        ans.push(now);
+        if now == 1 {break;}
+        
+        if dp[now-1] + a[now] == dp[now] {
+            now -= 1;
+        } else {
+            now -= 2;
+        }
+    }
+
+    ans.reverse();
+
+    println!("{}", ans.len());
+    println!("{}", ans.into_iter().join(" "));
+
+
 }

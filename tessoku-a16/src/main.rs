@@ -3,6 +3,7 @@ use itertools::Itertools;
 use proconio::{fastout, input, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
+use std::usize::MAX;
 
 #[allow(dead_code)]
 const MOD: usize = 1_000_000_000 + 7;
@@ -176,11 +177,35 @@ impl UnionFind {
     }
 }
 
-#[allow(non_snake_case)]
+#[allow(dead_code)]
+fn binary_search<T: PartialOrd+PartialEq>(vector: Vec<T>, lookup: T) -> isize {
+    let mut l = 1;
+    let mut r = vector.len();
+    while l <= r {
+        let index = (l + r) / 2;
+        if lookup < vector[index] { r = index - 1 };
+        if lookup == vector[index] { return index as isize };
+        if lookup > vector[index] { l = index + 1 };
+    }
+    return -1;
+}
+
 #[fastout]
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        a: [usize; n-1],
+        b: [usize; n-2],
     }
+
+    let mut dp = vec![MAX; n];
+    dp[0] = 0;
+
+    for i in 1..n {
+        chmin!(dp[i], dp[i-1] + a[i-1]);
+        if i >= 2 {
+            chmin!(dp[i], dp[i-2] + b[i-2]);
+        }
+    }
+    println!("{}", dp[n-1]);
 }

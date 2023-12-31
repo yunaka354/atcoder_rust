@@ -180,7 +180,16 @@ impl UnionFind {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        s: Chars,
     }
+
+    let mut sum = 0;
+    for c in s {
+        if c == 'v' {
+            sum += 1;
+        } else {
+            sum += 2;
+        }
+    }
+    println!("{}", sum);
 }

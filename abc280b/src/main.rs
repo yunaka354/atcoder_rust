@@ -181,6 +181,16 @@ impl UnionFind {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        s: [isize; n],
     }
+
+    let mut ans = Vec::new();
+
+    let mut sum = 0;
+    for e in s {
+        ans.push(e - sum);
+        sum += e - sum;
+    }
+
+    println!("{}", ans.iter().join(" "));
 }

@@ -177,10 +177,48 @@ impl UnionFind {
 }
 
 #[allow(non_snake_case)]
-#[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        mut h: usize,
+        mut m: usize,
     }
+
+
+    loop {
+        let a = h / 10;
+        let b = h % 10;
+        let c = m / 10;
+        let d = m % 10;
+
+        if is_valid(a, c, b, d) {
+            println!("{}{} {}{}", a,b,c,d);
+            return;
+        }
+
+        m += 1;
+
+        if m == 60 {
+            h += 1;
+            m = 0;
+        }
+
+        if h == 24 {
+            h = 0;
+        }
+    }
+}
+
+fn is_valid(a: usize, b: usize, c: usize, d: usize) -> bool {
+    let h = a * 10 + b;
+    let m = c * 10 + d;
+    
+    if h > 23 {
+        return false;
+    }
+
+    if m > 59 {
+        return false;
+    }
+
+    true
 }

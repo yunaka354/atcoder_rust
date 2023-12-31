@@ -181,6 +181,19 @@ impl UnionFind {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        m: usize,
+        ab: [(usize, usize); m],
+    }
+
+    let mut ans = vec![vec![0; 0]; n+1];
+
+    for (a, b) in ab {
+        ans[a].push(b);
+        ans[b].push(a);
+    }
+
+    for town in ans.iter_mut().skip(1) {
+        town.sort();
+        println!("{} {}", town.len(), town.iter().join(" "));
     }
 }

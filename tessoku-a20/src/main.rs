@@ -180,7 +180,25 @@ impl UnionFind {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        mut s: Chars,
+        mut t: Chars,
     }
+    let sl = s.len();
+    let tl = t.len();
+    s.insert(0, 'a');
+    t.insert(0, 'a');
+
+
+    let mut dp = vec![vec![0; 2005]; 2005];
+    
+    for i in 1..=sl {
+        for j in 1..=tl {
+            if s[i] == t[j] {
+                dp[i][j] = max!(dp[i-1][j], dp[i][j-1], dp[i-1][j-1] + 1);
+            } else {
+                dp[i][j] = max!(dp[i-1][j], dp[i][j-1]);
+            }
+        }
+    }
+    println!("{}", dp[sl][tl]);
 }

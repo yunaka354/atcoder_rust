@@ -181,6 +181,15 @@ impl UnionFind {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        k: usize,
+        mut a: [usize; n],
     }
+
+    for _ in 0..k {
+        a.push(0);
+    }
+
+    println!("{}", a.iter().skip(k).join(" "));
+
+
 }

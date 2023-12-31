@@ -180,7 +180,25 @@ impl UnionFind {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        s: Chars,
+        t: Chars,
     }
+
+    let sl = s.len();
+    let tl = t.len();
+    
+    if sl < tl {
+        println!("No");
+        return;
+    }
+
+    for start in 0..(sl-tl+1) {
+        let sub = &s[start..start+tl];
+        if sub == t {
+            println!("Yes");
+            return;
+        }
+    }
+
+    println!("No");
 }

@@ -181,6 +181,13 @@ impl UnionFind {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        x: usize,
+        p: [usize; n],
+    }
+
+    for i in 0..n {
+        if p[i] == x {
+            println!("{}", i+1);
+        }
     }
 }

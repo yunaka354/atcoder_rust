@@ -180,7 +180,26 @@ impl UnionFind {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        a: usize,
+        b: usize,
+        c: usize,
+        d: usize,
+        e: usize,
+        f: usize,
     }
+
+    let m = 998244353;
+    let a = a % m;
+    let b = b % m;
+    let c = c % m;
+    let d = d % m;
+    let e = e % m;
+    let f = f % m;
+
+    let x =(a * b) % m;
+    let x = (x * c) % m;
+    let y = (d * e) % m;
+    let y = (y * f) % m;
+    let ans = (x+m-y) % m;
+    println!("{}",ans);
 }

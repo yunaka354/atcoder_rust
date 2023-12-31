@@ -181,6 +181,40 @@ impl UnionFind {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        s: [Chars; n],
     }
+    let mut st = HashSet::new();
+
+    let check = [
+        'H',
+        'D',
+        'C',
+        'S',
+    ];
+
+    let check2 = [
+        'A',
+        '2',
+        '3',
+        '4',
+        '5',
+        '6',
+        '7',
+        '8',
+        '9',
+        'T',
+        'J',
+        'Q',
+        'K',
+    ];
+
+    for e in s {
+        if !check.contains(&e[0]) || !check2.contains(&e[1]) || st.contains(&e){
+            println!("No");
+            return;
+        }
+        st.insert(e);
+    }
+
+    println!("Yes");
 }

@@ -176,11 +176,45 @@ impl UnionFind {
     }
 }
 
-#[allow(non_snake_case)]
+#[allow(dead_code)]
+fn binary_search<T: PartialOrd+PartialEq>(vector: &Vec<T>, lookup: T) -> isize {
+    let mut l = 1;
+    let mut r = vector.len();
+    while l <= r {
+        let index = (l + r) / 2;
+        if lookup < vector[index] { r = index - 1 };
+        if lookup == vector[index] { return index as isize };
+        if lookup > vector[index] { l = index + 1 };
+    }
+    return -1;
+}
+
 #[fastout]
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        k: usize,
+        a: [usize; n],
+        b: [usize; n],
+        c: [usize; n],
+        d: [usize; n],
     }
+
+    let p: Vec<usize> = a.iter()
+        .cartesian_product(b.iter())
+        .map(|(aa, bb)| aa + bb)
+        .collect();
+    let mut q: Vec<usize> = c.iter()
+        .cartesian_product(d.iter())
+        .map(|(cc, dd)| cc + dd)
+        .collect();
+    q.sort_unstable();
+
+    for e in p {
+        if q.binary_search(&(k - e)).is_ok() {
+            println!("Yes");
+            return;
+        }
+    }
+    println!("No");
 }

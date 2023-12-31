@@ -176,11 +176,50 @@ impl UnionFind {
     }
 }
 
-#[allow(non_snake_case)]
+#[allow(dead_code)]
+fn binary_search<T: PartialOrd+PartialEq>(vector: Vec<T>, lookup: T) -> isize {
+    let mut l = 1;
+    let mut r = vector.len();
+    while l <= r {
+        let index = (l + r) / 2;
+        if lookup < vector[index] { r = index - 1 };
+        if lookup == vector[index] { return index as isize };
+        if lookup > vector[index] { l = index + 1 };
+    }
+    return -1;
+}
+
 #[fastout]
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        s: usize,
     }
+    let mut a = vec![0; 65];
+    for i in 1..=n {
+        input! {e: usize};
+        a[i] = e;
+    }
+    
+    let mut dp = vec![vec![false; 10005]; 65];
+    dp[0][0] = true;
+    
+    for i in 1..=n {
+        for j in 0..=s {
+            if dp[i-1][j] {
+                dp[i][j] = true; // 選ばない
+            }
+            
+            if dp[i-1][j] && a[i] + j <= s { // 2項目はオーバーフローしないためのチェック
+                dp[i][j+a[i]] = true; // 選ぶ
+            }
+        }
+    }
+    
+    if dp[n][s] {
+        println!("Yes");
+    } else {
+        println!("No");
+    }
+    
 }
