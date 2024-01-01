@@ -188,6 +188,8 @@ fn round_integer(value: i64, n: u32) -> usize {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
     }
+    let b = convert_to_base(n, 16);
+    let b = b.to_ascii_uppercase();
+    println!("{:0>2}", b);
 }

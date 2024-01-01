@@ -186,8 +186,11 @@ fn round_integer(value: i64, n: u32) -> usize {
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
-    input! {
-        n: usize,
-        _a: [usize; n],
+
+    let mut st = HashSet::new();
+    for _ in 0..5 {
+        input! { n: usize }
+        st.insert(n);
     }
+    println!("{}", st.len());
 }

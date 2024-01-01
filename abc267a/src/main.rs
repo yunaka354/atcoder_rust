@@ -184,10 +184,20 @@ fn round_integer(value: i64, n: u32) -> usize {
 }
 
 #[allow(non_snake_case)]
-#[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        s: String,
+    }
+
+    let mut map = HashMap::new();
+    map.insert("Monday".to_string(), 5);
+    map.insert("Tuesday".to_string(), 4);
+    map.insert("Wednesday".to_string(), 3);
+    map.insert("Thursday".to_string(), 2);
+    map.insert("Friday".to_string(), 1);
+
+    match map.get(s.as_str()) {
+        Some(&d) => println!("{}", d),
+        None => panic!("error"),
     }
 }

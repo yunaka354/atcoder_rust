@@ -3,6 +3,7 @@ use itertools::Itertools;
 use proconio::{fastout, input, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
+use std::usize::MAX;
 
 #[allow(dead_code)]
 const MOD: usize = 1_000_000_000 + 7;
@@ -176,18 +177,53 @@ impl UnionFind {
     }
 }
 
-#[allow(dead_code)]
-fn round_integer(value: i64, n: u32) -> usize {
-    let factor = 10i64.pow(n);
-    let rounded = ((value as f64) / (factor as f64)).round();
-    (rounded * (factor as f64)) as usize
-}
-
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        m: usize,
     }
+
+    let mut a = vec![vec![0; 15]; 105];
+    for i in 1..=m {
+        for j in 1..=n {
+            input! {
+                tmp: usize, 
+            }
+            a[i][j] = tmp;
+        }
+    }
+
+    let mut dp = vec![vec![MAX-1; 1<<10]; 105];
+    dp[0][0] = 0;
+
+    for i in 1..=m {
+        for j in 0..(1<<n) {
+            let mut already = vec![0; 15]; // already free
+            for k in 1..=n {
+                if (j / (1 << (k-1))) % 2 == 0 {
+                    already[k] = 0;
+                } else {
+                    already[k] = 1;
+                }
+            }
+            let mut v = 0;
+            for k in 1..=n {
+                if already[k] == 1 || a[i][k] == 1 {
+                    v += 1 << (k-1);
+                }
+            }
+    
+            chmin!(dp[i][j], dp[i-1][j]);
+            chmin!(dp[i][v], dp[i-1][j] + 1);
+        }
+    }
+
+    if dp[m][(1 << n) - 1] == MAX-1 {
+        println!("-1");
+    } else {
+        println!("{}", dp[m][(1<<n)-1]);
+    }
+
 }

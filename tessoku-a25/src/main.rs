@@ -176,18 +176,39 @@ impl UnionFind {
     }
 }
 
-#[allow(dead_code)]
-fn round_integer(value: i64, n: u32) -> usize {
-    let factor = 10i64.pow(n);
-    let rounded = ((value as f64) / (factor as f64)).round();
-    (rounded * (factor as f64)) as usize
-}
-
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        h: usize,
+        w: usize,
+        c: [Chars; h],
     }
+
+    let mut dp: Vec<Vec<usize>> = vec![vec![0; w+1]; h+1];
+    dp[0][0] = 1;
+    let d = [
+        (0, -1), // from left
+        (-1, 0), // from top
+    ];
+
+    for i in 0..h {
+        for j in 0..w {
+            if c[i][j] == '#' {
+                dp[i][j] = 0;
+            } else {
+                for (dy, dx) in d {
+                    let from_y = i as isize + dy;
+                    let from_x = j as isize + dx;
+
+                    if from_y < 0 || from_y >= h as isize || from_x < 0 || from_x >= w as isize {
+                        continue;;
+                    }
+                    dp[i][j] += dp[from_y as usize][from_x as usize];
+                }
+            }            
+        }
+    }
+
+    println!("{}", dp[h-1][w-1]);
 }

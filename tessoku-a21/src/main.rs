@@ -3,6 +3,7 @@ use itertools::Itertools;
 use proconio::{fastout, input, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
+use std::env::consts::ARCH;
 
 #[allow(dead_code)]
 const MOD: usize = 1_000_000_000 + 7;
@@ -176,18 +177,56 @@ impl UnionFind {
     }
 }
 
-#[allow(dead_code)]
-fn round_integer(value: i64, n: u32) -> usize {
-    let factor = 10i64.pow(n);
-    let rounded = ((value as f64) / (factor as f64)).round();
-    (rounded * (factor as f64)) as usize
-}
-
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
     }
+    let mut P = vec![0; 2005];
+    let mut A = vec![0; 2005];
+
+    let mut dp = vec![vec![0; 2005];2005];
+
+    for i in 1..=n {
+        input! {
+            p: usize,
+            a: usize,
+        }
+        P[i] = p;
+        A[i] = a;
+    }
+
+    dp[1][n] = 0;
+
+    for len in (0..=n-2).rev() {
+        for l in 1..=(n-len) {
+            let r = l + len;
+            
+            let mut score1 = 0;
+            if l<=P[l-1] && P[l-1]<=r {
+                score1 = A[l-1];
+            }
+
+            let mut score2 = 0;
+            if l<=P[r+1] && P[r+1] <= r {
+                score2 = A[r+1];
+            }
+
+            if l == 1 {
+                dp[l][r] = dp[l][r+1] + score2;
+            } else if r == n {
+                dp[l][r] = dp[l-1][r] + score1;
+            } else {
+                dp[l][r] = max(dp[l-1][r]+score1, dp[l][r+1]+score2);
+            }
+        }
+    }
+
+    let mut ans = 0;
+    for i in 1..=n {
+        chmax!(ans, dp[i][i]);
+    }
+    println!("{}", ans);
+
 }

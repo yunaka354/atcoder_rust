@@ -3,6 +3,7 @@ use itertools::Itertools;
 use proconio::{fastout, input, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
+use std::usize::{MIN, MAX};
 
 #[allow(dead_code)]
 const MOD: usize = 1_000_000_000 + 7;
@@ -187,7 +188,24 @@ fn round_integer(value: i64, n: u32) -> usize {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        s: [Chars; 10],
     }
+
+    let mut a = MAX;
+    let mut b = MIN;
+    let mut c = MAX;
+    let mut d = MIN;
+
+    for i in 0..10 {
+        for j in 0..10 {
+            if s[i][j] == '#' {
+                chmin!(a, i);
+                chmax!(b, i);
+                chmin!(c, j);
+                chmax!(d, j);
+            }
+        }
+    }
+    println!("{} {}", a+1, b+1);
+    println!("{} {}", c+1, d+1);
 }

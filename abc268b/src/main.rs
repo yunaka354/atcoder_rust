@@ -187,7 +187,13 @@ fn round_integer(value: i64, n: u32) -> usize {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        s: String,
+        t: String,
+    }
+
+    if t.starts_with(&s) {
+        println!("Yes");
+    } else {
+        println!("No");
     }
 }

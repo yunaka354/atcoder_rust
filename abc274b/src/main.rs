@@ -176,18 +176,23 @@ impl UnionFind {
     }
 }
 
-#[allow(dead_code)]
-fn round_integer(value: i64, n: u32) -> usize {
-    let factor = 10i64.pow(n);
-    let rounded = ((value as f64) / (factor as f64)).round();
-    (rounded * (factor as f64)) as usize
-}
-
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        h: usize,
+        w: usize,
+        c: [Chars; h],
     }
+
+    let mut ans = vec![0; w];
+    for i in 0..h {
+        for j in 0..w {
+            if c[i][j] == '#' {
+                ans[j] += 1;
+            }
+        }
+    }
+
+    println!("{}", ans.iter().join(" "));
 }

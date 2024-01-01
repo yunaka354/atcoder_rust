@@ -187,7 +187,26 @@ fn round_integer(value: i64, n: u32) -> usize {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        mut goal: isize,
+        mut wall: isize,
+        mut hammer: isize,
     }
+
+    if wall < 0 {
+        goal = -goal;
+        wall = -wall;
+        hammer = -hammer;
+    }
+
+    if goal < wall {
+        println!("{}", goal.abs());
+    } else {
+        if hammer < wall {
+            println!("{}", hammer.abs() + (goal - hammer).abs())
+        } else {
+            println!("-1");
+        }
+    }
+
+
 }

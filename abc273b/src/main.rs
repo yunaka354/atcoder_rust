@@ -176,7 +176,6 @@ impl UnionFind {
     }
 }
 
-#[allow(dead_code)]
 fn round_integer(value: i64, n: u32) -> usize {
     let factor = 10i64.pow(n);
     let rounded = ((value as f64) / (factor as f64)).round();
@@ -187,7 +186,13 @@ fn round_integer(value: i64, n: u32) -> usize {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        mut x: usize,
+        k: usize,
     }
+    let mut d = 0;
+    while d < k {
+        x = round_integer(x as i64, (d + 1) as u32);
+        d += 1;
+    }
+    println!("{}", x);
 }

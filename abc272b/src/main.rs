@@ -188,6 +188,36 @@ fn round_integer(value: i64, n: u32) -> usize {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        m: usize,
+    }
+
+    let mut ans = vec![vec![false; n];n];
+
+    for _ in 0..m {
+        input! {
+            k: usize,
+            x: [usize; k]
+        }
+        for i in 0..k {
+            for j in 0..k {
+                ans[x[i]-1][x[j]-1] = true;
+                ans[x[j]-1][x[i]-1] = true;
+            }
+        }
+    }
+
+    let mut count = 0;
+    for i in 0..n {
+        for j in 0..n {
+            if ans[i][j] {
+                count += 1;
+            }
+        }
+    }
+
+    if count == n * n {
+        println!("Yes");
+    } else {
+        println!("No");
     }
 }

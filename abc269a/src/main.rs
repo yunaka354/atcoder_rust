@@ -187,7 +187,11 @@ fn round_integer(value: i64, n: u32) -> usize {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        a: isize,
+        b: isize,
+        c: isize,
+        d: isize,
     }
+    println!("{}", (a+b)*(c-d));
+    println!("Takahashi");
 }

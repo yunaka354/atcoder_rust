@@ -176,18 +176,18 @@ impl UnionFind {
     }
 }
 
-#[allow(dead_code)]
-fn round_integer(value: i64, n: u32) -> usize {
-    let factor = 10i64.pow(n);
-    let rounded = ((value as f64) / (factor as f64)).round();
-    (rounded * (factor as f64)) as usize
-}
-
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
     }
+    println!("{}", recursive(n));
+}
+
+fn recursive(k: usize) -> usize {
+    if k == 0 {
+        return 1;
+    }
+    return k * recursive(k - 1);
 }

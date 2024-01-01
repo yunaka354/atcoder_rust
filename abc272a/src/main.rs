@@ -188,6 +188,7 @@ fn round_integer(value: i64, n: u32) -> usize {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        a: [usize; n],
     }
+    println!("{}", (a.iter().sum::<usize>()));
 }

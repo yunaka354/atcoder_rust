@@ -187,7 +187,14 @@ fn round_integer(value: i64, n: u32) -> usize {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        a: usize,
+        b: usize,
     }
+
+    let mut sunuke = 0;
+
+    sunuke |= a;
+    sunuke |= b;
+
+    println!("{}", sunuke);
 }

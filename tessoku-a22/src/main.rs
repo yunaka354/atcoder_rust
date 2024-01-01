@@ -3,6 +3,7 @@ use itertools::Itertools;
 use proconio::{fastout, input, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
+use std::i32::MIN;
 
 #[allow(dead_code)]
 const MOD: usize = 1_000_000_000 + 7;
@@ -176,18 +177,22 @@ impl UnionFind {
     }
 }
 
-#[allow(dead_code)]
-fn round_integer(value: i64, n: u32) -> usize {
-    let factor = 10i64.pow(n);
-    let rounded = ((value as f64) / (factor as f64)).round();
-    (rounded * (factor as f64)) as usize
-}
-
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        a: [usize; n-1],
+        b: [usize; n-1],
     }
+
+    let mut dp = vec![MIN; n];
+    dp[0] = 0;
+
+    for i in 0..n-1 {
+        chmax!(dp[a[i]-1], dp[i] + 100);
+        chmax!(dp[b[i]-1], dp[i] + 150);
+    }
+
+    println!("{}", dp[n-1]);
 }

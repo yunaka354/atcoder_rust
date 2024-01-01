@@ -188,6 +188,23 @@ fn round_integer(value: i64, n: u32) -> usize {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        q: usize,
+    }
+
+    let mut a = Vec::new();
+    for _ in 0..n {
+        input! {
+            l: usize,
+            a_vec: [usize; l]
+        }
+        a.push(a_vec);
+    }
+
+    for _ in 0..q {
+        input! {
+            s: usize,
+            t: usize,
+        }
+        println!("{}", a[s-1][t-1]);
     }
 }

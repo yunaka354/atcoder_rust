@@ -187,7 +187,35 @@ fn round_integer(value: i64, n: u32) -> usize {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        s: Chars,
     }
+
+    if s[0] == '1' {
+        println!("No");
+        return;
+    }
+    
+    let mut cols = vec![true; 7];
+
+    cols[0] = s[6] == '1';
+    cols[1] = s[3] == '1';
+    cols[2] = s[1] == '1' || s[7] == '1';
+    cols[3] = s[0] == '1' || s[4] == '1';
+    cols[4] = s[2] == '1' || s[8] == '1';
+    cols[5] = s[5] == '1';
+    cols[6] = s[9] == '1';
+
+    for i in 0..7 {
+        for j in 0..i {
+            if cols[i] && cols[j] {
+                for k in j+1..i {
+                    if !cols[k] {
+                        println!("Yes");
+                        return;
+                    }
+                }
+            }
+        }
+    }
+    println!("No");
 }
