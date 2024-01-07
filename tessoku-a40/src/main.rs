@@ -222,6 +222,23 @@ fn ncr(n: usize, r: usize) -> usize {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        a: [usize; n],
     }
+
+    let mut map = HashMap::new();
+
+    for e in a {
+        let entry = map.entry(e).or_insert(0 as usize);
+        *entry += 1;
+    }
+
+    let mut ans = 0;
+    
+    for (_k, v) in map {
+        if v >= 3 {
+            ans += v * (v-1) * (v-2) / 6;
+        }
+    }
+
+    println!("{}", ans);
 }

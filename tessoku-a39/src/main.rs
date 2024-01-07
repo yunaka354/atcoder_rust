@@ -183,45 +183,22 @@ fn round_integer(value: i64, n: u32) -> usize {
     (rounded * (factor as f64)) as usize
 }
 
-#[allow(dead_code)]
-fn power(a: usize, b: usize) -> usize {
-    let mut p = a;
-    let mut ans = 1;
-    for i in 0..30 {
-        let wari = 1 << i;
-        if (b / wari) % 2 == 1 {
-            ans = (ans * p) % MOD; 
-        }
-        p = (p * p) % MOD;
-    }
-    ans
-}
-
-#[allow(dead_code)]
-fn ncr(n: usize, r: usize) -> usize {
-    let mut numerator = 1;
-    let mut denominator = 1;
-
-    for i in 1..=n {
-        numerator = (numerator * i) % MOD;
-    }
-
-    for i in 1..=r {
-        denominator = (denominator * i) % MOD;
-    }
-
-    for i in 1..=(n-r) {
-        denominator = (denominator * i) % MOD;
-    }
-    
-    numerator * power(denominator, MOD-2) % MOD
-}
-
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        mut movies: [(usize, usize); n],
     }
+    
+    movies.sort_by(|a, b| a.1.cmp(&b.1));
+    
+    let mut now = movies[0].1; let mut ans = 1;
+    for movie in movies.iter().skip(1) {
+        if movie.0 >= now {
+            now = movie.1;
+            ans += 1;
+        }
+    }
+    println!("{}", ans);
 }

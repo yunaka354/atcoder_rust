@@ -222,6 +222,27 @@ fn ncr(n: usize, r: usize) -> usize {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        a: [usize; n],
     }
+
+    let mut count = vec![0 as usize; 105];
+
+    for e in a {
+        count[e % 100] += 1; 
+    }
+
+    let mut ans = 0;
+    for i in 1..=49 {
+        ans += count[i] * count[100-i];
+    }
+
+    if count[50] >= 2 {
+        ans += count[50] * (count[50]-1) / 2;
+    }
+
+    if count[0] >= 2 {
+        ans += count[0] * (count[0]-1) / 2;
+    }
+
+    println!("{}",ans);
 }

@@ -221,7 +221,14 @@ fn ncr(n: usize, r: usize) -> usize {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        _n: usize,
+        s: String,
     }
+
+    if s.contains("RRR") || s.contains("BBB") {
+        println!("Yes");
+    } else {
+        println!("No");
+    }
+    
 }

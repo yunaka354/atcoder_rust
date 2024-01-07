@@ -221,7 +221,26 @@ fn ncr(n: usize, r: usize) -> usize {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        x: usize,
+        y: usize,
+    }
+
+    let mut ans = vec![(x, y)];
+
+    while *ans.last().unwrap() != (1, 1) {
+        let (tx, ty) = ans.last().unwrap();
+        if tx > ty {
+            ans.push((tx-ty, *ty));
+        } else {
+            ans.push((*tx, ty-tx));
+        }
+    }
+
+    ans.reverse();
+
+    println!("{}", ans.len()-1);
+
+    for (tx, ty) in ans.iter().skip(1) {
+        println!("{} {}", tx, ty);
     }
 }
