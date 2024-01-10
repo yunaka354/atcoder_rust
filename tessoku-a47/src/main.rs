@@ -199,15 +199,31 @@ fn power(a: usize, b: usize) -> usize {
 
 #[allow(dead_code)]
 fn ncr(n: usize, r: usize) -> usize {
-    if r > n {
-        return 0;
+    let mut numerator = 1;
+    let mut denominator = 1;
+
+    for i in 1..=n {
+        numerator = (numerator * i) % MOD;
     }
-    let mut res = 1;
-    for i in 0..r {
-        res *= n - i;
-        res /= i + 1;
+
+    for i in 1..=r {
+        denominator = (denominator * i) % MOD;
     }
-    res
+
+    for i in 1..=(n-r) {
+        denominator = (denominator * i) % MOD;
+    }
+    
+    numerator * power(denominator, MOD-2) % MOD
+}
+
+use rand::Rng;
+
+fn random_integers_in_range(min: usize, max: usize) -> (usize, usize) {
+    let mut rng = rand::thread_rng();
+    let n1 = rng.gen_range(min..=max);
+    let n2 = rng.gen_range(min..=max);
+    if n1 < n2 { (n1, n2) } else { (n2, n1) }
 }
 
 #[allow(non_snake_case)]
@@ -215,6 +231,43 @@ fn ncr(n: usize, r: usize) -> usize {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        towns: [(isize, isize); n],
     }
+
+    //  initialize
+    let mut ans = vec![0; n+1];
+    for i in 1..n {
+        ans[i] = i;
+    }
+
+    let mut current_dist = get_dist(&ans, &towns);
+
+    for _ in 0..2000000 {
+        let (l, r) = random_integers_in_range(1, n-1);
+        ans[l..=r].reverse();
+        let new_dist = get_dist(&ans, &towns);
+        if new_dist < current_dist {
+            current_dist = new_dist;
+        } else {
+            ans[l..=r].reverse();
+        }
+    }
+
+    for e in ans {
+        println!("{}", e+1);
+    }
+}
+
+fn get_dist(v: &Vec<usize>, towns: &Vec<(isize, isize)>) -> f64 {
+    let mut dist = 0.0;
+    let (mut cx, mut cy) = towns[0];
+    let len = towns.len();
+    for i in 1..=len {
+        let (nx, ny) = towns[v[i]];
+        let tmp_dist = (nx - cx).pow(2) + (ny - cy).pow(2);
+        let tmp_dist = (tmp_dist as f64).sqrt();
+        dist += tmp_dist;
+        cx = nx; cy = ny;
+    }
+    dist
 }

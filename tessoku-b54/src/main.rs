@@ -198,7 +198,7 @@ fn power(a: usize, b: usize) -> usize {
 }
 
 #[allow(dead_code)]
-fn ncr(n: usize, r: usize) -> usize {
+fn ncr(n: u64, r: u64) -> u64 {
     if r > n {
         return 0;
     }
@@ -215,6 +215,21 @@ fn ncr(n: usize, r: usize) -> usize {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        a: [usize; n],
     }
+
+    let mut map = HashMap::new();
+
+    for i in 0..n {
+        let e = map.entry(a[i]).or_insert(Vec::new());
+        e.push(i);
+    }
+
+    let mut ans = 0;
+
+    for (_k, v) in map.iter() {
+        ans += ncr(v.len() as u64, 2);
+    }
+
+    println!("{}", ans);
 }

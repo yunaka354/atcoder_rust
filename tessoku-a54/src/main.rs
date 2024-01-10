@@ -199,22 +199,45 @@ fn power(a: usize, b: usize) -> usize {
 
 #[allow(dead_code)]
 fn ncr(n: usize, r: usize) -> usize {
-    if r > n {
-        return 0;
+    let mut numerator = 1;
+    let mut denominator = 1;
+
+    for i in 1..=n {
+        numerator = (numerator * i) % MOD;
     }
-    let mut res = 1;
-    for i in 0..r {
-        res *= n - i;
-        res /= i + 1;
+
+    for i in 1..=r {
+        denominator = (denominator * i) % MOD;
     }
-    res
+
+    for i in 1..=(n-r) {
+        denominator = (denominator * i) % MOD;
+    }
+    
+    numerator * power(denominator, MOD-2) % MOD
 }
 
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        q: usize,
+    }
+
+    let mut map = HashMap::new();
+
+    for _ in 0..q {
+        input! { query: usize }
+        
+        if query == 1 {
+            input! {
+                name: String,
+                point: usize,
+            }
+            map.insert(name, point);
+        } else {
+            input! { name: String }
+            println!("{}", map.get(&name).unwrap())
+        }
     }
 }

@@ -1,8 +1,8 @@
 #![allow(unused_imports)]
 use itertools::Itertools;
 use proconio::{fastout, input, marker::Chars};
-use std::cmp::{max, min};
-use std::collections::{HashMap, HashSet, VecDeque};
+use std::cmp::{max, min, Reverse};
+use std::collections::{HashMap, HashSet, VecDeque, BinaryHeap};
 
 #[allow(dead_code)]
 const MOD: usize = 1_000_000_000 + 7;
@@ -199,22 +199,47 @@ fn power(a: usize, b: usize) -> usize {
 
 #[allow(dead_code)]
 fn ncr(n: usize, r: usize) -> usize {
-    if r > n {
-        return 0;
+    let mut numerator = 1;
+    let mut denominator = 1;
+
+    for i in 1..=n {
+        numerator = (numerator * i) % MOD;
     }
-    let mut res = 1;
-    for i in 0..r {
-        res *= n - i;
-        res /= i + 1;
+
+    for i in 1..=r {
+        denominator = (denominator * i) % MOD;
     }
-    res
+
+    for i in 1..=(n-r) {
+        denominator = (denominator * i) % MOD;
+    }
+    
+    numerator * power(denominator, MOD-2) % MOD
 }
 
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        q: usize,
+    }
+
+    let mut min_heap = BinaryHeap::new();
+
+    for _ in 0..q {
+        input! {
+            query_type: usize,
+        }
+        
+        if query_type == 1 {
+            input! { price: usize }
+            min_heap.push(Reverse(price));
+        } else if query_type == 2 {
+            let min = min_heap.peek().unwrap();
+            let v = min.0;
+            println!("{}", v);
+        } else {
+            min_heap.pop();
+        }
     }
 }

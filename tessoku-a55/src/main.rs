@@ -2,7 +2,7 @@
 use itertools::Itertools;
 use proconio::{fastout, input, marker::Chars};
 use std::cmp::{max, min};
-use std::collections::{HashMap, HashSet, VecDeque};
+use std::collections::{HashMap, HashSet, VecDeque, BTreeSet};
 
 #[allow(dead_code)]
 const MOD: usize = 1_000_000_000 + 7;
@@ -211,10 +211,26 @@ fn ncr(n: usize, r: usize) -> usize {
 }
 
 #[allow(non_snake_case)]
-#[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        q: usize,
+    }
+
+    let mut set = BTreeSet::new();
+
+    for _ in 0..q {
+        input! { query: usize, number: usize }
+        if query == 1 {
+            set.insert(number);
+        } else if query == 2 {
+            set.remove(&number);
+        } else {
+            let t = set.range(number..).next();
+
+            match t {
+                Some(n) => println!("{}", n),
+                None => println!("-1"),
+            }
+        }
     }
 }

@@ -2,7 +2,7 @@
 use itertools::Itertools;
 use proconio::{fastout, input, marker::Chars};
 use std::cmp::{max, min};
-use std::collections::{HashMap, HashSet, VecDeque};
+use std::collections::{HashMap, HashSet, VecDeque, BinaryHeap};
 
 #[allow(dead_code)]
 const MOD: usize = 1_000_000_000 + 7;
@@ -199,15 +199,22 @@ fn power(a: usize, b: usize) -> usize {
 
 #[allow(dead_code)]
 fn ncr(n: usize, r: usize) -> usize {
-    if r > n {
-        return 0;
+    let mut numerator = 1;
+    let mut denominator = 1;
+
+    for i in 1..=n {
+        numerator = (numerator * i) % MOD;
     }
-    let mut res = 1;
-    for i in 0..r {
-        res *= n - i;
-        res /= i + 1;
+
+    for i in 1..=r {
+        denominator = (denominator * i) % MOD;
     }
-    res
+
+    for i in 1..=(n-r) {
+        denominator = (denominator * i) % MOD;
+    }
+    
+    numerator * power(denominator, MOD-2) % MOD
 }
 
 #[allow(non_snake_case)]
@@ -215,6 +222,29 @@ fn ncr(n: usize, r: usize) -> usize {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        d: usize,
+        mut xy: [(usize, usize); n],
     }
+
+    let mut job_per_day = vec![Vec::<usize>::new(); d];
+    for (day, pay) in xy {
+        job_per_day[day-1].push(pay);
+    }
+
+    let mut heap = BinaryHeap::new();
+    let mut ans = 0;
+    for i in 0..d {
+        for pay in &job_per_day[i] {
+            heap.push(pay);
+        }
+
+        let comp = heap.pop();
+
+        match comp {
+            Some(pay) => ans += pay,
+            None => ()
+        }
+    }
+
+    println!("{}", ans);
 }
