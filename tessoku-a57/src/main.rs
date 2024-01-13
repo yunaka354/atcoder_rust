@@ -210,53 +210,50 @@ fn ncr(n: usize, r: usize) -> usize {
     res
 }
 
-#[allow(dead_code)]
-struct SegmentTree {
-    pub dat: Vec<isize>,
-    pub size: usize,
-}
-
-#[allow(dead_code)]
-impl SegmentTree {
-
-    fn new(n: usize) -> Self {
-        let mut size = 1;
-        while size < n { size *= 2; }
-        SegmentTree {
-            dat: vec![0; 300000],
-            size
-        }
-    }
-
-    fn update(&mut self, mut pos: usize, x: isize) {
-        pos = pos + self.size - 1;
-        self.dat[pos] = x;
-        while pos >= 2 {
-            pos /= 2;
-            self.dat[pos] = max(self.dat[pos * 2], self.dat[pos * 2 + 1]);
-        }
-    }
-
-    fn query(&self, l: isize, r: isize, a: isize, b: isize, u: usize) -> isize {
-        if r <= a || b <= l {
-            return std::isize::MIN;
-        }
-        if l <= a && b <= r {
-            return self.dat[u];
-        }
-
-        let m = (a + b) / 2;
-        let answer_l = self.query(l, r, a, m, u * 2);
-        let answer_r = self.query(l, r, m, b, u * 2 + 1);
-        return max(answer_l, answer_r);
-    }
-}
-
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        q: usize,
+    }
+
+    let mut a = vec![0; 100009];
+    let mut x = vec![0; 100009];
+    let mut y = vec![0; 100009];
+    let mut dp = vec![vec![0; 100009]; 32];
+
+    for i in 1..=n {
+        input! { n: usize }
+        a[i] = n;
+    }
+
+    for i in 1..=q {
+        input! {
+            n: usize,
+            m: usize,
+        }
+        x[i] = n;
+        y[i] = m;
+    }
+
+    for i in 1..=n {
+        dp[0][i] = a[i];
+    }
+
+    for d in 1..=29 {
+        for i in 1..=n {
+            dp[d][i] = dp[d-1][dp[d-1][i]];
+        } 
+    }
+
+    for i in 1..=q {
+        let mut current_place = x[i];
+        for d in (0..30).rev() {
+            if (y[i] / (1 << d)) % 2 != 0 {
+                current_place = dp[d][current_place];
+            }
+        }
+        println!("{}", current_place);
     }
 }

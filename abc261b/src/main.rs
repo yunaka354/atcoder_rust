@@ -257,6 +257,40 @@ impl SegmentTree {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        a: [Chars; n],
+    }
+
+    let mut ok = true;
+    for i in 0..n {
+        for j in 0..n {
+            if i == j { continue; }
+            let c = a[i][j];
+            let d = a[j][i];
+
+            match c {
+                'W' => {
+                    if d != 'L' {
+                        ok = false;
+                    }
+                },
+                'L' => {
+                    if d != 'W' {
+                        ok = false;
+                    }
+                },
+                'D' => {
+                    if d != 'D' {
+                        ok = false;
+                    }
+                },
+                _ => panic!("error")
+            }
+        }
+    }
+
+    if ok {
+        println!("correct");
+    } else {
+        println!("incorrect");
     }
 }

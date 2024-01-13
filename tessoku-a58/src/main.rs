@@ -3,6 +3,7 @@ use itertools::Itertools;
 use proconio::{fastout, input, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
+use std::isize::MIN;
 
 #[allow(dead_code)]
 const MOD: usize = 1_000_000_000 + 7;
@@ -239,7 +240,7 @@ impl SegmentTree {
 
     fn query(&self, l: isize, r: isize, a: isize, b: isize, u: usize) -> isize {
         if r <= a || b <= l {
-            return std::isize::MIN;
+            return MIN;
         }
         if l <= a && b <= r {
             return self.dat[u];
@@ -257,6 +258,36 @@ impl SegmentTree {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        q: usize,
+    }
+
+    let mut query = vec![0; 100009];
+    let mut pos = vec![0; 100009];
+    let mut x = vec![0; 100009];
+    let mut l = vec![0; 100009];
+    let mut r = vec![0; 100009];
+
+    let mut tree = SegmentTree::new(n);
+
+    for i in 1..=q {
+        input! { n: usize }
+        query[i] = n;
+        if n == 1 {
+            input! { m: usize, o: usize}
+            pos[i] = m;
+            x[i] = o;
+        } else {
+            input! { m: usize, o: usize }
+            l[i] = m;
+            r[i] = o;
+        }
+    }
+
+    for i in 1..=q {
+        if query[i] == 1 {
+            tree.update(pos[i], x[i] as isize);
+        } else {
+            println!("{}", tree.query(l[i] as isize, r[i] as isize, 1, tree.size as isize + 1, 1));
+        }
     }
 }

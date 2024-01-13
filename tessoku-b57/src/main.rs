@@ -210,53 +210,34 @@ fn ncr(n: usize, r: usize) -> usize {
     res
 }
 
-#[allow(dead_code)]
-struct SegmentTree {
-    pub dat: Vec<isize>,
-    pub size: usize,
-}
-
-#[allow(dead_code)]
-impl SegmentTree {
-
-    fn new(n: usize) -> Self {
-        let mut size = 1;
-        while size < n { size *= 2; }
-        SegmentTree {
-            dat: vec![0; 300000],
-            size
-        }
-    }
-
-    fn update(&mut self, mut pos: usize, x: isize) {
-        pos = pos + self.size - 1;
-        self.dat[pos] = x;
-        while pos >= 2 {
-            pos /= 2;
-            self.dat[pos] = max(self.dat[pos * 2], self.dat[pos * 2 + 1]);
-        }
-    }
-
-    fn query(&self, l: isize, r: isize, a: isize, b: isize, u: usize) -> isize {
-        if r <= a || b <= l {
-            return std::isize::MIN;
-        }
-        if l <= a && b <= r {
-            return self.dat[u];
-        }
-
-        let m = (a + b) / 2;
-        let answer_l = self.query(l, r, a, m, u * 2);
-        let answer_r = self.query(l, r, m, b, u * 2 + 1);
-        return max(answer_l, answer_r);
-    }
-}
-
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        k: usize,
+    }
+
+    let mut dp = vec![vec![0; 300009]; 35];
+
+    for i in 1..=n {
+        dp[0][i] = i - find_sum_of_digits(i);
+    }
+
+    for d in 1..=30 {
+        for i in 1..=n {
+            dp[d][i] = dp[d-1][dp[d-1][i]];
+        }
+    }
+
+    let mut ans = vec![0; n+1];
+    for i in 1..=n {
+        ans[i] = i;
+        for d in (0..30).rev() {
+            if (k / (1 << d)) % 2 != 0 {
+                ans[i] = dp[d][ans[i]];
+            }
+        }
+        println!("{}", ans[i]);
     }
 }
