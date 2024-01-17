@@ -256,12 +256,17 @@ impl SegmentTree {
 #[fastout]
 fn main() {
     input! {
-        _n: isize,
-        m: isize,
-        x: isize,
-        t: isize,
-        d: isize,
+        n: usize,
+        x: usize,
     }
 
-    println!("{}", t- d * max(0, x-m));
+    let mut ans = Vec::new();
+    for i in 0..26 {
+        for _ in 0..n {
+            let c = std::char::from_u32(i+65).unwrap();
+            ans.push(c);
+        }
+    }
+
+    println!("{}", ans[x-1]);
 }

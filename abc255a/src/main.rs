@@ -256,12 +256,9 @@ impl SegmentTree {
 #[fastout]
 fn main() {
     input! {
-        _n: isize,
-        m: isize,
-        x: isize,
-        t: isize,
-        d: isize,
+        r: usize,
+        c: usize,
+        a: [[usize; 2]; 2],
     }
-
-    println!("{}", t- d * max(0, x-m));
+    println!("{}", a[r-1][c-1]);
 }
