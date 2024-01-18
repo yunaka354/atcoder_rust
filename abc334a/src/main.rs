@@ -336,7 +336,13 @@ impl MaximumFlow {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        b: usize,
+        g: usize,
+    }
+
+    if b > g {
+        println!("Bat");
+    } else {
+        println!("Glove");
     }
 }

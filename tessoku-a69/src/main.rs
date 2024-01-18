@@ -333,10 +333,26 @@ impl MaximumFlow {
 }
 
 #[allow(non_snake_case)]
-#[fastout]
+// #[fastout]
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        c: [Chars; n],
     }
+
+    let mut z = MaximumFlow::new(2*n+2);
+    for i in 0..n {
+        for j in 0..n {
+            if c[i][j] == '#' {
+                z.add_edge(i, n+j, 1);
+            }
+        }
+    }
+
+    for i in 0..n {
+        z.add_edge(2*n+1-1, i, 1);
+        z.add_edge(n+i, 2*n+2-1, 1);
+    }
+
+    println!("{}", z.max_flow(2*n, 2*n+1));
 }

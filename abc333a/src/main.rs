@@ -337,6 +337,12 @@ impl MaximumFlow {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
     }
+    let mut ans = Vec::new();
+
+    for _ in 0..n {
+        ans.push(n);
+    }
+
+    println!("{}", ans.iter().join(""));
 }

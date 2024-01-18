@@ -336,7 +336,9 @@ impl MaximumFlow {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        s: String,
     }
+    let l = s.len();
+    let ans = &s[..l-1];
+    println!("{}4", ans);
 }

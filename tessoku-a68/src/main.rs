@@ -337,6 +337,15 @@ impl MaximumFlow {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        m: usize,
+        abc: [(usize, usize, usize); m],
     }
+
+    let mut z = MaximumFlow::new(n);
+
+    for (a, b, c) in abc {
+        z.add_edge(a-1, b-1, c);
+    }
+
+    println!("{}",z.max_flow(0, n-1));
 }
