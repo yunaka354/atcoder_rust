@@ -332,33 +332,14 @@ impl MaximumFlow {
     }
 }
 
-// nの約数を列挙して返す関数　計算量 (√n)
-#[allow(dead_code)]
-fn calc_divisors(n: usize) -> Vec<usize> {
-    let mut v = Vec::new();
-    let mut i = 1;
-    while i * i <= n {
-        // 割り切れる場合
-        if n % i == 0 {
-            v.push(i);
-            
-            // 同じ数字を足さないように注意 
-            if n / i != i {
-                v.push(n/i);
-            }
-        }
-        i += 1;
-    }
-    // 小さい順に並べる
-    v.sort();
-    v
-}
-
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        mut a: [usize; n],
     }
+    a.sort();
+    println!("{}", a[n-1] + a[n-2]);
+
 }

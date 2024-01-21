@@ -359,6 +359,19 @@ fn calc_divisors(n: usize) -> Vec<usize> {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+    }
+
+    let mut edges = Vec::new();
+
+    for i in 1..=n {
+        if i != n {
+            edges.push((i, i+1));
+        } else {
+            edges.push((i, 1));
+        }
+    }
+    println!("{}", n);
+    for (u, v) in edges {
+        println!("{} {}", u, v);
     }
 }

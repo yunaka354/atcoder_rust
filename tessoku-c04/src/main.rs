@@ -333,7 +333,6 @@ impl MaximumFlow {
 }
 
 // nの約数を列挙して返す関数　計算量 (√n)
-#[allow(dead_code)]
 fn calc_divisors(n: usize) -> Vec<usize> {
     let mut v = Vec::new();
     let mut i = 1;
@@ -359,6 +358,10 @@ fn calc_divisors(n: usize) -> Vec<usize> {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+    }
+
+    let ans = calc_divisors(n);
+    for num in ans {
+        println!("{}", num);
     }
 }

@@ -359,6 +359,23 @@ fn calc_divisors(n: usize) -> Vec<usize> {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
     }
+
+    let mut ans: Vec<usize> = Vec::new();
+
+    for bit in 0..(1 << 10) {
+        let mut num = 0;
+        for i in 0..10 {
+            if bit & (1 << i) == 0 {
+                num *= 10;
+                num += 4;
+            } else {
+                num *= 10;
+                num += 7;
+            }
+        }
+        ans.push(num);
+    }
+    ans.sort();
+    println!("{}", ans[n-1]);
 }
