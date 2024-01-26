@@ -3,6 +3,7 @@ use itertools::Itertools;
 use proconio::{fastout, input, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
+use std::usize::MAX;
 
 #[allow(dead_code)]
 const MOD: usize = 1_000_000_000 + 7;
@@ -359,26 +360,28 @@ fn calc_divisors(n: usize) -> Vec<usize> {
 fn main() {
     input! {
         n: usize,
+        w: usize,
     }
+    // dp[n][value] = minimum weight
+    let mut dp = vec![vec![1_000_000_000_000_000; 100005]; 105];
+    dp[0][0] = 0;
 
-    let mut map: HashMap<usize, Vec<usize>> = HashMap::new();
-
-    for i in 0..n {
-        input! { num: usize }
-        let entry = map.entry(num).or_default();
-        entry.push(i);
-    }
-    let mut a: Vec<(usize, Vec<usize>)> = map.into_iter().collect();
-    a.sort();
-    a.reverse();
-
-    let mut ans = vec![0; n];
-    let mut sum = 0;
-    for (num, indexs) in a {
-        for index in &indexs {
-            ans[*index] = sum;
+    for i in 1..=n {
+        input! { w: usize, v: usize }
+        for j in 0..100005 {
+            if j < v {
+                dp[i][j] = dp[i-1][j];
+            } else {
+                dp[i][j] = min!(dp[i-1][j], dp[i-1][j-v] + w);
+            }
         }
-        sum += num * indexs.len();
     }
-    println!("{}", ans.iter().join(" "));
+
+    let mut ans = 0;
+    for j in 0..100005 {
+        if dp[n][j] <= w {
+            ans = j;
+        }
+    }
+    println!("{}", ans);
 }

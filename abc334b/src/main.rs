@@ -354,31 +354,24 @@ fn calc_divisors(n: usize) -> Vec<usize> {
     v
 }
 
+fn floor(x: isize, m: isize) -> isize {
+    let r = (x % m + m) % m;
+    (x - r) / m
+}
+
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
-        n: usize,
+        mut a: isize,
+        mut m: isize,
+        mut l: isize,
+        mut r: isize,
     }
 
-    let mut map: HashMap<usize, Vec<usize>> = HashMap::new();
-
-    for i in 0..n {
-        input! { num: usize }
-        let entry = map.entry(num).or_default();
-        entry.push(i);
-    }
-    let mut a: Vec<(usize, Vec<usize>)> = map.into_iter().collect();
-    a.sort();
-    a.reverse();
-
-    let mut ans = vec![0; n];
-    let mut sum = 0;
-    for (num, indexs) in a {
-        for index in &indexs {
-            ans[*index] = sum;
-        }
-        sum += num * indexs.len();
-    }
-    println!("{}", ans.iter().join(" "));
+    l -= a;
+    r -= a;
+    let t1 = floor(l - 1, m);
+    let t2 = floor(r, m);
+    println!("{}", t2 - t1);
 }

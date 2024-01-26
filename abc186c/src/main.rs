@@ -354,31 +354,27 @@ fn calc_divisors(n: usize) -> Vec<usize> {
     v
 }
 
+fn no_seven(mut n: usize, base: usize) -> bool {
+    while n != 0 {
+        if n % base == 7 {
+            return false
+        }
+        n /= base;
+    }
+    true
+}
+
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
         n: usize,
     }
-
-    let mut map: HashMap<usize, Vec<usize>> = HashMap::new();
-
-    for i in 0..n {
-        input! { num: usize }
-        let entry = map.entry(num).or_default();
-        entry.push(i);
-    }
-    let mut a: Vec<(usize, Vec<usize>)> = map.into_iter().collect();
-    a.sort();
-    a.reverse();
-
-    let mut ans = vec![0; n];
-    let mut sum = 0;
-    for (num, indexs) in a {
-        for index in &indexs {
-            ans[*index] = sum;
+    let mut ans = 0;
+    for i in 1..=n {
+        if no_seven(i, 10) && no_seven(i, 8) {
+            ans += 1;
         }
-        sum += num * indexs.len();
     }
-    println!("{}", ans.iter().join(" "));
+    println!("{}", ans);
 }

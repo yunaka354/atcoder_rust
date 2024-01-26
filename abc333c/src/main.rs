@@ -361,24 +361,26 @@ fn main() {
         n: usize,
     }
 
-    let mut map: HashMap<usize, Vec<usize>> = HashMap::new();
+    let mut vec = Vec::new();
 
-    for i in 0..n {
-        input! { num: usize }
-        let entry = map.entry(num).or_default();
-        entry.push(i);
+    let mut num = 1;
+    let d = 15;
+    for _ in 0..d {
+        vec.push(num);
+        num = num * 10 + 1;
     }
-    let mut a: Vec<(usize, Vec<usize>)> = map.into_iter().collect();
-    a.sort();
-    a.reverse();
 
-    let mut ans = vec![0; n];
-    let mut sum = 0;
-    for (num, indexs) in a {
-        for index in &indexs {
-            ans[*index] = sum;
+    let mut s = HashSet::new();
+    for i in 0..d {
+        for j in 0..d {
+            for k in 0..d {
+                s.insert(vec[i] + vec[j] + vec[k]);
+            }
         }
-        sum += num * indexs.len();
     }
-    println!("{}", ans.iter().join(" "));
+
+    let mut r = s.into_iter().collect::<Vec<usize>>();
+    r.sort();
+
+    println!("{}", r[n-1]);
 }
