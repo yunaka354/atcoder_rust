@@ -359,6 +359,33 @@ fn calc_divisors(n: usize) -> Vec<usize> {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        k: usize,
+        mut a: [usize; n],
     }
+
+    let mut v = vec![vec![0;0]; k];
+
+    for i in 0..n {
+        v[i%k].push(a[i]);
+    }
+
+    for i in 0..k {
+        v[i].sort();
+        v[i].reverse();
+    }
+
+    let mut ans = Vec::new();
+
+    for i in 0..n {
+        ans.push(v[i%k].pop().unwrap());
+    }
+
+    a.sort();
+
+    if a == ans {
+        println!("Yes");
+    } else {
+        println!("No");
+    }
+
 }
