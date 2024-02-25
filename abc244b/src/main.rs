@@ -1,6 +1,6 @@
 #![allow(unused_imports)]
 use itertools::Itertools;
-use proconio::{fastout, input, marker::Chars, input_interactive};
+use proconio::{fastout, input, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
 
@@ -358,7 +358,28 @@ fn calc_divisors(n: usize) -> Vec<usize> {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        _n: usize,
+        t: Chars,
     }
+
+    let directions = [
+        (1, 0),
+        (0, -1),
+        (-1, 0),
+        (0, 1),
+    ];
+
+    let mut direction_index = 0;
+    let mut pos = (0, 0);
+
+    for c in t {
+        if c == 'R' {
+            direction_index = (direction_index+1)%4;
+        } else {
+            let direction = directions[direction_index];
+            pos.0 = pos.0 + direction.0;
+            pos.1 = pos.1 + direction.1;
+        }
+    }
+    println!("{} {}", pos.0, pos.1);
 }

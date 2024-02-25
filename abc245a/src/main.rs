@@ -1,6 +1,6 @@
 #![allow(unused_imports)]
 use itertools::Itertools;
-use proconio::{fastout, input, marker::Chars, input_interactive};
+use proconio::{fastout, input, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
 
@@ -358,7 +358,27 @@ fn calc_divisors(n: usize) -> Vec<usize> {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        a: usize,
+        b: usize,
+        c: usize,
+        d: usize,
     }
+
+    if a > c {
+        println!("Aoki");
+        return;
+    }
+    if c > a {
+        println!("Takahashi");
+        return;
+    }
+    if b > d {
+        println!("Aoki");
+        return;
+    }
+    if d > b {
+        println!("Takahashi");
+        return;
+    }
+    println!("Takahashi");
 }

@@ -1,6 +1,6 @@
 #![allow(unused_imports)]
 use itertools::Itertools;
-use proconio::{fastout, input, marker::Chars, input_interactive};
+use proconio::{fastout, input, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
 
@@ -354,11 +354,45 @@ fn calc_divisors(n: usize) -> Vec<usize> {
     v
 }
 
+
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        k: isize,
+        a: [isize; n],
+        b: [isize; n],
+    }
+
+    let mut dp = vec![vec![false; 2]; n];
+    
+    dp[0][0] = true;
+    dp[0][1] = true;
+
+    for i in 1..n {
+        let can_a_to_a = (a[i] - a[i-1]).abs() <= k;
+        let can_a_to_b = (b[i] - a[i-1]).abs() <= k;
+        let can_b_to_a = (a[i] - b[i-1]).abs() <= k;
+        let can_b_to_b = (b[i] - b[i-1]).abs() <= k;
+        
+        if can_a_to_a && dp[i-1][0] {
+            dp[i][0] = true;
+        }
+        if can_a_to_b && dp[i-1][0] {
+            dp[i][1] = true;
+        }
+        if can_b_to_a && dp[i-1][1] {
+            dp[i][0] = true;
+        }
+        if can_b_to_b && dp[i-1][1] {
+            dp[i][1] = true;
+        }
+    }
+
+    if dp[n-1][0] || dp[n-1][1] {
+        println!("Yes");
+    } else {
+        println!("No");
     }
 }

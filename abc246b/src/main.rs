@@ -1,6 +1,6 @@
 #![allow(unused_imports)]
 use itertools::Itertools;
-use proconio::{fastout, input, marker::Chars, input_interactive};
+use proconio::{fastout, input, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
 
@@ -358,7 +358,11 @@ fn calc_divisors(n: usize) -> Vec<usize> {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        a: usize,
+        b: usize,
     }
+
+    let c = a*a + b*b;
+    let length = (c as f64).sqrt();
+    println!("{} {}", a as f64 / length, b as f64 / length);
 }

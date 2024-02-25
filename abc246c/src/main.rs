@@ -1,6 +1,6 @@
 #![allow(unused_imports)]
 use itertools::Itertools;
-use proconio::{fastout, input, marker::Chars, input_interactive};
+use proconio::{fastout, input, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
 
@@ -359,6 +359,32 @@ fn calc_divisors(n: usize) -> Vec<usize> {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        mut k: usize,
+        x: usize,
+        mut a: [usize; n],
     }
+    a.sort();
+    a.reverse();
+
+    for i in 0..n {
+        // クーポンを所持している時のみ処理する。
+        if x > 0 {
+            // 所持数より多くのクーポンは使えないようにする
+            let consume = min(a[i]/x, k);
+            a[i] = a[i] - x * consume;
+            k -= consume;
+        }
+    }
+
+    a.sort();
+    a.reverse();
+
+    for i in 0..n {
+        if k > 0 {
+            a[i] = 0;
+            k -= 1;
+        }
+    }
+
+    println!("{}", a.iter().sum::<usize>());
 }

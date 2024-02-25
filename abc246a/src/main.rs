@@ -1,6 +1,6 @@
 #![allow(unused_imports)]
 use itertools::Itertools;
-use proconio::{fastout, input, marker::Chars, input_interactive};
+use proconio::{fastout, input, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
 
@@ -16,7 +16,7 @@ const DIRECTION_4: [(isize, isize); 4] = [
 ];
 
 #[allow(unused_macros)]
-macro_rules! chmin {
+macro_rules! chmin { 
     ($base:expr, $($cmps:expr),+ $(,)*) => {{
         let cmp_min = min!($($cmps),+);
         if $base > cmp_min {
@@ -358,7 +358,36 @@ fn calc_divisors(n: usize) -> Vec<usize> {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        xy: [(isize, isize); 3],
     }
+
+    let mut map_x: HashMap<isize, usize> = HashMap::new();
+    let mut map_y: HashMap<isize, usize> = HashMap::new();
+    
+    for (x, y) in xy {
+        let entry = map_x.entry(x).or_default();
+        *entry += 1;
+        let entry = map_y.entry(y).or_default();
+        *entry += 1;
+    }
+
+    let x = || {
+        for (k, v) in map_x {
+            if v == 1 {
+                return k
+            }
+        }
+        0
+    };
+    let y = || {
+        for (k, v) in map_y {
+            if v == 1 {
+                return k
+            }
+        }
+        0
+    };
+
+    println!("{} {}", x(), y());
+
 }

@@ -2,7 +2,7 @@
 use itertools::Itertools;
 use proconio::{fastout, input, marker::Chars, input_interactive};
 use std::cmp::{max, min};
-use std::collections::{HashMap, HashSet, VecDeque};
+use std::collections::{BTreeSet, HashMap, HashSet, VecDeque};
 
 #[allow(dead_code)]
 const MOD: usize = 1_000_000_000 + 7;
@@ -355,10 +355,13 @@ fn calc_divisors(n: usize) -> Vec<usize> {
 }
 
 #[allow(non_snake_case)]
-#[fastout]
 fn main() {
-    input! {
-        n: usize,
-        _a: [usize; n],
+    input_interactive!(n: usize);
+    let mut set = BTreeSet::from_iter(1..=n*2+1);
+    loop {
+        println!("{}", set.pop_first().unwrap());
+        input_interactive!(i: usize);
+        if i == 0 { break }
+        set.remove(&i);
     }
 }
