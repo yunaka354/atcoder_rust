@@ -354,7 +354,6 @@ fn calc_divisors(n: usize) -> Vec<usize> {
     v
 }
 
-// 座標圧縮
 #[allow(dead_code)]
 fn compress(v: Vec<usize>) -> Vec<usize> {
     let mut v = v.into_iter()
@@ -380,7 +379,24 @@ fn compress(v: Vec<usize>) -> Vec<usize> {
 #[fastout]
 fn main() {
     input! {
+        _h: usize,
+        _w: usize,
         n: usize,
-        _a: [usize; n],
+        ab: [(usize, usize); n],
+    }
+
+    let mut a = Vec::new();
+    let mut b = Vec::new();
+
+    for e in ab {
+        a.push(e.0);
+        b.push(e.1);
+    }
+
+    let a = compress(a);
+    let b = compress(b);
+
+    for i in 0..n {
+        println!("{} {}", a[i]+1, b[i]+1);
     }
 }

@@ -354,33 +354,20 @@ fn calc_divisors(n: usize) -> Vec<usize> {
     v
 }
 
-// 座標圧縮
-#[allow(dead_code)]
-fn compress(v: Vec<usize>) -> Vec<usize> {
-    let mut v = v.into_iter()
-        .enumerate()
-        .sorted_by_key(|val| val.1) // (元々のindex, 元々の数字)
-        .collect_vec();
-    let mut now = v[0].1;
-    let mut val = 0 as usize; // 圧縮された座標
-    
-    for (_index, x) in v.iter_mut() {
-        if now != *x {
-            now = *x;
-            val += 1;
-        }
-        *x = val; // 座標をアップデートする。
-    }
-
-    v.sort(); // 元々のindexでソートして元に戻す。
-    v.into_iter().map(|(_index, x)| x).collect_vec() // 圧縮された座標だけをVecにして返す
-}
-
 #[allow(non_snake_case)]
-#[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        a: usize,
+        b: usize,
+    }
+
+    let mut c = 0;
+
+    loop {
+        if a^c == b {
+            println!("{}", c);
+            return;
+        }
+        c += 1;
     }
 }
