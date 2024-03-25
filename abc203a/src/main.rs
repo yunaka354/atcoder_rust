@@ -380,35 +380,18 @@ fn compress(v: Vec<usize>) -> Vec<usize> {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        s: Chars,
-        c: [usize; n]
+        a: usize,
+        b: usize,
+        c: usize,
     }
 
-    // dp[i文字目まで見て][隣接する文字がj箇所][i文字目がk] = cost
-    let mut dp = vec![vec![vec![1_000_000_000_000_000_000; 2]; 2]; n];
-
-    if s[0] == '0' {
-        dp[0][0][0] = 0;
-        dp[0][0][1] = c[0];
+    if a == b {
+        println!("{}", c);
+    } else if b == c {
+        println!("{}", a);
+    } else if a == c {
+        println!("{}", b);
     } else {
-        dp[0][0][0] = c[0];
-        dp[0][0][1] = 0;
+        println!("0");
     }
-
-    for i in 1..n {
-        if s[i] == '0' {
-            dp[i][0][0] = dp[i-1][0][1]; // そのまま繋げるケース
-            dp[i][0][1] = dp[i-1][0][0] + c[i]; // 変更して01で繋げるケース
-            dp[i][1][0] = min(dp[i-1][1][1], dp[i-1][0][0]); // すでに1回連続する文字列が出ていて前回が1のケース vs 今回で連続する文字列になるケース (変更なし)
-            dp[i][1][1] = min(dp[i-1][1][0] + c[i], dp[i-1][0][1] + c[i]); // すでに前回までに連続する文字列が出ていてかつ前回が0の場合 vs 前回が１で今回初めて連続する文字列になる場合
-        } else {
-            dp[i][0][0] = dp[i-1][0][1] + c[i]; // 変更して10で繋げるケース
-            dp[i][0][1] = dp[i-1][0][0]; // そのまま繋げるケース
-            dp[i][1][0] = min(dp[i-1][1][1] + c[i], dp[i-1][0][0] + c[i]);
-            dp[i][1][1] = min(dp[i-1][1][0], dp[i-1][0][1]);            
-        }
-    }
-    let ans = min(dp[n-1][1][0], dp[n-1][1][1]);
-    println!("{}", ans);
 }
