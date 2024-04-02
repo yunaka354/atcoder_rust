@@ -377,37 +377,33 @@ fn compress(v: Vec<usize>) -> Vec<usize> {
 }
 
 #[allow(non_snake_case)]
+#[fastout]
 fn main() {
     input! {
-        n: usize,
+        mut n: isize,
+        m: usize,
+        t: isize,
+        ab: [(isize, isize); m],
     }
+    let max_battery = n;
+    let mut now = 0;
 
-    let mut players = VecDeque::new();
-    
-    for i in 0..(2 as usize).pow(n as u32) {
-        input! { rate: usize }
-        players.push_back((i+1, rate));
-    }
-
-    loop {
-        if players.len() == 2 {
-            let p1 = players.pop_front().unwrap();
-            let p2 = players.pop_front().unwrap();
-            if p1.1 > p2.1 {
-                println!("{}", p2.0);
-            } else {
-                println!("{}", p1.0);
-            }
+    for (a, b) in ab {
+        n -= a - now;
+        if n <= 0 {
+            println!("No");
             return;
         }
+        n += b - a;
+        chmin!(n, max_battery);
+        now = b;
+    }
 
-        let p1 = players.pop_front().unwrap();
-        let p2 = players.pop_front().unwrap();
-        
-        if p1.1 > p2.1 {
-            players.push_back(p1);
-        } else {
-            players.push_back(p2);
-        }
+    n -= t - now;
+
+    if n <= 0 {
+        println!("No");
+    } else {
+        println!("Yes");
     }
 }

@@ -377,37 +377,30 @@ fn compress(v: Vec<usize>) -> Vec<usize> {
 }
 
 #[allow(non_snake_case)]
+#[fastout]
 fn main() {
     input! {
         n: usize,
+        s: [Chars; n],
     }
 
-    let mut players = VecDeque::new();
-    
-    for i in 0..(2 as usize).pow(n as u32) {
-        input! { rate: usize }
-        players.push_back((i+1, rate));
+    let mut map: HashMap<Vec<char>, (usize, usize)> = HashMap::new();
+
+    for i in 0..n {
+        let v: Vec<char> = s[i].clone().into_iter().filter(|c| *c != '!').collect();
+        let entry = map.entry(v).or_insert((0, 0));
+        if s[i][0] == '!' {
+            entry.1 += 1;
+        } else {
+            entry.0 += 1;
+        }
     }
 
-    loop {
-        if players.len() == 2 {
-            let p1 = players.pop_front().unwrap();
-            let p2 = players.pop_front().unwrap();
-            if p1.1 > p2.1 {
-                println!("{}", p2.0);
-            } else {
-                println!("{}", p1.0);
-            }
+    for (key, value) in map {
+        if value.0 > 0 && value.1 > 0 {
+            println!("{}", key.iter().join(""));
             return;
         }
-
-        let p1 = players.pop_front().unwrap();
-        let p2 = players.pop_front().unwrap();
-        
-        if p1.1 > p2.1 {
-            players.push_back(p1);
-        } else {
-            players.push_back(p2);
-        }
     }
+    println!("satisfiable");
 }

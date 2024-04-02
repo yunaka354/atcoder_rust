@@ -377,37 +377,57 @@ fn compress(v: Vec<usize>) -> Vec<usize> {
 }
 
 #[allow(non_snake_case)]
+#[fastout]
 fn main() {
     input! {
-        n: usize,
+        mut x1: isize,
+        mut y1: isize,
+        mut x2: isize,
+        mut y2: isize,
     }
-
-    let mut players = VecDeque::new();
     
-    for i in 0..(2 as usize).pow(n as u32) {
-        input! { rate: usize }
-        players.push_back((i+1, rate));
+    x2 -= x1;
+    y2 -= y1;
+
+    x1 = 0; y1 = 0;
+    
+    if x2 < 0 {
+        x2 *= -1;
     }
 
-    loop {
-        if players.len() == 2 {
-            let p1 = players.pop_front().unwrap();
-            let p2 = players.pop_front().unwrap();
-            if p1.1 > p2.1 {
-                println!("{}", p2.0);
-            } else {
-                println!("{}", p1.0);
-            }
-            return;
-        }
-
-        let p1 = players.pop_front().unwrap();
-        let p2 = players.pop_front().unwrap();
-        
-        if p1.1 > p2.1 {
-            players.push_back(p1);
-        } else {
-            players.push_back(p2);
-        }
+    if y2 < 0 {
+        y2 *= -1;
     }
+
+    if x1 == x2 && y1 == y2 {
+        println!("0");
+        return;
+    }
+
+    if x2 + y2 <= 3 {
+        println!("1");
+        return;
+    }
+
+    if x2 == y2 {
+        println!("1");
+        return;
+    }
+    
+    if x2 + y2 <= 6 {
+        println!("2");
+        return;
+    }
+
+    if (x2+y2)%2 == 0 {
+        println!("2");
+        return;
+    }
+
+    if (x2-y2).abs() <= 3 {
+        println!("2");
+        return;
+    }
+
+    println!("3");
 }

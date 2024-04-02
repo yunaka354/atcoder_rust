@@ -377,37 +377,27 @@ fn compress(v: Vec<usize>) -> Vec<usize> {
 }
 
 #[allow(non_snake_case)]
+#[fastout]
 fn main() {
     input! {
-        n: usize,
+        h: usize,
+        w: usize,
+        a: [[usize; w]; h],
     }
 
-    let mut players = VecDeque::new();
+    let mut mi = usize::MAX;
+    for i in 0..h {
+        for j in 0..w {
+            chmin!(mi, a[i][j]);
+        }
+    }
     
-    for i in 0..(2 as usize).pow(n as u32) {
-        input! { rate: usize }
-        players.push_back((i+1, rate));
-    }
-
-    loop {
-        if players.len() == 2 {
-            let p1 = players.pop_front().unwrap();
-            let p2 = players.pop_front().unwrap();
-            if p1.1 > p2.1 {
-                println!("{}", p2.0);
-            } else {
-                println!("{}", p1.0);
-            }
-            return;
-        }
-
-        let p1 = players.pop_front().unwrap();
-        let p2 = players.pop_front().unwrap();
-        
-        if p1.1 > p2.1 {
-            players.push_back(p1);
-        } else {
-            players.push_back(p2);
+    let mut ans = 0;
+    for i in 0..h {
+        for j in 0..w {
+            ans += a[i][j] - mi;
         }
     }
+
+    println!("{}", ans);
 }

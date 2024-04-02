@@ -377,37 +377,23 @@ fn compress(v: Vec<usize>) -> Vec<usize> {
 }
 
 #[allow(non_snake_case)]
+#[fastout]
 fn main() {
     input! {
         n: usize,
+        xy: [(f64, f64); n],
     }
-
-    let mut players = VecDeque::new();
     
-    for i in 0..(2 as usize).pow(n as u32) {
-        input! { rate: usize }
-        players.push_back((i+1, rate));
-    }
-
-    loop {
-        if players.len() == 2 {
-            let p1 = players.pop_front().unwrap();
-            let p2 = players.pop_front().unwrap();
-            if p1.1 > p2.1 {
-                println!("{}", p2.0);
-            } else {
-                println!("{}", p1.0);
+    let mut ans = 0;
+    
+    for i in 0..n {
+        for j in i+1..n {
+            let slope = (xy[j].1 - xy[i].1)/(xy[j].0 - xy[i].0);
+            if slope >= -1.0 && slope <= 1.0 {
+                ans += 1;
             }
-            return;
-        }
-
-        let p1 = players.pop_front().unwrap();
-        let p2 = players.pop_front().unwrap();
-        
-        if p1.1 > p2.1 {
-            players.push_back(p1);
-        } else {
-            players.push_back(p2);
         }
     }
+
+    println!("{}", ans);
 }
