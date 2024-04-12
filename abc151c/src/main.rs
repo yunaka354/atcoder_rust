@@ -1,5 +1,6 @@
 #![allow(unused_imports)]
 use itertools::Itertools;
+use proconio::marker::Usize1;
 use proconio::{fastout, input, marker::Chars, input_interactive};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
@@ -376,33 +377,35 @@ fn compress(v: Vec<usize>) -> Vec<usize> {
     v.into_iter().map(|(_index, x)| x).collect_vec() // 圧縮された座標だけをVecにして返す
 }
 
-// 素数判定
-#[allow(dead_code)]
-fn is_prime(n: usize) -> bool {
-    if n <= 1 {
-        return false;
-    }
-    if n <= 3 {
-        return true;
-    }
-    if n % 2 == 0 || n % 3 == 0 {
-        return false;
-    }
-    let mut i = 5;
-    while i * i <= n {
-        if n % i == 0 || n % (i + 2) == 0 {
-            return false;
-        }
-        i += 6;
-    }
-    true
-}
-
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        m: usize,
+        ps: [(Usize1, String); m],
     }
+
+    let mut ACed = vec![false; n];
+    let mut penalties = vec![0; n];
+
+    for (p, s) in ps {
+        if s == "AC".to_string() {
+            ACed[p] = true;
+        } else {
+            if !ACed[p] {
+                penalties[p] += 1;
+            }
+        }
+    }
+    let mut ac_count = 0;
+    let mut penality_count = 0;
+    for i in 0..n {
+        if ACed[i] {
+            ac_count += 1;
+            penality_count += penalties[i];
+        }
+    }
+    
+    println!("{} {}", ac_count, penality_count);
 }

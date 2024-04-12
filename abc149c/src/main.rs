@@ -354,6 +354,26 @@ fn calc_divisors(n: usize) -> Vec<usize> {
     v
 }
 
+fn is_prime(n: usize) -> bool {
+    if n <= 1 {
+        return false;
+    }
+    if n <= 3 {
+        return true;
+    }
+    if n % 2 == 0 || n % 3 == 0 {
+        return false;
+    }
+    let mut i = 5;
+    while i * i <= n {
+        if n % i == 0 || n % (i + 2) == 0 {
+            return false;
+        }
+        i += 6;
+    }
+    true
+}
+
 // 座標圧縮
 #[allow(dead_code)]
 fn compress(v: Vec<usize>) -> Vec<usize> {
@@ -376,33 +396,17 @@ fn compress(v: Vec<usize>) -> Vec<usize> {
     v.into_iter().map(|(_index, x)| x).collect_vec() // 圧縮された座標だけをVecにして返す
 }
 
-// 素数判定
-#[allow(dead_code)]
-fn is_prime(n: usize) -> bool {
-    if n <= 1 {
-        return false;
-    }
-    if n <= 3 {
-        return true;
-    }
-    if n % 2 == 0 || n % 3 == 0 {
-        return false;
-    }
-    let mut i = 5;
-    while i * i <= n {
-        if n % i == 0 || n % (i + 2) == 0 {
-            return false;
-        }
-        i += 6;
-    }
-    true
-}
-
 #[allow(non_snake_case)]
-#[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        mut x: usize,
+    }
+
+    loop {
+        if is_prime(x) {
+            println!("{}", x);
+            return;
+        }
+        x += 1;
     }
 }

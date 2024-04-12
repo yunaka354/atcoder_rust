@@ -1,5 +1,5 @@
 #![allow(unused_imports)]
-use itertools::Itertools;
+use itertools::{Itertools, Permutations};
 use proconio::{fastout, input, marker::Chars, input_interactive};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
@@ -376,33 +376,31 @@ fn compress(v: Vec<usize>) -> Vec<usize> {
     v.into_iter().map(|(_index, x)| x).collect_vec() // 圧縮された座標だけをVecにして返す
 }
 
-// 素数判定
-#[allow(dead_code)]
-fn is_prime(n: usize) -> bool {
-    if n <= 1 {
-        return false;
-    }
-    if n <= 3 {
-        return true;
-    }
-    if n % 2 == 0 || n % 3 == 0 {
-        return false;
-    }
-    let mut i = 5;
-    while i * i <= n {
-        if n % i == 0 || n % (i + 2) == 0 {
-            return false;
-        }
-        i += 6;
-    }
-    true
-}
-
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        p: [usize; n],
+        q: [usize; n],
     }
+
+    let v: Vec<usize> = (1..=n).collect();
+    let mut perm = v.iter().permutations(n);
+
+    let mut a:isize = 0;
+    let mut b:isize = 0;
+    let mut index:isize = 0;
+    while let Some(pattern) = perm.next() {
+        let vec_of_values: Vec<usize> = pattern.iter().map(|&x| *x).collect();
+        index += 1;
+        if p == vec_of_values {
+            a = index;
+        }
+        if q == vec_of_values {
+            b = index;
+        }
+    }
+
+    println!("{}", (a - b).abs());
 }
