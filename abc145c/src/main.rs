@@ -24,9 +24,9 @@ macro_rules! chmin {
             true
         } else {
             false
-        }};
-    }
         }
+    }};
+}
 #[allow(unused_macros)]
 macro_rules! chmax {
     ($base:expr, $($cmps:expr),+ $(,)*) => {{
@@ -376,14 +376,56 @@ fn compress(v: Vec<usize>) -> Vec<usize> {
     v.into_iter().map(|(_index, x)| x).collect_vec() // 圧縮された座標だけをVecにして返す
 }
 
+// 素数判定
+#[allow(dead_code)]
+fn is_prime(n: usize) -> bool {
+    if n <= 1 {
+        return false;
+    }
+    if n <= 3 {
+        return true;
+    }
+    if n % 2 == 0 || n % 3 == 0 {
+        return false;
+    }
+    let mut i = 5;
+    while i * i <= n {
+        if n % i == 0 || n % (i + 2) == 0 {
+            return false;
+        }
+        i += 6;
+    }
+    true
+}
+
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
-        c: char,
+        n: usize,
+        xy: [(isize, isize); n],
     }
 
-    let next = (c as u8 + 1) as char;
+    let mut v = Vec::new();
+    
+    let pattern: Vec<usize> = (0..n).collect();
+    let mut permutations = pattern.iter().permutations(n);
 
-    println!("{}", next);
+    let mut count = 0;
+    while let Some(p) = permutations.next() {
+        count += 1;
+        let (mut cx, mut cy) = xy[*p[0]];
+        for next in 1..n {
+            let (nx, ny) = xy[*p[next]];
+            let tmp = (cx - nx).pow(2)+(cy - ny).pow(2);
+            let d = (tmp as f64).sqrt();
+            v.push(d);
+            cx = nx;
+            cy = ny;
+        }
+    }
+
+    let sum: f64 = v.iter().sum();
+    
+    println!("{}", sum/(count as f64));
 }

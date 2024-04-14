@@ -1,8 +1,10 @@
 #![allow(unused_imports)]
 use itertools::Itertools;
+use proconio::marker::Usize1;
 use proconio::{fastout, input, marker::Chars, input_interactive};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
+use std::thread::panicking;
 
 #[allow(dead_code)]
 const MOD: usize = 1_000_000_000 + 7;
@@ -24,9 +26,9 @@ macro_rules! chmin {
             true
         } else {
             false
-        }};
-    }
         }
+    }};
+}
 #[allow(unused_macros)]
 macro_rules! chmax {
     ($base:expr, $($cmps:expr),+ $(,)*) => {{
@@ -376,14 +378,69 @@ fn compress(v: Vec<usize>) -> Vec<usize> {
     v.into_iter().map(|(_index, x)| x).collect_vec() // 圧縮された座標だけをVecにして返す
 }
 
+// 素数判定
+#[allow(dead_code)]
+fn is_prime(n: usize) -> bool {
+    if n <= 1 {
+        return false;
+    }
+    if n <= 3 {
+        return true;
+    }
+    if n % 2 == 0 || n % 3 == 0 {
+        return false;
+    }
+    let mut i = 5;
+    while i * i <= n {
+        if n % i == 0 || n % (i + 2) == 0 {
+            return false;
+        }
+        i += 6;
+    }
+    true
+}
+
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
-        c: char,
+        n: usize,
     }
 
-    let next = (c as u8 + 1) as char;
+    let mut shogen = vec![vec![]; n];
 
-    println!("{}", next);
+    for i in 0..n {
+        input! { a: usize };
+        for _j in 0..a {
+            input! {x:Usize1, y: usize};
+            shogen[i].push((x, y));
+        }
+    }
+    let mut ans = 0;
+    for i in 0..(1<<n) {
+        let mut honests = vec![false; n];
+        for j in 0..n {
+            if i & (1<<j) != 0 {
+                honests[j] = true;
+            }
+        }
+        let mut ok = true;
+        for person in 0..n {
+            if !honests[person] {continue;}
+            for (x, y) in &shogen[person] {
+                let b = match y {
+                    0 => false,
+                    1 => true,
+                    _ => panic!("error")
+                };
+                if honests[*x] != b {
+                    ok = false;
+                }
+            }
+        }
+        if ok {
+            chmax!(ans, honests.iter().filter(|&&b| b).count());
+        }
+    }
+    println!("{}", ans);
 }

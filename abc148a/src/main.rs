@@ -1,5 +1,6 @@
 #![allow(unused_imports)]
 use itertools::Itertools;
+use proconio::marker::Usize1;
 use proconio::{fastout, input, marker::Chars, input_interactive};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
@@ -24,9 +25,9 @@ macro_rules! chmin {
             true
         } else {
             false
-        }};
-    }
         }
+    }};
+}
 #[allow(unused_macros)]
 macro_rules! chmax {
     ($base:expr, $($cmps:expr),+ $(,)*) => {{
@@ -376,14 +377,40 @@ fn compress(v: Vec<usize>) -> Vec<usize> {
     v.into_iter().map(|(_index, x)| x).collect_vec() // 圧縮された座標だけをVecにして返す
 }
 
+// 素数判定
+#[allow(dead_code)]
+fn is_prime(n: usize) -> bool {
+    if n <= 1 {
+        return false;
+    }
+    if n <= 3 {
+        return true;
+    }
+    if n % 2 == 0 || n % 3 == 0 {
+        return false;
+    }
+    let mut i = 5;
+    while i * i <= n {
+        if n % i == 0 || n % (i + 2) == 0 {
+            return false;
+        }
+        i += 6;
+    }
+    true
+}
+
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
-    input! {
-        c: char,
+    let mut v = vec![true; 3];
+    for _ in 0..2 {
+        input! { n: Usize1 };
+        v[n] = false;
     }
-
-    let next = (c as u8 + 1) as char;
-
-    println!("{}", next);
+    for i in 0..3 {
+        if v[i] {
+            println!("{}", i+1);
+            return;
+        }
+    }
 }
