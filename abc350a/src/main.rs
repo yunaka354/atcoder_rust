@@ -402,22 +402,21 @@ fn is_prime(n: usize) -> bool {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        k: usize,
+        s: Chars,
     }
 
-    let mut ans = 0.0;
-    for i in 1..=n {
-        let mut x = i;
-        let mut q = 1.0/n as f64;
+    let mut n = 0;
 
-        while x < k {
-            x *= 2;
-            q /= 2.0;
-        }
-
-        ans += q;
+    for i in 3..6 {
+        n *= 10;
+        n += s[i].to_digit(10).unwrap();
     }
 
-    println!("{}", ans);
+    if n == 316 || n == 0 {
+        println!("No");
+    } else if n > 349 {
+        println!("No");
+    } else {
+        println!("Yes");
+    }
 }

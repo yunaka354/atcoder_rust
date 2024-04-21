@@ -1,5 +1,6 @@
 #![allow(unused_imports)]
 use itertools::Itertools;
+use proconio::marker::Usize1;
 use proconio::{fastout, input, marker::Chars, input_interactive};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
@@ -403,21 +404,15 @@ fn is_prime(n: usize) -> bool {
 fn main() {
     input! {
         n: usize,
-        k: usize,
+        q: usize,
+        t: [Usize1; q],
     }
 
-    let mut ans = 0.0;
-    for i in 1..=n {
-        let mut x = i;
-        let mut q = 1.0/n as f64;
+    let mut ans = vec![true; n];
 
-        while x < k {
-            x *= 2;
-            q /= 2.0;
-        }
-
-        ans += q;
+    for i in 0..q {
+        ans[t[i]] = !ans[t[i]];
     }
 
-    println!("{}", ans);
+    println!("{}", ans.iter().filter(|&&b| b).count());
 }

@@ -1,8 +1,10 @@
 #![allow(unused_imports)]
 use itertools::Itertools;
+use proconio::marker::Usize1;
 use proconio::{fastout, input, marker::Chars, input_interactive};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
+use std::mem::swap;
 
 #[allow(dead_code)]
 const MOD: usize = 1_000_000_000 + 7;
@@ -403,21 +405,40 @@ fn is_prime(n: usize) -> bool {
 fn main() {
     input! {
         n: usize,
-        k: usize,
+        mut a: [Usize1; n],
     }
 
-    let mut ans = 0.0;
-    for i in 1..=n {
-        let mut x = i;
-        let mut q = 1.0/n as f64;
+    let mut map = HashMap::new();
 
-        while x < k {
-            x *= 2;
-            q /= 2.0;
-        }
-
-        ans += q;
+    for i in 0..n {
+        map.insert(a[i], i);
     }
 
-    println!("{}", ans);
+    let mut ans = Vec::new();
+
+    for i in 0..n {
+        // 現在の場所をゲットする。
+        let position = *map.get(&i).unwrap();
+        // もしすでにあるべき場所にいればスキップ
+        if i == position { continue; }
+
+        // そうでないなら操作を記録。
+        ans.push((i+1, position+1));
+
+        // 動かしたい位置にある数字を記録。
+        let now = a[i];
+
+        // スワップする。
+        a.swap(i, position);
+
+        // マップを更新。
+        let value = map.get_mut(&now).unwrap(); //　元々の数字は
+        *value = position; // 動かした数字のあった場所へ
+    }
+
+    println!("{}", ans.len());
+    for e in ans {
+        println!("{} {}", e.0, e.1);
+    }
+
 }

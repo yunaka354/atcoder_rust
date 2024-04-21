@@ -402,22 +402,23 @@ fn is_prime(n: usize) -> bool {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        k: usize,
+        dishes: [usize; 5],
     }
-
-    let mut ans = 0.0;
-    for i in 1..=n {
-        let mut x = i;
-        let mut q = 1.0/n as f64;
-
-        while x < k {
-            x *= 2;
-            q /= 2.0;
+    
+    let data: Vec<usize> = (0..5).collect();
+    let mut perm = data.iter().permutations(5);
+    let mut ans = usize::MAX;
+    while let Some(p) = perm.next() {
+        let mut time = 0;
+        let mut count = 0;
+        for i in p {
+            count += 1;
+            time += dishes[*i];
+            if count < 5 {
+                time = (time + 9) / 10 * 10;
+            }
         }
-
-        ans += q;
+        chmin!(ans, time);
     }
-
     println!("{}", ans);
 }

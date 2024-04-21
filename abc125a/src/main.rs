@@ -402,22 +402,9 @@ fn is_prime(n: usize) -> bool {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        k: usize,
+        a: usize,
+        b: usize,
+        t: usize,
     }
-
-    let mut ans = 0.0;
-    for i in 1..=n {
-        let mut x = i;
-        let mut q = 1.0/n as f64;
-
-        while x < k {
-            x *= 2;
-            q /= 2.0;
-        }
-
-        ans += q;
-    }
-
-    println!("{}", ans);
+    println!("{}", t/a*b);
 }

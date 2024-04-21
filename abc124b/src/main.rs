@@ -403,20 +403,16 @@ fn is_prime(n: usize) -> bool {
 fn main() {
     input! {
         n: usize,
-        k: usize,
+        h: [usize; n],
     }
 
-    let mut ans = 0.0;
-    for i in 1..=n {
-        let mut x = i;
-        let mut q = 1.0/n as f64;
-
-        while x < k {
-            x *= 2;
-            q /= 2.0;
+    let mut m = h[0];
+    let mut ans = 1;
+    for i in 1..n {
+        if h[i] >= m {
+            ans += 1;
         }
-
-        ans += q;
+        chmax!(m, h[i]);
     }
 
     println!("{}", ans);

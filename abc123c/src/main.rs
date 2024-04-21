@@ -402,22 +402,12 @@ fn is_prime(n: usize) -> bool {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        k: usize,
+        n: isize,
+        towns: [isize; 5],
     }
 
-    let mut ans = 0.0;
-    for i in 1..=n {
-        let mut x = i;
-        let mut q = 1.0/n as f64;
-
-        while x < k {
-            x *= 2;
-            q /= 2.0;
-        }
-
-        ans += q;
-    }
-
-    println!("{}", ans);
+    let bottle_neck = *towns.iter().min().unwrap();
+    let add = (n+bottle_neck-1)/bottle_neck;
+    let add = max!(0, add-1);
+    println!("{}", 5 + add);
 }

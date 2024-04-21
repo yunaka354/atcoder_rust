@@ -403,21 +403,26 @@ fn is_prime(n: usize) -> bool {
 fn main() {
     input! {
         n: usize,
-        k: usize,
+        a: [usize; n],
     }
 
-    let mut ans = 0.0;
-    for i in 1..=n {
-        let mut x = i;
-        let mut q = 1.0/n as f64;
+    let mut left = vec![0; n+1];
+    let mut right = vec![0; n+1];
 
-        while x < k {
-            x *= 2;
-            q /= 2.0;
-        }
-
-        ans += q;
+    for i in 0..n {
+        left[i+1] = gcd(left[i], a[i]);
     }
 
+    for i in (0..n).rev() {
+        right[i] = gcd(right[i+1], a[i]);
+    }
+
+    println!("{:?}", left);
+    println!("{:?}", right);
+    let mut ans = 0;
+
+    for i in 0..n {
+        chmax!(ans, gcd(left[i], right[i+1]));
+    }
     println!("{}", ans);
 }

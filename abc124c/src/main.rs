@@ -402,22 +402,50 @@ fn is_prime(n: usize) -> bool {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        k: usize,
+        mut s: Chars,
     }
 
-    let mut ans = 0.0;
-    for i in 1..=n {
-        let mut x = i;
-        let mut q = 1.0/n as f64;
+    let n = s.len();
+    let mut ans = usize::MAX;
 
-        while x < k {
-            x *= 2;
-            q /= 2.0;
+
+    // 0->1->0...
+    let mut count = 0;
+    for i in 0..n {
+        if !i % 2 == s[i].to_digit(10).unwrap() as usize {
+            count += 1;
         }
-
-        ans += q;
     }
+    chmin!(ans, count);
+
+    // 1->0->1...
+    let mut count = 0;
+    for i in 0..n {
+        if i % 2 == s[i].to_digit(10).unwrap() as usize {
+            count += 1;
+        }
+    }
+    chmin!(ans, count);
+    
+    s.reverse();
+
+    // 0->1->0...
+    let mut count = 0;
+    for i in 0..n {
+        if !i % 2 == s[i].to_digit(10).unwrap() as usize {
+            count += 1;
+        }
+    }
+    chmin!(ans, count);
+
+    // 1->0->1...
+    let mut count = 0;
+    for i in 0..n {
+        if i % 2 == s[i].to_digit(10).unwrap() as usize {
+            count += 1;
+        }
+    }
+    chmin!(ans, count);
 
     println!("{}", ans);
 }

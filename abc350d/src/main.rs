@@ -1,5 +1,6 @@
 #![allow(unused_imports)]
 use itertools::Itertools;
+use proconio::marker::Usize1;
 use proconio::{fastout, input, marker::Chars, input_interactive};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
@@ -403,21 +404,51 @@ fn is_prime(n: usize) -> bool {
 fn main() {
     input! {
         n: usize,
-        k: usize,
+        m: usize,
+        ab: [(Usize1, Usize1); m],
     }
 
-    let mut ans = 0.0;
-    for i in 1..=n {
-        let mut x = i;
-        let mut q = 1.0/n as f64;
+    let mut g = vec![vec![]; n];
 
-        while x < k {
-            x *= 2;
-            q /= 2.0;
+    for (a, b) in ab {
+        g[a].push(b);
+        g[b].push(a);
+    }
+
+    let mut visited = vec![false; n];
+    let mut ans = 0;
+    for i in 0..n {
+        if visited[i] { 
+            // println!("already visited: {i}");
+            continue
+        };
+        let mut queue = VecDeque::new();
+        let mut node_count = 1;
+        let mut edge_count = 0;
+        queue.push_back(i);
+
+        while let Some(now) = queue.pop_front() {
+            // println!("goto->{now}");
+            visited[now] = true;
+            for next in &g[now] {
+                // println!("next->{next}");
+                if visited[*next] { 
+                    // println!("already visited -> {next}");
+                    continue };
+                node_count += 1;
+                queue.push_back(*next);
+                visited[*next] = true;
+            }
+
+            // 初めて到達したノードが持っているエッジの数を数える
+            edge_count += &g[now].len();
         }
 
-        ans += q;
+        // 無向グラフなので、重複を省くために2で割る。
+        edge_count /= 2;
+        // println!("i={i} nc={node_count} ec={edge_count}");
+        ans += ncr(node_count, 2) - edge_count;
     }
-
     println!("{}", ans);
+
 }
