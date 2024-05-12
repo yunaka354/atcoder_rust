@@ -408,40 +408,37 @@ fn is_prime(n: usize) -> bool {
     true
 }
 
-// 素因数分解を行う関数
-fn prime_factors(mut n: usize) -> HashMap<usize, usize> {
-    let mut factors = HashMap::new();
-    let mut divisor = 2;
-
-    // 2で割れるだけ割る
-    while n % divisor == 0 {
-        *factors.entry(divisor).or_insert(0) += 1;
-        n /= divisor;
-    }
-
-    // 3からsqrt(n)までの奇数で割っていく
-    divisor = 3;
-    while divisor * divisor <= n {
-        while n % divisor == 0 {
-            *factors.entry(divisor).or_insert(0) += 1;
-            n /= divisor;
-        }
-        divisor += 2;
-    }
-
-    // 最後に残った数が1より大きい場合、それは素数
-    if n > 1 {
-        factors.insert(n, 1);
-    }
-
-    factors
-}
-
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        a: Chars,
+        b: Chars,
     }
+
+    let an = a.len();
+    let bn = b.len();
+
+    if an > bn {
+        println!("GREATER");
+        return;
+    }
+    if bn > an {
+        println!("LESS");
+        return;
+    }
+
+    for i in 0..an {
+        let x = a[i].to_digit(10).unwrap();
+        let y = b[i].to_digit(10).unwrap();
+        if x > y {
+            println!("GREATER");
+            return;
+        }
+        if y > x {
+            println!("LESS");
+            return;
+        }
+    }
+    println!("EQUAL");
 }
