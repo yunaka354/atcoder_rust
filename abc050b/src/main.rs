@@ -443,6 +443,15 @@ fn prime_factors(mut n: usize) -> HashMap<usize, usize> {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        t: [usize; n],
+        m: usize,
+        px: [(usize, usize); m],
+    }
+
+    let sum: usize = t.iter().sum();
+
+    for i in 0..m {
+        let (p, x) = px[i];
+        println!("{}", sum - t[p - 1] + x);
     }
 }

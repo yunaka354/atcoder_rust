@@ -442,7 +442,12 @@ fn prime_factors(mut n: usize) -> HashMap<usize, usize> {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        c: char,
+    }
+
+    if c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' {
+        println!("vowel");
+    } else {
+        println!("consonant");
     }
 }

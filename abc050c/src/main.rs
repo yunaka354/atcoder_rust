@@ -443,6 +443,41 @@ fn prime_factors(mut n: usize) -> HashMap<usize, usize> {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        a: [usize; n],
     }
+
+    let mut map = HashMap::new();
+
+    for e in a {
+        if n % 2 == 0 {
+            if e % 2 != 1 {
+                println!("0");
+                return;
+            }
+        } else {
+            if e % 2 != 0 {
+                println!("0");
+                return;
+            }
+        }
+
+        let entry = map.entry(e).or_insert(0);
+        *entry += 1;
+
+        if e == 0 && *entry > 1 {
+            println!("0");
+            return;
+        }
+
+        if *entry > 2 {
+            println!("0");
+            return;
+        }
+    }
+    let mut ans = 1;
+    for _ in 0..n / 2 {
+        ans *= 2;
+        ans %= 1_000_000_007;
+    }
+    println!("{}", ans);
 }

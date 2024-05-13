@@ -442,7 +442,34 @@ fn prime_factors(mut n: usize) -> HashMap<usize, usize> {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        sx: isize,
+        sy: isize,
+        mut gx: isize,
+        mut gy: isize,
     }
+    gx = gx - sx;
+    gy = gy - sy;
+
+    let gx = gx as usize;
+    let gy = gy as usize;
+    let mut v = Vec::new();
+
+    let mut f = |time: usize, c: char| {
+        for _ in 0..time {
+            v.push(c);
+        }
+    };
+    f(gy, 'U');
+    f(gx, 'R');
+    f(gy, 'D');
+    f(gx, 'L');
+    f(1, 'L');
+    f(gy + 1, 'U');
+    f(gx + 1, 'R');
+    f(1, 'D');
+    f(1, 'R');
+    f(gy + 1, 'D');
+    f(gx + 1, 'L');
+    f(1, 'U');
+    println!("{}", v.iter().join(""));
 }

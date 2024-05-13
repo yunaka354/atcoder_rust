@@ -442,7 +442,13 @@ fn prime_factors(mut n: usize) -> HashMap<usize, usize> {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        h: usize,
+        _w: usize,
+        c: [Chars; h],
+    }
+
+    for i in 0..h {
+        println!("{}", c[i].iter().join(""));
+        println!("{}", c[i].iter().join(""));
     }
 }

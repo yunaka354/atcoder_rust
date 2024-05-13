@@ -442,7 +442,14 @@ fn prime_factors(mut n: usize) -> HashMap<usize, usize> {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        a: isize,
+        c: char,
+        b: isize,
+    }
+
+    if c == '+' {
+        println!("{}", a + b);
+    } else {
+        println!("{}", a - b);
     }
 }
