@@ -462,7 +462,38 @@ fn mod_exp(base: usize, exp: usize) -> usize {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        s: Chars,
     }
+
+    if s.len() == 1 {
+        if s[0] == '0' {
+            println!("0");
+        } else {
+            println!("1");
+        }
+        return;
+    }
+    let mut v: Vec<Vec<usize>> = Vec::new();
+
+    v.push(Vec::new());
+    v[0].push(s[0].to_digit(10).unwrap() as usize);
+
+    for i in 1..s.len() {
+        if i % 2 == 1 {
+            if s[i] == '+' {
+                v.push(Vec::new());
+            }
+        } else {
+            v.last_mut()
+                .unwrap()
+                .push(s[i].to_digit(10).unwrap() as usize);
+        }
+    }
+    let mut ans = 0;
+    for e in v {
+        if !e.contains(&0) {
+            ans += 1;
+        }
+    }
+    println!("{}", ans);
 }

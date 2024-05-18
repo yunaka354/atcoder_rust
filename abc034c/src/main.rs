@@ -1,5 +1,6 @@
 #![allow(unused_imports)]
 use itertools::Itertools;
+use proconio::marker::Usize1;
 use proconio::{fastout, input, input_interactive, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
@@ -192,7 +193,7 @@ fn power(a: usize, b: usize) -> usize {
 }
 
 #[allow(dead_code)]
-fn ncr(n: usize, r: usize) -> usize {
+fn ncr(n: u128, r: u128) -> u128 {
     if r > n {
         return 0;
     }
@@ -439,13 +440,11 @@ fn prime_factors(mut n: usize) -> HashMap<usize, usize> {
 }
 
 // フェルマーの小定理に基づく逆元の計算。問題によってMODが変わる場合は変更すること。
-#[allow(dead_code)]
 fn mod_inverse(a: usize) -> usize {
     mod_exp(a, MOD - 2)
 }
 
 // 繰り返し二乗法を用いたべき乗の計算
-#[allow(dead_code)]
 fn mod_exp(base: usize, exp: usize) -> usize {
     if exp == 0 {
         return 1;
@@ -462,7 +461,30 @@ fn mod_exp(base: usize, exp: usize) -> usize {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        w: Usize1,
+        h: Usize1,
     }
+
+    let deno = {
+        let mut r = h;
+        let mut ret = 1;
+        for _ in 0..h {
+            ret *= r;
+            ret %= MOD;
+            r -= 1;
+        }
+        ret
+    };
+    let nume = {
+        let mut r = w + h;
+        let mut ret = 1;
+        for _ in 0..h {
+            ret *= r;
+            ret %= MOD;
+            r -= 1;
+        }
+        ret
+    };
+    let inv = mod_inverse(deno);
+    println!("{}", (nume * inv) % MOD);
 }

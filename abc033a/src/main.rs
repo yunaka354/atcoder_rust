@@ -462,7 +462,12 @@ fn mod_exp(base: usize, exp: usize) -> usize {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        n: Chars,
+    }
+
+    if n[0] == n[1] && n[1] == n[2] && n[2] == n[3] {
+        println!("SAME");
+    } else {
+        println!("DIFFERENT");
     }
 }

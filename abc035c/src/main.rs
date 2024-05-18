@@ -1,5 +1,6 @@
 #![allow(unused_imports)]
 use itertools::Itertools;
+use proconio::marker::Usize1;
 use proconio::{fastout, input, input_interactive, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
@@ -438,31 +439,26 @@ fn prime_factors(mut n: usize) -> HashMap<usize, usize> {
     factors
 }
 
-// フェルマーの小定理に基づく逆元の計算。問題によってMODが変わる場合は変更すること。
-#[allow(dead_code)]
-fn mod_inverse(a: usize) -> usize {
-    mod_exp(a, MOD - 2)
-}
-
-// 繰り返し二乗法を用いたべき乗の計算
-#[allow(dead_code)]
-fn mod_exp(base: usize, exp: usize) -> usize {
-    if exp == 0 {
-        return 1;
-    }
-    let mut res = mod_exp(base, exp / 2);
-    res = (res * res) % MOD;
-    if exp % 2 != 0 {
-        res = (res * base) % MOD;
-    }
-    res
-}
-
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        q: usize,
     }
+    let mut flip = vec![0; n + 2];
+    for _ in 0..q {
+        input! {l: usize, r: usize};
+        flip[l] += 1;
+        flip[r + 1] -= 1;
+    }
+    let mut accum = vec![0; n + 1];
+    for i in 1..=n {
+        accum[i] = accum[i - 1] + flip[i];
+    }
+
+    for i in 1..=n {
+        print!("{}", accum[i] % 2);
+    }
+    println!("");
 }

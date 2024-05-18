@@ -438,31 +438,40 @@ fn prime_factors(mut n: usize) -> HashMap<usize, usize> {
     factors
 }
 
-// フェルマーの小定理に基づく逆元の計算。問題によってMODが変わる場合は変更すること。
-#[allow(dead_code)]
-fn mod_inverse(a: usize) -> usize {
-    mod_exp(a, MOD - 2)
-}
-
-// 繰り返し二乗法を用いたべき乗の計算
-#[allow(dead_code)]
-fn mod_exp(base: usize, exp: usize) -> usize {
-    if exp == 0 {
-        return 1;
-    }
-    let mut res = mod_exp(base, exp / 2);
-    res = (res * res) % MOD;
-    if exp % 2 != 0 {
-        res = (res * base) % MOD;
-    }
-    res
-}
-
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        s: Chars,
+        t: usize,
+    }
+    let mut position: (i32, i32) = (0, 0);
+    let mut q = 0;
+
+    for i in 0..s.len() {
+        match s[i] {
+            'L' => position = (position.0 - 1, position.1),
+            'R' => position = (position.0 + 1, position.1),
+            'U' => position = (position.0, position.1 + 1),
+            'D' => position = (position.0, position.1 - 1),
+            '?' => q += 1,
+            _ => {}
+        }
+    }
+
+    let distance = position.0.abs() + position.1.abs();
+
+    if t == 1 {
+        println!("{}", distance + q);
+    } else {
+        if distance >= q {
+            println!("{}", distance - q);
+        } else {
+            if distance % 2 == q % 2 {
+                println!("0");
+            } else {
+                println!("1");
+            }
+        }
     }
 }

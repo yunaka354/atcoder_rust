@@ -463,6 +463,17 @@ fn mod_exp(base: usize, exp: usize) -> usize {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        mut sp: [(Chars, usize); n],
+    }
+    sp.sort_by(|a, b| a.1.cmp(&b.1));
+    let mut sum = 0;
+    for i in 0..n {
+        sum += sp[i].1;
+    }
+
+    if sp[n - 1].1 > sum / 2 {
+        println!("{}", sp[n - 1].0.iter().join(""));
+    } else {
+        println!("atcoder");
     }
 }
