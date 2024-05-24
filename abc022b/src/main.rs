@@ -1,6 +1,5 @@
 #![allow(unused_imports)]
 use itertools::Itertools;
-use proconio::marker::Usize1;
 use proconio::{fastout, input, input_interactive, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
@@ -463,42 +462,21 @@ fn mod_exp(base: usize, exp: usize) -> usize {
 #[fastout]
 fn main() {
     input! {
-        r: usize,
-        c: usize,
-        k: usize,
         n: usize,
-        rc:[(Usize1, Usize1); n],
+        a: [usize; n],
     }
-    let mut yoko = vec![0; r];
-    let mut tate = vec![0; c];
+    let mut map = HashMap::new();
+
     for i in 0..n {
-        let (_r, _c) = rc[i];
-        yoko[_r] += 1;
-        tate[_c] += 1;
+        let entry = map.entry(&a[i]).or_insert(0);
+        *entry += 1;
     }
+    let mut ans = 0;
 
-    let mut hist = vec![0; n + 1];
-    for i in 0..c {
-        hist[tate[i]] += 1;
-    }
-
-    let mut a: usize = 0;
-    let mut b: usize = 0;
-    let mut c: usize = 0;
-
-    for i in 0..r {
-        if k >= yoko[i] {
-            a += hist[k - yoko[i]];
+    for v in map.values() {
+        if *v > 1 {
+            ans += *v - 1;
         }
     }
-    for i in 0..n {
-        let sum = yoko[rc[i].0] + tate[rc[i].1];
-        if sum == k {
-            b += 1
-        };
-        if sum == k + 1 {
-            c += 1
-        };
-    }
-    println!("{}", a - b + c);
+    println!("{}", ans);
 }

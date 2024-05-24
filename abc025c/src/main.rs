@@ -1,6 +1,5 @@
 #![allow(unused_imports)]
 use itertools::Itertools;
-use proconio::marker::Usize1;
 use proconio::{fastout, input, input_interactive, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
@@ -459,46 +458,64 @@ fn mod_exp(base: usize, exp: usize) -> usize {
     res
 }
 
+fn dfs(turn: usize, flag: &mut Vec<Vec<usize>>, b: &Vec<Vec<usize>>, c: &Vec<Vec<usize>>) -> usize {
+    // 最後の手番
+    if turn == 9 {
+        let mut ret = 0;
+        for i in 0..2 {
+            for j in 0..3 {
+                if flag[i][j] == flag[i + 1][j] {
+                    ret += b[i][j];
+                }
+            }
+        }
+        for i in 0..3 {
+            for j in 0..2 {
+                if flag[i][j] == flag[i][j + 1] {
+                    ret += c[i][j];
+                }
+            }
+        }
+        return ret;
+    } else if turn % 2 == 0 {
+        // 直大くんの手番
+        let mut ret = usize::MIN;
+        for i in 0..3 {
+            for j in 0..3 {
+                if flag[i][j] == 0 {
+                    flag[i][j] = 1;
+                    chmax!(ret, dfs(turn + 1, flag, b, c));
+                    flag[i][j] = 0;
+                }
+            }
+        }
+        return ret;
+    } else {
+        // 直子さんの手番
+        let mut ret = usize::MAX;
+        for i in 0..3 {
+            for j in 0..3 {
+                if flag[i][j] == 0 {
+                    flag[i][j] = 2;
+                    chmin!(ret, dfs(turn + 1, flag, b, c)); // 直大くんの点数を最小化する
+                    flag[i][j] = 0;
+                }
+            }
+        }
+        return ret;
+    }
+}
+
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
-        r: usize,
-        c: usize,
-        k: usize,
-        n: usize,
-        rc:[(Usize1, Usize1); n],
+        b: [[usize; 3];2],
+        c: [[usize; 2];3],
     }
-    let mut yoko = vec![0; r];
-    let mut tate = vec![0; c];
-    for i in 0..n {
-        let (_r, _c) = rc[i];
-        yoko[_r] += 1;
-        tate[_c] += 1;
-    }
-
-    let mut hist = vec![0; n + 1];
-    for i in 0..c {
-        hist[tate[i]] += 1;
-    }
-
-    let mut a: usize = 0;
-    let mut b: usize = 0;
-    let mut c: usize = 0;
-
-    for i in 0..r {
-        if k >= yoko[i] {
-            a += hist[k - yoko[i]];
-        }
-    }
-    for i in 0..n {
-        let sum = yoko[rc[i].0] + tate[rc[i].1];
-        if sum == k {
-            b += 1
-        };
-        if sum == k + 1 {
-            c += 1
-        };
-    }
-    println!("{}", a - b + c);
+    let mut flag = vec![vec![0; 3]; 3];
+    let score = dfs(0, &mut flag, &b, &c);
+    let sum = b.iter().flatten().sum::<usize>() + c.iter().flatten().sum::<usize>();
+    println!("{}", score);
+    println!("{}", sum - score);
 }

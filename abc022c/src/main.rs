@@ -1,5 +1,6 @@
 #![allow(unused_imports)]
 use itertools::Itertools;
+use proconio::marker::Usize1;
 use proconio::{fastout, input, input_interactive, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
@@ -458,38 +459,62 @@ fn mod_exp(base: usize, exp: usize) -> usize {
     res
 }
 
+fn warshall_floyd(d: &mut Vec<Vec<usize>>, n: usize) {
+    for k in 0..n {
+        for i in 0..n {
+            for j in 0..n {
+                chmin!(d[i][j], d[i][k] + d[j][k]);
+            }
+        }
+    }
+}
+
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
-        _n: usize,
-        d: usize,
-        k: usize,
-        lr: [(usize, usize); d],
-        st: [(usize, usize); k],
+        n: usize,
+        m: usize,
+        uvl: [(Usize1, Usize1, usize); m],
+    }
+    const INF: usize = 1_000_000_000;
+    let mut adj: Vec<(usize, usize)> = Vec::new();
+    let mut d = vec![vec![INF; 305]; 305];
+
+    for i in 0..305 {
+        d[i][i] = 0;
     }
 
-    for i in 0..k {
-        let (mut s, t) = st[i];
-        for j in 0..d {
-            let (l, r) = lr[j];
-            if s < t {
-                if l <= s {
-                    chmax!(s, r);
-                }
-                if s >= t {
-                    println!("{}", j + 1);
-                    break;
-                }
-            } else {
-                if r >= s {
-                    chmin!(s, l);
-                }
-                if s <= t {
-                    println!("{}", j + 1);
-                    break;
-                }
-            }
+    for i in 0..m {
+        let (u, v, l) = uvl[i];
+        if u == 0 {
+            adj.push((v, l));
+            continue;
         }
+        if v == 0 {
+            adj.push((u, l));
+            continue;
+        }
+        d[u][v] = l;
+        d[v][u] = l;
+    }
+    warshall_floyd(&mut d, n);
+    let mut ans = INF;
+    for i in 0..adj.len() {
+        for j in 0..adj.len() {
+            let u = adj[i];
+            let v = adj[j];
+            if u.0 == v.0 {
+                continue;
+            }
+
+            let len = u.1 + d[u.0][v.0] + v.1;
+            chmin!(ans, len);
+        }
+    }
+    if ans == INF {
+        println!("-1");
+    } else {
+        println!("{}", ans);
     }
 }
