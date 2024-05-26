@@ -459,75 +459,28 @@ fn mod_exp(base: usize, exp: usize) -> usize {
 }
 
 #[allow(non_snake_case)]
+#[fastout]
 fn main() {
     input! {
-        h: usize,
-        w: usize,
-        t: usize,
-        s: [Chars; h],
+        n: usize,
+        m: usize,
     }
-    let start: (usize, usize) = {
-        let mut ret = (0, 0);
-        for i in 0..h {
-            for j in 0..w {
-                if s[i][j] == 'S' {
-                    ret = (i, j);
-                }
-            }
-        }
-        ret
-    };
-    let goal: (usize, usize) = {
-        let mut ret = (0, 0);
-        for i in 0..h {
-            for j in 0..w {
-                if s[i][j] == 'G' {
-                    ret = (i, j);
-                }
-            }
-        }
-        ret
-    };
-    const INF: usize = 1 << 60;
+    let mut v = Vec::new();
+    for _ in 0..n {
+        input! {a:usize}
+        v.push((a, 'a'));
+    }
+    for _ in 0..m {
+        input! {b:usize}
+        v.push((b, 'b'));
+    }
+    v.sort();
 
-    let bfs = |x: usize| {
-        let mut steps = vec![vec![INF; w]; h];
-        steps[start.0][start.1] = 0;
-        let mut q = VecDeque::new();
-        q.push_back(start);
-
-        while let Some(now) = q.pop_front() {
-            for (dy, dx) in DIRECTION_4 {
-                if now.0 as isize + dy < 0
-                    || now.0 as isize + dy >= h as isize
-                    || now.1 as isize + dx < 0
-                    || now.1 as isize + dx >= w as isize
-                {
-                    continue;
-                }
-                let ny = now.0 as isize + dy;
-                let nx = now.1 as isize + dx;
-                let ny = ny as usize;
-                let nx = nx as usize;
-
-                let d = if s[ny][nx] == '#' { x } else { 1 };
-                if steps[ny][nx] > steps[now.0][now.1] + d {
-                    steps[ny][nx] = steps[now.0][now.1] + d;
-                    q.push_back((ny, nx));
-                }
-            }
-        }
-        steps[goal.0][goal.1] <= t
-    };
-    let mut ok = 1;
-    let mut ng = t;
-    while ng - ok > 1 {
-        let mid = (ok + ng) / 2;
-        if bfs(mid) {
-            ok = mid;
-        } else {
-            ng = mid;
+    for i in 1..n + m {
+        if v[i - 1].1 == 'a' && v[i].1 == 'a' {
+            println!("Yes");
+            return;
         }
     }
-    println!("{}", ok);
+    println!("No");
 }
