@@ -462,62 +462,8 @@ fn mod_exp(base: usize, exp: usize) -> usize {
 #[fastout]
 fn main() {
     input! {
-        r: usize,
-        c: usize,
-        k: usize,
-        s: [Chars; r],
+        x: usize,
+        y: usize,
     }
-    const INF: usize = 1 << 60;
-    let mut dp = vec![vec![INF; c + 2]; r + 2];
-    let mut q = VecDeque::new();
-
-    for i in 0..r + 2 {
-        for j in 0..c + 2 {
-            if j == 0 || i == 0 || j == c + 1 || i == r + 1 {
-                dp[i][j] = 0;
-                q.push_back((i, j));
-            }
-        }
-    }
-
-    for i in 0..r {
-        for j in 0..c {
-            if s[i][j] == 'x' {
-                dp[i + 1][j + 1] = 0;
-                q.push_back((i + 1, j + 1));
-            }
-        }
-    }
-
-    while let Some((y, x)) = q.pop_front() {
-        for (dy, dx) in DIRECTION_4 {
-            let ny = y as isize + dy;
-            let nx = x as isize + dx;
-
-            if ny < 0 || ny >= (r + 2) as isize || nx < 0 || nx >= (c + 2) as isize {
-                continue;
-            }
-
-            let ny = ny as usize;
-            let nx = nx as usize;
-
-            if dp[ny][nx] > dp[y][x] + 1 {
-                dp[ny][nx] = dp[y][x] + 1;
-                q.push_back((ny, nx));
-            }
-        }
-    }
-    // for i in 0..r + 2 {
-    //     println!("{:?}", dp[i]);
-    // }
-    let mut ans = 0;
-
-    for i in 0..r + 2 {
-        for j in 0..c + 2 {
-            if dp[i][j] >= k {
-                ans += 1;
-            }
-        }
-    }
-    println!("{}", ans);
+    println!("{}", y / x);
 }
