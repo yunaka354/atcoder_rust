@@ -82,13 +82,12 @@ fn round_up(dividend: usize, divisor: usize) -> usize {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        mut a: [usize; n],
+        mut n: usize,
     }
 
-    a.sort();
-
-    let ans = a.last().unwrap() - a.first().unwrap();
-
-    println!("{}", ans);
+    let h = n / 3600;
+    n %= 3600;
+    let m = n / 60;
+    n %= 60;
+    println!("{:0>2}:{:0>2}:{:0>2}", h, m, n);
 }
