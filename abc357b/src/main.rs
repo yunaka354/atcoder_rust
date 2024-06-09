@@ -498,7 +498,29 @@ impl V {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        s: Chars,
     }
+
+    let mut upper = 0;
+    let mut lower = 0;
+    let n = s.len();
+
+    for i in 0..n {
+        if s[i].is_uppercase() {
+            upper += 1;
+        } else {
+            lower += 1;
+        }
+    }
+
+    if upper > lower {
+        for i in 0..n {
+            print!("{}", s[i].to_uppercase());
+        }
+    } else {
+        for i in 0..n {
+            print!("{}", s[i].to_lowercase());
+        }
+    }
+    println!("");
 }

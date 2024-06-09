@@ -1,20 +1,16 @@
 #![allow(unused_imports)]
 use itertools::Itertools;
+use proconio::marker::Usize1;
 use proconio::{fastout, input, marker::Chars};
-use std::cmp::{max, min, Ordering};
-use std::collections::{HashMap, HashSet, VecDeque, BinaryHeap};
+use std::cmp::{max, min, Ordering, Reverse};
+use std::collections::{BinaryHeap, HashMap, HashSet, VecDeque};
 use std::usize::MAX;
 
 #[allow(dead_code)]
 const MOD: usize = 1_000_000_000 + 7;
 
 #[allow(dead_code)]
-const DIRECTION_4: [(isize, isize); 4] = [
-    (-1, 0),
-    (1, 0),
-    (0, -1),
-    (0, 1),
-];
+const DIRECTION_4: [(isize, isize); 4] = [(-1, 0), (1, 0), (0, -1), (0, 1)];
 
 #[allow(unused_macros)]
 macro_rules! chmin {
@@ -128,12 +124,11 @@ fn convert_to_base(num: usize, base: usize) -> String {
 #[allow(dead_code)]
 struct UnionFind {
     par: Vec<usize>,
-    siz: Vec<usize>
+    siz: Vec<usize>,
 }
 
 #[allow(dead_code)]
 impl UnionFind {
-
     /// generate UnionFind. nodes = number of nodes (0-index)
     fn new(nodes: usize) -> Self {
         Self {
@@ -191,7 +186,7 @@ fn power(a: usize, b: usize) -> usize {
     for i in 0..30 {
         let wari = 1 << i;
         if (b / wari) % 2 == 1 {
-            ans = (ans * p) % MOD; 
+            ans = (ans * p) % MOD;
         }
         p = (p * p) % MOD;
     }
@@ -219,13 +214,14 @@ struct SegmentTree {
 
 #[allow(dead_code)]
 impl SegmentTree {
-
     fn new(n: usize) -> Self {
         let mut size = 1;
-        while size < n { size *= 2; }
+        while size < n {
+            size *= 2;
+        }
         SegmentTree {
             dat: vec![0; 300000],
-            size
+            size,
         }
     }
 
@@ -262,10 +258,10 @@ fn calc_divisors(n: usize) -> Vec<usize> {
         // 割り切れる場合
         if n % i == 0 {
             v.push(i);
-            
-            // 同じ数字を足さないように注意 
+
+            // 同じ数字を足さないように注意
             if n / i != i {
-                v.push(n/i);
+                v.push(n / i);
             }
         }
         i += 1;
@@ -274,79 +270,53 @@ fn calc_divisors(n: usize) -> Vec<usize> {
     v.sort();
     v
 }
-// エッジを表す構造体
-#[derive(Copy, Clone, Eq, PartialEq)]
-struct Edge {
-    node: usize,
-    cost: usize,
-}
 
-// `Edge`の比較を逆順にするためのラッパー
-#[derive(Copy, Clone, Eq, PartialEq)]
-struct ReverseEdge(Edge);
-
-impl Ord for ReverseEdge {
-    fn cmp(&self, other: &Self) -> Ordering {
-        other.0.cost.cmp(&self.0.cost)
-    }
-}
-
-impl PartialOrd for ReverseEdge {
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
-// ダイクストラ法
-fn dijkstra(graph: &Vec<Vec<Edge>>, start: usize) -> Vec<usize> {
-    let mut dist = vec![usize::MAX; graph.len()];
-    let mut heap = BinaryHeap::new();
-
-    // 開始ノードの距離は0
-    dist[start] = 0;
-    heap.push(ReverseEdge(Edge { node: start, cost: 0 }));
-
-    while let Some(ReverseEdge(Edge { node, cost })) = heap.pop() {
-        if cost > dist[node] {
-            continue;
-        }
-
-        for edge in &graph[node] {
-            let next = Edge {
-                node: edge.node,
-                cost: cost + edge.cost,
-            };
-
-            if next.cost < dist[next.node] {
-                heap.push(ReverseEdge(next));
-                dist[next.node] = next.cost;
-            }
-        }
-    }
-
-    dist
-}
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
         n: usize,
     }
+    let mut g = vec![vec![]; n];
 
-    let mut g: Vec<Vec<Edge>> = Vec::new();
-
-    for i in 0..n-1 {
-        input! {
-            a: usize,
-            b: usize,
-            x: usize,
-        }
-        let mut v = Vec::new();
-        v.push(Edge{node: i+1, cost: a});
-        v.push(Edge{node: x-1, cost: b});
+    for i in 0..n - 1 {
+        input! {a: usize, b: usize, x: Usize1};
+        g[i].push((i + 1, a));
+        g[i].push((x, b));
     }
-    g.push(Vec::<Edge>::new());
-    let start = 0;
-    let distance = dijkstra(&g, start);
-    println!("{}", distance[n-1]);
+
+    // ある頂点が確定しているか
+    let mut fixed = vec![false; n];
+    // 現在時点の最短距離
+    let mut cur = vec![1_000_000_000_000_000; n];
+    // 始点は距離０
+    cur[0] = 0;
+    // 優先度付きキュー
+    let mut q = BinaryHeap::new();
+
+    // 始点を追加
+    q.push(Reverse((cur[0], 0)));
+
+    while let Some(Reverse(pair)) = q.pop() {
+        let pos = pair.1;
+        // 既に確定している頂点ならスキップ
+        if fixed[pos] {
+            continue;
+        }
+        // 確定させる
+        fixed[pos] = true;
+
+        for i in 0..g[pos].len() {
+            let next = g[pos][i].0;
+            let cost = g[pos][i].1;
+
+            // 現在時点の距離より早く到達できるなら更新
+            if cur[next] > cur[pos] + cost {
+                cur[next] = cur[pos] + cost;
+                // キューに追加する
+                q.push(Reverse((cur[next], next)));
+            }
+        }
+    }
+    println!("{}", cur[n - 1]);
 }

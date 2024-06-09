@@ -1,5 +1,6 @@
 #![allow(unused_imports)]
 use itertools::Itertools;
+use proconio::marker::Usize1;
 use proconio::{fastout, input, input_interactive, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
@@ -494,11 +495,55 @@ impl V {
     }
 }
 
+fn dfs(tree: &Vec<Vec<usize>>, size: &mut Vec<usize>, node: usize, parent: usize) -> usize {
+    if size[node] != usize::MAX {
+        return size[node];
+    }
+
+    if tree[node].len() == 1 {
+        size[node] = 1;
+        return size[node];
+    }
+
+    let mut ret = 1;
+    for i in 0..tree[node].len() {
+        let next = tree[node][i];
+        if next != parent {
+            ret += dfs(tree, size, next, node);
+        }
+    }
+
+    size[node] = ret;
+    return size[node];
+}
+
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
     }
+
+    let mut tree = vec![vec![]; n];
+
+    for _ in 0..n - 1 {
+        input! {u: Usize1, v: Usize1};
+        tree[u].push(v);
+        tree[v].push(u);
+    }
+
+    if tree[0].len() == 1 {
+        println!("1");
+        return;
+    }
+
+    let mut size = vec![usize::MAX; n];
+    let mut ans = Vec::new();
+
+    for i in 0..tree[0].len() {
+        ans.push(dfs(&tree, &mut size, tree[0][i], 0));
+    }
+    ans.sort();
+    ans.pop().unwrap();
+    println!("{}", ans.iter().sum::<usize>() + 1);
 }

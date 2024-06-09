@@ -498,7 +498,19 @@ impl V {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        mut s: Chars,
     }
+    let mut v = Vec::new();
+
+    for c in s {
+        v.push(c);
+        if v.len() >= 3 {
+            if v[v.len() - 3] == 'A' && v[v.len() - 2] == 'B' && v[v.len() - 1] == 'C' {
+                v.pop();
+                v.pop();
+                v.pop();
+            }
+        }
+    }
+    println!("{}", v.iter().join(""));
 }

@@ -494,11 +494,71 @@ impl V {
     }
 }
 
+#[derive(Clone)]
+struct Sheet {
+    h: isize,
+    w: isize,
+    s: Vec<Vec<char>>,
+}
+
+impl Sheet {
+    pub fn input() -> Self {
+        input! { h: isize, w: isize, s: [Chars; h]};
+        Self { h, w, s }
+    }
+
+    pub fn clear(&mut self) {
+        for i in 0..self.h {
+            for j in 0..self.w {
+                self.s[i as usize][j as usize] = '.';
+            }
+        }
+    }
+
+    pub fn copy(&mut self, other: &Sheet, di: isize, dj: isize) -> bool {
+        for i in 0..other.h {
+            for j in 0..other.w {
+                if other.s[i as usize][j as usize] == '.' {
+                    continue;
+                }
+                let ni = i as isize + di;
+                let nj = j as isize + dj;
+                if ni < 0 || ni >= self.h as isize || nj < 0 || nj >= self.w as isize {
+                    return false;
+                }
+                self.s[ni as usize][nj as usize] = other.s[i as usize][j as usize];
+            }
+        }
+        return true;
+    }
+}
+
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
-    input! {
-        n: usize,
-        _a: [usize; n],
+    let a = Sheet::input();
+    let b = Sheet::input();
+    let x = Sheet::input();
+
+    for ai in -a.h..x.h {
+        for aj in -a.w..x.w {
+            for bi in -b.h..x.h {
+                for bj in -b.w..x.w {
+                    let mut y = x.clone();
+                    y.clear();
+                    if !y.copy(&a, ai, aj) {
+                        continue;
+                    };
+                    if !y.copy(&b, bi, bj) {
+                        continue;
+                    };
+                    if x.s == y.s {
+                        println!("Yes");
+                        return;
+                    }
+                }
+            }
+        }
     }
+    println!("No");
 }

@@ -499,6 +499,31 @@ impl V {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        q: usize,
+        mut r: [usize; n],
+    }
+    r.sort();
+    let mut v = vec![0; n + 1];
+    for i in 0..n {
+        v[i + 1] += v[i] + r[i];
+    }
+
+    for _ in 0..q {
+        input! {
+            x: usize,
+        }
+
+        let mut ok = 0;
+        let mut ng = n + 1;
+
+        while ng - ok > 1 {
+            let mid = (ok + ng) / 2;
+            if v[mid] > x {
+                ng = mid;
+            } else {
+                ok = mid;
+            }
+        }
+        println!("{}", ok);
     }
 }

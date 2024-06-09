@@ -499,6 +499,17 @@ impl V {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        mut m: usize,
+        h: [usize; n],
     }
+    let mut index = 0;
+
+    while index < n {
+        if m < h[index] {
+            break;
+        };
+        m -= h[index];
+        index += 1;
+    }
+    println!("{}", index);
 }

@@ -498,7 +498,23 @@ impl V {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        _n: usize,
+        m: usize,
+        a: [usize; m],
+    }
+    let mut map = HashMap::new();
+    let mut winner = (0, 0);
+
+    for i in 0..m {
+        let entry = map.entry(a[i]).or_insert(0);
+        *entry += 1;
+        if winner.1 < *entry {
+            winner = (a[i], *entry);
+        } else if winner.1 == *entry {
+            if winner.0 > a[i] {
+                winner = (a[i], *entry);
+            }
+        }
+        println!("{}", winner.0);
     }
 }

@@ -499,6 +499,31 @@ impl V {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        s: [Chars; n],
     }
+
+    let mut w = Vec::new();
+    let mut h = Vec::new();
+
+    for i in 0..n {
+        w.push(s[i].iter().filter(|&&c| c == 'o').count());
+    }
+
+    for j in 0..n {
+        let mut count = 0;
+        for i in 0..n {
+            count += if s[i][j] == 'o' { 1 } else { 0 };
+        }
+        h.push(count);
+    }
+    let mut ans = 0;
+    for i in 0..n {
+        for j in 0..n {
+            if s[i][j] == 'x' {
+                continue;
+            };
+            ans += (w[i] - 1) * (h[j] - 1);
+        }
+    }
+    println!("{}", ans);
 }

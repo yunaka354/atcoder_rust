@@ -1,5 +1,6 @@
 #![allow(unused_imports)]
 use itertools::Itertools;
+use proconio::marker::Usize1;
 use proconio::{fastout, input, input_interactive, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
@@ -494,11 +495,42 @@ impl V {
     }
 }
 
+fn dfs(g: &Vec<Vec<usize>>, x: &mut Vec<isize>, node: usize, binary: isize, bipartite: &mut bool) {
+    x[node] = binary;
+    for next in &g[node] {
+        if x[*next] == -1 {
+            dfs(g, x, *next, 1 - binary, bipartite);
+        } else if x[node] == x[*next] {
+            *bipartite = false;
+        }
+    }
+}
+
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        m: usize,
+        a: [Usize1; m],
+        b: [Usize1; m],
+    }
+    let mut bipartite = true;
+    let mut g = vec![vec![]; n];
+
+    for i in 0..m {
+        g[a[i]].push(b[i]);
+        g[b[i]].push(a[i]);
+    }
+    let mut x = vec![-1; n];
+    for i in 0..n {
+        if x[i] == -1 {
+            dfs(&g, &mut x, i, 0, &mut bipartite);
+        }
+    }
+    if bipartite {
+        println!("Yes");
+    } else {
+        println!("No");
     }
 }

@@ -3,6 +3,7 @@ use itertools::Itertools;
 use proconio::{fastout, input, input_interactive, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
+use std::ops::Sub;
 
 #[allow(dead_code)]
 const MOD: usize = 1_000_000_000 + 7;
@@ -458,60 +459,55 @@ fn mod_exp(base: usize, exp: usize) -> usize {
     res
 }
 
-use std::f64::consts::PI;
-
-#[derive(Debug)]
-struct Point {
-    x: f64,
-    y: f64,
+// ベクトル
+#[derive(Clone, Copy)]
+struct V {
+    x: isize,
+    y: isize,
 }
 
-fn angle_between_points(a: &Point, b: &Point, c: &Point) -> f64 {
-    // ベクトルABとベクトルBCを計算
-    let ab = (b.x - a.x, b.y - a.y);
-    let bc = (c.x - b.x, c.y - b.y);
+impl V {
+    // 外積の計算
+    pub fn cross(&self, other: &V) -> isize {
+        return self.x * other.y - self.y * other.x;
+    }
 
-    // ベクトルの内積を計算
-    let dot_product = ab.0 * bc.0 + ab.1 * bc.1;
+    pub fn sub(&self, other: &V) -> Self {
+        return Self {
+            x: self.x - other.x,
+            y: self.y - other.y,
+        };
+    }
 
-    // ベクトルの大きさを計算
-    let magnitude_ab = (ab.0.powi(2) + ab.1.powi(2)).sqrt();
-    let magnitude_bc = (bc.0.powi(2) + bc.1.powi(2)).sqrt();
-
-    // コサイン値を計算
-    let cos_theta = dot_product / (magnitude_ab * magnitude_bc);
-
-    // コサイン値から角度をラジアンで求め、度に変換
-    let angle_rad = cos_theta.acos();
-    let angle_deg = angle_rad * 180.0 / PI;
-
-    angle_deg
+    pub fn ccw(&self, other: &V) -> isize {
+        let area = self.cross(other);
+        if area > 0 {
+            return 1; // counter clock wise
+        } else if area < 0 {
+            return -1; // clock wise
+        } else {
+            return 0; // collinear
+        }
+    }
 }
 
 fn main() {
-    input! {
-        ax: f64,
-        ay: f64,
-        bx: f64,
-        by: f64,
-        cx: f64,
-        cy: f64,
-        dx: f64,
-        dy: f64,
+    let mut p = Vec::new();
+    for _ in 0..4 {
+        input! {x: isize, y: isize}
+        p.push(V { x, y });
     }
-    let point_a = Point { x: ax, y: ay };
-    let point_b = Point { x: bx, y: by };
-    let point_c = Point { x: cx, y: cy };
-    let point_d = Point { x: dx, y: dy };
-    let ang = angle_between_points(&point_d, &point_a, &point_b);
-    println!("{}", ang);
-    if angle_between_points(&point_b, &point_a, &point_d) >= 180.0
-        || angle_between_points(&point_a, &point_b, &point_c) >= 180.0
-        || angle_between_points(&point_b, &point_c, &point_d) >= 180.0
-        || angle_between_points(&point_c, &point_d, &point_a) >= 180.0
-    {
-        println!("No");
-    } else {
-        println!("Yes");
+    for i in 0..4 {
+        let a = p[i];
+        let b = p[(i + 1) % 4];
+        let c = p[(i + 2) % 4];
+        let b = b.sub(&a);
+        let c = c.sub(&a);
+
+        if b.ccw(&c) != 1 {
+            println!("No");
+            return;
+        }
     }
+    println!("Yes");
 }

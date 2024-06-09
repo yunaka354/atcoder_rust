@@ -499,6 +499,36 @@ impl V {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+    }
+
+    let mut v = vec![vec![String::from("default"); n]; n];
+    let DIR = [(0, 1), (1, 0), (0, -1), (-1, 0)];
+
+    let mut current_dir = 0;
+    let mut cy: isize = 0;
+    let mut cx: isize = 0;
+    for i in 0..n * n {
+        v[cy as usize][cx as usize] = (i as isize + 1).to_string();
+        let (dy, dx) = DIR[current_dir];
+        let ny = cy + dy;
+        let nx = cx + dx;
+
+        if ny < 0
+            || nx < 0
+            || ny >= n as isize
+            || nx >= n as isize
+            || v[ny as usize][nx as usize] != String::from("default")
+        {
+            current_dir = (current_dir + 1) % 4;
+        }
+
+        cy += DIR[current_dir].0;
+        cx += DIR[current_dir].1;
+    }
+
+    v[n / 2][n / 2] = String::from("T");
+
+    for i in 0..n {
+        println!("{}", v[i].iter().join(" "));
     }
 }

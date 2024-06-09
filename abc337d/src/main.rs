@@ -498,7 +498,71 @@ impl V {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        h: usize,
+        w: usize,
+        k: usize,
+        s: [Chars; h],
+    }
+
+    let mut ans = usize::MAX;
+
+    // 累積和
+    let mut x = vec![vec![0; w + 1]; h + 1];
+    let mut dot = vec![vec![0; w + 1]; h + 1];
+
+    for i in 0..h {
+        for j in 0..w {
+            x[i][j + 1] = x[i][j];
+            dot[i][j + 1] = dot[i][j];
+            if s[i][j] == 'x' {
+                x[i][j + 1] += 1;
+            }
+            if s[i][j] == '.' {
+                dot[i][j + 1] += 1;
+            }
+        }
+    }
+
+    // 横
+    for i in 0..h {
+        for j in k - 1..w {
+            if x[i][j + 1] - x[i][j + 1 - k] > 0 {
+                continue;
+            }
+            chmin!(ans, dot[i][j + 1] - dot[i][j + 1 - k]);
+        }
+    }
+
+    // 累積和
+    let mut x = vec![vec![0; w + 1]; h + 1];
+    let mut dot = vec![vec![0; w + 1]; h + 1];
+
+    for j in 0..w {
+        for i in 0..h {
+            x[i + 1][j] = x[i][j];
+            dot[i + 1][j] = dot[i][j];
+            if s[i][j] == 'x' {
+                x[i + 1][j] += 1;
+            }
+            if s[i][j] == '.' {
+                dot[i + 1][j] += 1;
+            }
+        }
+    }
+
+    // 縦
+    for j in 0..w {
+        for i in k - 1..h {
+            if x[i + 1][j] - x[i + 1 - k][j] > 0 {
+                continue;
+            }
+            chmin!(ans, dot[i + 1][j] - dot[i + 1 - k][j]);
+        }
+    }
+
+    if ans == usize::MAX {
+        println!("-1");
+    } else {
+        println!("{}", ans);
     }
 }

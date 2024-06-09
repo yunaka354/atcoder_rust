@@ -499,6 +499,19 @@ impl V {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+    }
+    const MOD: usize = 998244353;
+    let s: Vec<char> = n.to_string().chars().collect();
+    let mut v: Vec<char> = Vec::new();
+    for _ in 0..n {
+        v.extend(s.clone());
+    }
+    println!("{:?}", v);
+
+    let mut x = 0;
+    for i in 0..v.len() {
+        x *= 10;
+        x += v[i].to_digit(10).unwrap() as usize;
+        println!("x={} ans={}", x, x % MOD);
     }
 }

@@ -494,11 +494,40 @@ impl V {
     }
 }
 
+fn func(k: usize) -> Vec<Vec<char>> {
+    if k == 0 {
+        return vec![vec!['#'; 1]; 1];
+    }
+
+    let mut s = vec![vec!['.'; (3 as usize).pow(k as u32)]; (3 as usize).pow(k as u32)];
+    let prev_level = func(k - 1);
+    let prev_len = prev_level.len();
+    for i in 0..3 {
+        for j in 0..3 {
+            // 真ん中は塗らない
+            if i == 1 && j == 1 {
+                continue;
+            }
+
+            for pi in 0..prev_len {
+                for pj in 0..prev_len {
+                    s[i * prev_len + pi][j * prev_len + pj] = prev_level[pi][pj];
+                }
+            }
+        }
+    }
+    return s;
+}
+
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+    }
+    let ans = func(n);
+    let n = ans.len();
+    for i in 0..n {
+        println!("{}", ans[i].iter().join(""));
     }
 }
