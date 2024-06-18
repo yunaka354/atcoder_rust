@@ -516,6 +516,20 @@ fn lower_bound(arr: &Vec<usize>, target: usize) -> usize {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        a: usize,
+        b: usize,
     }
+
+    let func = |kousa: usize, kosuu: usize| {
+        if kosuu == 0 {
+            return 0;
+        }
+        (2 * kousa + (kosuu - 1) * kousa) * kosuu / 2
+    };
+    let lcm = a / gcd(a, b) * b;
+    let total = func(1, n);
+    let a_sum = func(a, n / a);
+    let b_sum = func(b, n / b);
+    let ab_sum = func(lcm, n / lcm);
+    println!("{}", total + ab_sum - a_sum - b_sum);
 }

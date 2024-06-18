@@ -516,6 +516,19 @@ fn lower_bound(arr: &Vec<usize>, target: usize) -> usize {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        q: usize,
+        mut a: [usize; n],
+    }
+    a.sort();
+    let mut s = vec![0; n + 1];
+    for i in 0..n {
+        s[i + 1] = s[i] + a[i];
+    }
+    for _ in 0..q {
+        input! {x:usize};
+        let index = lower_bound(&a, x);
+        let lower = x * index - s[index];
+        let upper = (s[n] - s[index]) - (n - index) * x;
+        println!("{}", lower + upper);
     }
 }
