@@ -514,7 +514,19 @@ fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        s: [char; 3],
+        t: [char; 3],
+    }
+    let mut count = 0;
+    for i in 0..3 {
+        if s[i] != t[i] {
+            count += 1;
+        }
+    }
+
+    if count == 2 {
+        println!("No");
+    } else {
+        println!("Yes");
     }
 }

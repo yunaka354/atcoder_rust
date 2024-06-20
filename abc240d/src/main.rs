@@ -515,6 +515,24 @@ fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        a: [usize; n],
+    }
+    let mut stack: Vec<(usize, usize)> = Vec::new();
+    let mut count = 0;
+
+    for i in 0..n {
+        let ball = a[i];
+        count += 1;
+        if stack.is_empty() || stack.last().unwrap().0 != ball {
+            stack.push((ball, 1));
+        } else {
+            let last = stack.last_mut().unwrap();
+            last.1 += 1;
+            if last.0 == last.1 {
+                count -= ball;
+                stack.pop();
+            }
+        }
+        println!("{}", count);
     }
 }

@@ -515,6 +515,35 @@ fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        mut x: usize,
+        s: Chars,
     }
+    let mut stack = Vec::new();
+
+    for i in 0..n {
+        match stack.pop() {
+            None => stack.push(s[i]),
+            Some(c) => {
+                if c == 'R' && s[i] == 'U' {
+                    continue;
+                } else if c == 'L' && s[i] == 'U' {
+                    continue;
+                } else {
+                    stack.push(c);
+                    stack.push(s[i]);
+                }
+            }
+        }
+    }
+    for i in 0..stack.len() {
+        if stack[i] == 'U' {
+            x /= 2;
+        } else if stack[i] == 'L' {
+            x *= 2;
+        } else if stack[i] == 'R' {
+            x *= 2;
+            x += 1;
+        }
+    }
+    println!("{}", x);
 }

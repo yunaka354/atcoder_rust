@@ -514,7 +514,32 @@ fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        _a: [usize; n],
+        a: usize,
+        b: usize,
+        c: usize,
+        d: usize,
     }
+
+    let mut primes = HashSet::new();
+
+    for i in 2..=200 {
+        if is_prime(i) {
+            primes.insert(i);
+        }
+    }
+
+    for takahashi in a..=b {
+        let mut takahashi_win = true;
+        for aoki in c..=d {
+            if primes.contains(&(takahashi + aoki)) {
+                takahashi_win = false;
+            }
+        }
+
+        if takahashi_win {
+            println!("Takahashi");
+            return;
+        }
+    }
+    println!("Aoki");
 }

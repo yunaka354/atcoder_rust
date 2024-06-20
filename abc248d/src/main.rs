@@ -1,5 +1,6 @@
 #![allow(unused_imports)]
 use itertools::Itertools;
+use proconio::marker::Usize1;
 use proconio::{fastout, input, input_interactive, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
@@ -515,6 +516,19 @@ fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        a: [usize; n],
+        q: usize,
+    }
+
+    let mut v = vec![vec![]; n + 1];
+    for i in 0..n {
+        v[a[i]].push(i);
+    }
+
+    for _ in 0..q {
+        input! {l: usize, r: usize, x: usize}
+        let ridx = lower_bound(&v[x], r);
+        let lidx = lower_bound(&v[x], l - 1);
+        println!("{}", ridx - lidx);
     }
 }
