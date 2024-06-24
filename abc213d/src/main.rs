@@ -1,5 +1,6 @@
 #![allow(unused_imports)]
 use itertools::Itertools;
+use proconio::marker::Usize1;
 use proconio::{fastout, input, input_interactive, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
@@ -510,29 +511,38 @@ fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
     right as usize
 }
 
+fn dfs(parent: usize, now: usize, g: &Vec<Vec<usize>>, routes: &mut Vec<usize>) {
+    routes.push(now + 1);
+    for next in &g[now] {
+        if parent == *next {
+            continue;
+        }
+        dfs(now, *next, g, routes);
+        routes.push(now + 1);
+    }
+}
+
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
-        mut sx: isize,
-        sy: isize,
-        mut tx: isize,
-        mut ty: isize,
+        n: usize,
+        ab: [(Usize1, Usize1); n-1],
     }
 
-    if sx % 2 != sy % 2 {
-        sx -= 1;
+    let mut g = vec![vec![]; n];
+
+    for (a, b) in ab {
+        g[a].push(b);
+        g[b].push(a);
     }
 
-    if tx % 2 != ty % 2 {
-        tx -= 1;
+    for i in 0..n {
+        g[i].sort();
     }
 
-    tx -= sx;
-    ty -= sy;
+    let mut routes = Vec::new();
+    dfs(2_000_000, 0, &g, &mut routes);
 
-    tx = tx.abs();
-    ty = ty.abs();
-
-    println!("{}", ty + max(tx - ty, 0) / 2);
+    println!("{}", routes.iter().join(" "));
 }

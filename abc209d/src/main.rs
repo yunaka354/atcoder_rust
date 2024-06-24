@@ -1,5 +1,6 @@
 #![allow(unused_imports)]
 use itertools::Itertools;
+use proconio::marker::Usize1;
 use proconio::{fastout, input, input_interactive, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
@@ -514,25 +515,37 @@ fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
 #[fastout]
 fn main() {
     input! {
-        mut sx: isize,
-        sy: isize,
-        mut tx: isize,
-        mut ty: isize,
+        n: usize,
+        q: usize,
+        ab: [(Usize1, Usize1); n-1],
+        cd: [(Usize1, Usize1); q],
     }
 
-    if sx % 2 != sy % 2 {
-        sx -= 1;
+    let mut g = vec![vec![]; n];
+    for (a, b) in &ab {
+        g[*a].push(*b);
+        g[*b].push(*a);
+    }
+    let mut dist = vec![usize::MAX; n];
+    let mut q = VecDeque::new();
+    dist[0] = 0;
+    q.push_back(0);
+
+    while let Some(now) = q.pop_front() {
+        for next in &g[now] {
+            if dist[*next] != usize::MAX {
+                continue;
+            };
+            dist[*next] = dist[now] + 1;
+            q.push_back(*next);
+        }
     }
 
-    if tx % 2 != ty % 2 {
-        tx -= 1;
+    for (c, d) in &cd {
+        if dist[*c] % 2 == dist[*d] % 2 {
+            println!("Town");
+        } else {
+            println!("Road");
+        }
     }
-
-    tx -= sx;
-    ty -= sy;
-
-    tx = tx.abs();
-    ty = ty.abs();
-
-    println!("{}", ty + max(tx - ty, 0) / 2);
 }

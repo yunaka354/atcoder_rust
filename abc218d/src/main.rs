@@ -514,25 +514,29 @@ fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
 #[fastout]
 fn main() {
     input! {
-        mut sx: isize,
-        sy: isize,
-        mut tx: isize,
-        mut ty: isize,
+        n: usize,
+        xy: [(usize, usize); n],
     }
 
-    if sx % 2 != sy % 2 {
-        sx -= 1;
+    let mut set = HashSet::new();
+
+    for i in 0..n {
+        let (x, y) = xy[i];
+        set.insert((x, y));
     }
 
-    if tx % 2 != ty % 2 {
-        tx -= 1;
+    let mut ans = 0;
+    for i in 0..n {
+        for j in 0..n {
+            let a = xy[i];
+            let b = xy[j];
+
+            if a.0 < b.0 && a.1 < b.1 {
+                if set.contains(&(a.0, b.1)) && set.contains(&(b.0, a.1)) {
+                    ans += 1;
+                }
+            }
+        }
     }
-
-    tx -= sx;
-    ty -= sy;
-
-    tx = tx.abs();
-    ty = ty.abs();
-
-    println!("{}", ty + max(tx - ty, 0) / 2);
+    println!("{}", ans);
 }

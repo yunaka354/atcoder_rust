@@ -514,25 +514,24 @@ fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
 #[fastout]
 fn main() {
     input! {
-        mut sx: isize,
-        sy: isize,
-        mut tx: isize,
-        mut ty: isize,
+        n: usize,
+        q: usize,
+        a: [usize; n],
+        k: [usize; q],
     }
 
-    if sx % 2 != sy % 2 {
-        sx -= 1;
+    let mut c = vec![0; n];
+    for i in 0..n {
+        c[i] = a[i] - i - 1;
     }
 
-    if tx % 2 != ty % 2 {
-        tx -= 1;
+    for i in 0..q {
+        let r = lower_bound(&c, k[i]);
+
+        if r == 0 {
+            println!("{}", k[i]);
+        } else {
+            println!("{}", a[r - 1] + (k[i] - c[r - 1]));
+        }
     }
-
-    tx -= sx;
-    ty -= sy;
-
-    tx = tx.abs();
-    ty = ty.abs();
-
-    println!("{}", ty + max(tx - ty, 0) / 2);
 }

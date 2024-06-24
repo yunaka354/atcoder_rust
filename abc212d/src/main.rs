@@ -1,8 +1,8 @@
 #![allow(unused_imports)]
 use itertools::Itertools;
 use proconio::{fastout, input, input_interactive, marker::Chars};
-use std::cmp::{max, min};
-use std::collections::{HashMap, HashSet, VecDeque};
+use std::cmp::{max, min, Reverse};
+use std::collections::{BinaryHeap, HashMap, HashSet, VecDeque};
 
 #[allow(dead_code)]
 const MOD: usize = 1_000_000_000 + 7;
@@ -494,45 +494,25 @@ impl V {
     }
 }
 
-#[allow(dead_code)]
-fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
-    let mut left = -1;
-    let mut right = arr.len() as isize;
-
-    while right - left > 1 {
-        let mid = left + (right - left) / 2;
-        if arr[mid as usize] >= x {
-            right = mid;
-        } else {
-            left = mid;
-        }
-    }
-    right as usize
-}
-
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
-        mut sx: isize,
-        sy: isize,
-        mut tx: isize,
-        mut ty: isize,
+        q: usize,
     }
-
-    if sx % 2 != sy % 2 {
-        sx -= 1;
+    let mut queue: BinaryHeap<Reverse<isize>> = BinaryHeap::new();
+    let mut sum: isize = 0;
+    for _ in 0..q {
+        input! {query: usize};
+        if query == 1 {
+            input! {x: isize};
+            queue.push(Reverse(x - sum));
+        } else if query == 2 {
+            input! {x: isize};
+            sum += x;
+        } else {
+            let Reverse(n) = queue.pop().unwrap();
+            println!("{}", n + sum);
+        }
     }
-
-    if tx % 2 != ty % 2 {
-        tx -= 1;
-    }
-
-    tx -= sx;
-    ty -= sy;
-
-    tx = tx.abs();
-    ty = ty.abs();
-
-    println!("{}", ty + max(tx - ty, 0) / 2);
 }

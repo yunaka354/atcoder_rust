@@ -514,25 +514,16 @@ fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
 #[fastout]
 fn main() {
     input! {
-        mut sx: isize,
-        sy: isize,
-        mut tx: isize,
-        mut ty: isize,
+        n: usize,
     }
 
-    if sx % 2 != sy % 2 {
-        sx -= 1;
+    let yakusu = calc_divisors(n * 2);
+    let mut ans = 0;
+    for l in yakusu {
+        let x = l as isize;
+        if ((2 * n as isize / x) - x + 1) % 2 == 0 {
+            ans += 1;
+        }
     }
-
-    if tx % 2 != ty % 2 {
-        tx -= 1;
-    }
-
-    tx -= sx;
-    ty -= sy;
-
-    tx = tx.abs();
-    ty = ty.abs();
-
-    println!("{}", ty + max(tx - ty, 0) / 2);
+    println!("{}", ans);
 }

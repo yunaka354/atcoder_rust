@@ -1,5 +1,6 @@
 #![allow(unused_imports)]
 use itertools::Itertools;
+use proconio::marker::Usize1;
 use proconio::{fastout, input, input_interactive, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
@@ -514,25 +515,37 @@ fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
 #[fastout]
 fn main() {
     input! {
-        mut sx: isize,
-        sy: isize,
-        mut tx: isize,
-        mut ty: isize,
+        n: usize,
+        m: usize,
+        ab: [(Usize1, Usize1); m],
     }
 
-    if sx % 2 != sy % 2 {
-        sx -= 1;
+    let mut g = vec![vec![]; n];
+    let mut count = vec![0; n];
+    let mut distance = vec![usize::MAX; n];
+    distance[0] = 0;
+    count[0] = 1;
+
+    for i in 0..m {
+        let (a, b) = ab[i];
+        g[a].push(b);
+        g[b].push(a);
     }
 
-    if tx % 2 != ty % 2 {
-        tx -= 1;
+    let mut queue = VecDeque::new();
+    queue.push_back(0);
+
+    while let Some(now) = queue.pop_front() {
+        for next in &g[now] {
+            if distance[*next] == usize::MAX {
+                distance[*next] = distance[now] + 1;
+                count[*next] = count[now];
+                queue.push_back(*next);
+            } else if distance[*next] == distance[now] + 1 {
+                count[*next] += count[now];
+                count[*next] %= 1_000_000_007;
+            }
+        }
     }
-
-    tx -= sx;
-    ty -= sy;
-
-    tx = tx.abs();
-    ty = ty.abs();
-
-    println!("{}", ty + max(tx - ty, 0) / 2);
+    println!("{}", count[n - 1]);
 }
