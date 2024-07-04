@@ -5,9 +5,10 @@ use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
 
 #[allow(dead_code)]
-const DIRECTION_4: [(isize, isize); 4] = [(-1, 0), (1, 0), (0, -1), (0, 1)];
+const MOD: usize = 1_000_000_000 + 7;
 
-const MOD: usize = 1_000_000 + 7;
+#[allow(dead_code)]
+const DIRECTION_4: [(isize, isize); 4] = [(-1, 0), (1, 0), (0, -1), (0, 1)];
 
 #[allow(unused_macros)]
 macro_rules! chmin {
@@ -493,21 +494,51 @@ impl V {
     }
 }
 
-use ac_library::ModInt998244353 as Mint;
+#[allow(dead_code)]
+fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
+    let mut left = -1;
+    let mut right = arr.len() as isize;
+
+    while right - left > 1 {
+        let mid = left + (right - left) / 2;
+        if arr[mid as usize] >= x {
+            right = mid;
+        } else {
+            left = mid;
+        }
+    }
+    right as usize
+}
 
 #[allow(non_snake_case)]
-#[fastout]
 fn main() {
     input! {
-        n: usize,
+        mut s: Chars,
     }
-    let mut a = Mint::new(1);
-    let mut _n = n;
-    while _n != 0 {
-        a *= 10;
-        _n /= 10;
+    let n = s.len();
+    let mut ans = vec![0; n];
+
+    for _ in 0..2 {
+        let mut count = 0;
+        for i in 0..n {
+            if s[i] == 'R' {
+                count += 1;
+            } else {
+                ans[i] += count / 2;
+                ans[i - 1] += (count + 1) / 2;
+                count = 0;
+            }
+        }
+        ans.reverse();
+        s.reverse();
+
+        for i in 0..n {
+            if s[i] == 'L' {
+                s[i] = 'R';
+            } else {
+                s[i] = 'L';
+            }
+        }
     }
-    let mut s = (a.pow(n as u64) - 1) / (a - 1);
-    s *= n;
-    println!("{}", s);
+    println!("{}", ans.iter().join(" "));
 }

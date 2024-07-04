@@ -5,9 +5,10 @@ use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
 
 #[allow(dead_code)]
-const DIRECTION_4: [(isize, isize); 4] = [(-1, 0), (1, 0), (0, -1), (0, 1)];
+const MOD: usize = 1_000_000_000 + 7;
 
-const MOD: usize = 1_000_000 + 7;
+#[allow(dead_code)]
+const DIRECTION_4: [(isize, isize); 4] = [(-1, 0), (1, 0), (0, -1), (0, 1)];
 
 #[allow(unused_macros)]
 macro_rules! chmin {
@@ -493,21 +494,39 @@ impl V {
     }
 }
 
-use ac_library::ModInt998244353 as Mint;
+#[allow(dead_code)]
+fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
+    let mut left = -1;
+    let mut right = arr.len() as isize;
+
+    while right - left > 1 {
+        let mid = left + (right - left) / 2;
+        if arr[mid as usize] >= x {
+            right = mid;
+        } else {
+            left = mid;
+        }
+    }
+    right as usize
+}
 
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
         n: usize,
+        mut ab: [(usize, usize); n],
     }
-    let mut a = Mint::new(1);
-    let mut _n = n;
-    while _n != 0 {
-        a *= 10;
-        _n /= 10;
+    ab.sort_by(|a, b| a.1.cmp(&b.1));
+
+    let mut now = 0;
+
+    for i in 0..n {
+        now += ab[i].0;
+        if now > ab[i].1 {
+            println!("No");
+            return;
+        }
     }
-    let mut s = (a.pow(n as u64) - 1) / (a - 1);
-    s *= n;
-    println!("{}", s);
+    println!("Yes");
 }
