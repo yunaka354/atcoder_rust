@@ -1,6 +1,5 @@
 #![allow(unused_imports)]
 use itertools::Itertools;
-use proconio::marker::Usize1;
 use proconio::{fastout, input, input_interactive, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
@@ -511,44 +510,42 @@ fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
     right as usize
 }
 
-fn dfs(g: &Vec<Vec<(usize, (isize, isize))>>, dist: &mut Vec<Option<(isize, isize)>>, from: usize) {
-    for nv in &g[from] {
-        let to = nv.0;
-        let dx = nv.1 .0;
-        let dy = nv.1 .1;
-
-        if dist[to] == None {
-            let (cx, cy) = dist[from].unwrap();
-            dist[to] = Some((cx + dx, cy + dy));
-            dfs(g, dist, to);
-        }
-    }
-}
-
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
         n: usize,
-        m: usize,
-        abxy: [(Usize1, Usize1, isize, isize); m],
     }
+    let mut x = Vec::new();
+    let mut y = Vec::new();
+    let mut z = Vec::new();
 
-    let mut g = vec![vec![]; n];
-    let mut dist = vec![None; n];
-
-    for (a, b, x, y) in abxy {
-        g[a].push((b, (x, y)));
-        g[b].push((a, (x * -1, y * -1)));
+    for _ in 0..n {
+        input! {a: usize, b: usize, c: usize}
+        x.push(a);
+        y.push(b);
+        z.push(c);
     }
-    dist[0] = Some((0, 0));
-
-    dfs(&g, &mut dist, 0);
+    let p = z.iter().sum::<usize>();
+    let mut dp = vec![vec![usize::MAX; 100005]; n + 1];
+    dp[0][0] = 0;
 
     for i in 0..n {
-        match dist[i] {
-            None => println!("undecidable"),
-            Some((x, y)) => println!("{} {}", x, y),
+        for j in 0..=100000 {
+            if dp[i][j] != usize::MAX {
+                chmin!(dp[i + 1][j], dp[i][j]);
+                if x[i] > y[i] {
+                    chmin!(dp[i + 1][j + z[i]], dp[i][j]);
+                } else {
+                    let d = (y[i] - x[i] + 1) / 2;
+                    chmin!(dp[i + 1][j + z[i]], dp[i][j] + d);
+                }
+            }
         }
     }
+    let mut ans = usize::MAX;
+    for i in p / 2 + 1..=100000 {
+        chmin!(ans, dp[n][i]);
+    }
+    println!("{}", ans);
 }

@@ -1,6 +1,6 @@
 #![allow(unused_imports)]
+use ac_library::ModInt998244353 as Mint;
 use itertools::Itertools;
-use proconio::marker::Usize1;
 use proconio::{fastout, input, input_interactive, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
@@ -511,44 +511,32 @@ fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
     right as usize
 }
 
-fn dfs(g: &Vec<Vec<(usize, (isize, isize))>>, dist: &mut Vec<Option<(isize, isize)>>, from: usize) {
-    for nv in &g[from] {
-        let to = nv.0;
-        let dx = nv.1 .0;
-        let dy = nv.1 .1;
-
-        if dist[to] == None {
-            let (cx, cy) = dist[from].unwrap();
-            dist[to] = Some((cx + dx, cy + dy));
-            dfs(g, dist, to);
-        }
-    }
-}
-
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        m: usize,
-        abxy: [(Usize1, Usize1, isize, isize); m],
+        s: Chars,
     }
-
-    let mut g = vec![vec![]; n];
-    let mut dist = vec![None; n];
-
-    for (a, b, x, y) in abxy {
-        g[a].push((b, (x, y)));
-        g[b].push((a, (x * -1, y * -1)));
-    }
-    dist[0] = Some((0, 0));
-
-    dfs(&g, &mut dist, 0);
+    let n = s.len();
+    let mut dp = vec![vec![Mint::new(0); n + 1]; n + 1];
+    dp[0][0] = Mint::new(1);
 
     for i in 0..n {
-        match dist[i] {
-            None => println!("undecidable"),
-            Some((x, y)) => println!("{} {}", x, y),
+        for j in 0..n {
+            let c = dp[i][j];
+            if s[i] == '(' {
+                dp[i + 1][j + 1] += c;
+            } else if s[i] == ')' {
+                if j > 0 {
+                    dp[i + 1][j - 1] += c;
+                }
+            } else {
+                dp[i + 1][j + 1] += c;
+                if j > 0 {
+                    dp[i + 1][j - 1] += c;
+                }
+            }
         }
     }
+    println!("{}", dp[n][0]);
 }
