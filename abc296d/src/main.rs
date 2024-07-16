@@ -438,26 +438,6 @@ fn prime_factors(mut n: usize) -> HashMap<usize, usize> {
     factors
 }
 
-fn sieve_of_eratosthenes(limit: usize) -> Vec<usize> {
-    let mut is_prime = vec![true; limit + 1];
-    is_prime[0] = false;
-    is_prime[1] = false;
-
-    for number in 2..=((limit as f64).sqrt() as usize) {
-        if is_prime[number] {
-            for multiple in (number * number..=limit).step_by(number) {
-                is_prime[multiple] = false;
-            }
-        }
-    }
-
-    is_prime
-        .into_iter()
-        .enumerate()
-        .filter_map(|(index, prime)| if prime { Some(index) } else { None })
-        .collect()
-}
-
 // フェルマーの小定理に基づく逆元の計算。問題によってMODが変わる場合は変更すること。
 #[allow(dead_code)]
 fn mod_inverse(a: usize) -> usize {
@@ -515,47 +495,40 @@ impl V {
 }
 
 #[allow(dead_code)]
-fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
-    let mut left = -1;
-    let mut right = arr.len() as isize;
+fn lower_bound(a: u128, m: u128, n: u128) -> u128 {
+    let mut left = 0;
+    let mut right = n + 1;
 
     while right - left > 1 {
-        let mid = left + (right - left) / 2;
-        if arr[mid as usize] >= x {
-            right = mid;
+        let b = left + (right - left) / 2;
+        if a * b >= m {
+            right = b;
         } else {
-            left = mid;
+            left = b;
         }
     }
-    right as usize
+    right
 }
 
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
-        n: usize,
+        n: u128,
+        m: u128,
     }
-    let primes = sieve_of_eratosthenes(288675);
-    let l = primes.len();
-    let mut ans = 0;
-    for i in 0..l {
-        let a = primes[i];
-        if a * a * a * a * a > n {
-            break;
-        }
-        for j in i + 1..l {
-            let b = primes[j];
-            if a * a * b * b * b > n {
-                break;
-            }
-            for k in j + 1..l {
-                let c = primes[k];
-                if a * a * b * c * c > n {
-                    break;
-                }
-                ans += 1;
-            }
+
+    if n * n < m {
+        println!("-1");
+        return;
+    }
+
+    let mut ans = u128::MAX;
+
+    for a in 1..=min(n, 1_000_000) {
+        let b = lower_bound(a, m, n);
+        if b <= n {
+            chmin!(ans, a * b);
         }
     }
     println!("{}", ans);

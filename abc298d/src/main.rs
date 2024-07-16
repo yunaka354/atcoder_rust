@@ -1,4 +1,5 @@
 #![allow(unused_imports)]
+use ac_library::modint::ModInt998244353 as Mint;
 use itertools::Itertools;
 use proconio::{fastout, input, input_interactive, marker::Chars};
 use std::cmp::{max, min};
@@ -438,26 +439,6 @@ fn prime_factors(mut n: usize) -> HashMap<usize, usize> {
     factors
 }
 
-fn sieve_of_eratosthenes(limit: usize) -> Vec<usize> {
-    let mut is_prime = vec![true; limit + 1];
-    is_prime[0] = false;
-    is_prime[1] = false;
-
-    for number in 2..=((limit as f64).sqrt() as usize) {
-        if is_prime[number] {
-            for multiple in (number * number..=limit).step_by(number) {
-                is_prime[multiple] = false;
-            }
-        }
-    }
-
-    is_prime
-        .into_iter()
-        .enumerate()
-        .filter_map(|(index, prime)| if prime { Some(index) } else { None })
-        .collect()
-}
-
 // フェルマーの小定理に基づく逆元の計算。問題によってMODが変わる場合は変更すること。
 #[allow(dead_code)]
 fn mod_inverse(a: usize) -> usize {
@@ -534,29 +515,23 @@ fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
 #[fastout]
 fn main() {
     input! {
-        n: usize,
+        q: usize,
     }
-    let primes = sieve_of_eratosthenes(288675);
-    let l = primes.len();
-    let mut ans = 0;
-    for i in 0..l {
-        let a = primes[i];
-        if a * a * a * a * a > n {
-            break;
-        }
-        for j in i + 1..l {
-            let b = primes[j];
-            if a * a * b * b * b > n {
-                break;
-            }
-            for k in j + 1..l {
-                let c = primes[k];
-                if a * a * b * c * c > n {
-                    break;
-                }
-                ans += 1;
-            }
+    let mut s = Mint::new(1);
+    let mut que = VecDeque::new();
+    que.push_back(Mint::new(1));
+    for _ in 0..q {
+        input! {query: usize}
+        if query == 1 {
+            input! {x: usize}
+            s *= 10;
+            s += x;
+            que.push_back(Mint::new(x));
+        } else if query == 2 {
+            let x = que.pop_front().unwrap();
+            s -= x * (Mint::new(10)).pow(que.len() as u64);
+        } else {
+            println!("{}", s);
         }
     }
-    println!("{}", ans);
 }
