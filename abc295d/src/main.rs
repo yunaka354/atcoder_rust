@@ -495,46 +495,47 @@ impl V {
 }
 
 #[allow(dead_code)]
-fn lower_bound(a: u128, m: u128, n: u128) -> u128 {
-    let mut left = 0;
-    let mut right = n + 1;
+fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
+    let mut left = -1;
+    let mut right = arr.len() as isize;
 
     while right - left > 1 {
-        let b = left + (right - left) / 2;
-        if a * b >= m {
-            right = b;
+        let mid = left + (right - left) / 2;
+        if arr[mid as usize] >= x {
+            right = mid;
         } else {
-            left = b;
+            left = mid;
         }
     }
-    right
+    right as usize
 }
 
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        m: usize,
+        s: Chars,
+    }
+    let n = s.len();
+
+    let mut v = vec![0; n + 1];
+
+    for i in 0..n {
+        v[i + 1] = v[i] ^ 1 << s[i].to_digit(10).unwrap();
     }
 
-    let mut ans = usize::MAX;
+    let mut map = HashMap::new();
 
-    for a in 1..=n {
-        let b = (m + a - 1) / a;
-
-        if b < a {
-            break;
-        }
-
-        if b <= n {
-            chmin!(ans, a * b);
-        }
+    for i in 0..n + 1 {
+        let entry = map.entry(v[i]).or_insert(0 as usize);
+        *entry += 1;
     }
 
-    if ans == usize::MAX {
-        println!("-1");
-    } else {
-        println!("{}", ans);
+    let mut ans = 0;
+
+    for v in map.values() {
+        ans += ncr(*v, 2);
     }
+
+    println!("{}", ans);
 }

@@ -2,6 +2,7 @@
 use itertools::Itertools;
 use proconio::{fastout, input, input_interactive, marker::Chars};
 use std::cmp::{max, min};
+use std::collections::btree_set::Union;
 use std::collections::{HashMap, HashSet, VecDeque};
 
 #[allow(dead_code)]
@@ -495,19 +496,19 @@ impl V {
 }
 
 #[allow(dead_code)]
-fn lower_bound(a: u128, m: u128, n: u128) -> u128 {
-    let mut left = 0;
-    let mut right = n + 1;
+fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
+    let mut left = -1;
+    let mut right = arr.len() as isize;
 
     while right - left > 1 {
-        let b = left + (right - left) / 2;
-        if a * b >= m {
-            right = b;
+        let mid = left + (right - left) / 2;
+        if arr[mid as usize] >= x {
+            right = mid;
         } else {
-            left = b;
+            left = mid;
         }
     }
-    right
+    right as usize
 }
 
 #[allow(non_snake_case)]
@@ -516,25 +517,29 @@ fn main() {
     input! {
         n: usize,
         m: usize,
+        mut a: [usize; n],
+    }
+    a.sort();
+    let sum = a.iter().sum::<usize>();
+
+    let mut uf = UnionFind::new(n);
+
+    for i in 0..n {
+        if a[i] == a[(i + 1) % n] || (a[i] + 1) % m == a[(i + 1) % n] % m {
+            uf.unite(i, (i + 1) % n);
+        }
     }
 
+    let mut map = HashMap::new();
+
+    for i in 0..n {
+        let entry = map.entry(uf.root(i)).or_insert(0);
+        *entry += a[i];
+    }
     let mut ans = usize::MAX;
 
-    for a in 1..=n {
-        let b = (m + a - 1) / a;
-
-        if b < a {
-            break;
-        }
-
-        if b <= n {
-            chmin!(ans, a * b);
-        }
+    for (_k, v) in map {
+        chmin!(ans, sum - v);
     }
-
-    if ans == usize::MAX {
-        println!("-1");
-    } else {
-        println!("{}", ans);
-    }
+    println!("{}", ans);
 }

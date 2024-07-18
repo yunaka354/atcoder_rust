@@ -1,7 +1,9 @@
 #![allow(unused_imports)]
 use itertools::Itertools;
+use proconio::marker::Usize1;
 use proconio::{fastout, input, input_interactive, marker::Chars};
 use std::cmp::{max, min};
+use std::collections::btree_set::Union;
 use std::collections::{HashMap, HashSet, VecDeque};
 
 #[allow(dead_code)]
@@ -495,19 +497,19 @@ impl V {
 }
 
 #[allow(dead_code)]
-fn lower_bound(a: u128, m: u128, n: u128) -> u128 {
-    let mut left = 0;
-    let mut right = n + 1;
+fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
+    let mut left = -1;
+    let mut right = arr.len() as isize;
 
     while right - left > 1 {
-        let b = left + (right - left) / 2;
-        if a * b >= m {
-            right = b;
+        let mid = left + (right - left) / 2;
+        if arr[mid as usize] >= x {
+            right = mid;
         } else {
-            left = b;
+            left = mid;
         }
     }
-    right
+    right as usize
 }
 
 #[allow(non_snake_case)]
@@ -518,23 +520,36 @@ fn main() {
         m: usize,
     }
 
-    let mut ans = usize::MAX;
+    let mut uf = UnionFind::new(n * 2);
 
-    for a in 1..=n {
-        let b = (m + a - 1) / a;
-
-        if b < a {
-            break;
-        }
-
-        if b <= n {
-            chmin!(ans, a * b);
-        }
+    for i in 0..n {
+        uf.unite(i * 2, i * 2 + 1);
     }
 
-    if ans == usize::MAX {
-        println!("-1");
-    } else {
-        println!("{}", ans);
+    let mut ans = 0;
+    for _ in 0..m {
+        input! { a: Usize1, b: char, c: Usize1, d: char}
+        let mut a = a * 2;
+        let mut c = c * 2;
+
+        if b == 'B' {
+            a += 1;
+        }
+        if d == 'B' {
+            c += 1;
+        }
+
+        if uf.is_same(a, c) {
+            ans += 1;
+        }
+        uf.unite(a, c);
     }
+
+    let mut root_count = HashSet::new();
+
+    for i in 0..n * 2 {
+        root_count.insert(uf.root(i));
+    }
+
+    println!("{} {}", ans, root_count.len() - ans);
 }

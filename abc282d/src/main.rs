@@ -1,5 +1,6 @@
 #![allow(unused_imports)]
 use itertools::Itertools;
+use proconio::marker::Usize1;
 use proconio::{fastout, input, input_interactive, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
@@ -495,19 +496,41 @@ impl V {
 }
 
 #[allow(dead_code)]
-fn lower_bound(a: u128, m: u128, n: u128) -> u128 {
-    let mut left = 0;
-    let mut right = n + 1;
+fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
+    let mut left = -1;
+    let mut right = arr.len() as isize;
 
     while right - left > 1 {
-        let b = left + (right - left) / 2;
-        if a * b >= m {
-            right = b;
+        let mid = left + (right - left) / 2;
+        if arr[mid as usize] >= x {
+            right = mid;
         } else {
-            left = b;
+            left = mid;
         }
     }
-    right
+    right as usize
+}
+
+fn dfs(
+    g: &Vec<Vec<usize>>,
+    color: &mut Vec<isize>,
+    to: usize,
+    next_color: isize,
+    color_count: &mut Vec<usize>,
+) -> bool {
+    if color[to] != -1 {
+        return color[to] == next_color;
+    }
+
+    color[to] = next_color;
+    color_count[next_color as usize] += 1;
+
+    for v in &g[to] {
+        if !dfs(g, color, *v, next_color ^ 1, color_count) {
+            return false;
+        }
+    }
+    return true;
 }
 
 #[allow(non_snake_case)]
@@ -518,23 +541,30 @@ fn main() {
         m: usize,
     }
 
-    let mut ans = usize::MAX;
+    let mut g = vec![vec![]; n];
 
-    for a in 1..=n {
-        let b = (m + a - 1) / a;
+    for _ in 0..m {
+        input! {u: Usize1, v: Usize1}
+        g[u].push(v);
+        g[v].push(u);
+    }
 
-        if b < a {
-            break;
+    let mut color = vec![-1; n];
+
+    let mut ans = ncr(n, 2) - m;
+    for i in 0..n {
+        if color[i] != -1 {
+            continue;
         }
-
-        if b <= n {
-            chmin!(ans, a * b);
+        let mut color_count = vec![0; 2];
+        if !dfs(&g, &mut color, i, 0, &mut color_count) {
+            println!("0");
+            return;
+        }
+        for j in 0..2 {
+            ans -= ncr(color_count[j], 2);
         }
     }
 
-    if ans == usize::MAX {
-        println!("-1");
-    } else {
-        println!("{}", ans);
-    }
+    println!("{}", ans);
 }

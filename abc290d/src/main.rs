@@ -1,5 +1,6 @@
 #![allow(unused_imports)]
 use itertools::Itertools;
+use proconio::marker::Usize1;
 use proconio::{fastout, input, input_interactive, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
@@ -495,46 +496,35 @@ impl V {
 }
 
 #[allow(dead_code)]
-fn lower_bound(a: u128, m: u128, n: u128) -> u128 {
-    let mut left = 0;
-    let mut right = n + 1;
+fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
+    let mut left = -1;
+    let mut right = arr.len() as isize;
 
     while right - left > 1 {
-        let b = left + (right - left) / 2;
-        if a * b >= m {
-            right = b;
+        let mid = left + (right - left) / 2;
+        if arr[mid as usize] >= x {
+            right = mid;
         } else {
-            left = b;
+            left = mid;
         }
     }
-    right
+    right as usize
 }
 
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        m: usize,
+        t: usize,
     }
 
-    let mut ans = usize::MAX;
-
-    for a in 1..=n {
-        let b = (m + a - 1) / a;
-
-        if b < a {
-            break;
-        }
-
-        if b <= n {
-            chmin!(ans, a * b);
-        }
-    }
-
-    if ans == usize::MAX {
-        println!("-1");
-    } else {
-        println!("{}", ans);
+    for _ in 0..t {
+        input! {n: usize, d: usize, k: Usize1}
+        let g = gcd(n, d);
+        let m = n / g;
+        let e = d / g;
+        let b = k * e % m; // 何ブロック目か
+        let i = k / m; // xブロックの何個目か
+        println!("{}", b * g + i);
     }
 }

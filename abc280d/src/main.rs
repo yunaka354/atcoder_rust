@@ -495,46 +495,46 @@ impl V {
 }
 
 #[allow(dead_code)]
-fn lower_bound(a: u128, m: u128, n: u128) -> u128 {
-    let mut left = 0;
-    let mut right = n + 1;
+fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
+    let mut left = -1;
+    let mut right = arr.len() as isize;
 
     while right - left > 1 {
-        let b = left + (right - left) / 2;
-        if a * b >= m {
-            right = b;
+        let mid = left + (right - left) / 2;
+        if arr[mid as usize] >= x {
+            right = mid;
         } else {
-            left = b;
+            left = mid;
         }
     }
-    right
+    right as usize
+}
+
+fn func(mut x: usize, b: usize) -> usize {
+    let mut ret = 0;
+    while x % b == 0 {
+        ret += 1;
+        x /= b;
+    }
+    ret
 }
 
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        m: usize,
+        k: usize,
     }
-
-    let mut ans = usize::MAX;
-
-    for a in 1..=n {
-        let b = (m + a - 1) / a;
-
-        if b < a {
-            break;
+    let map = prime_factors(k);
+    let mut ans = 0;
+    for (k, v) in map {
+        let mut sum = 0;
+        let mut m = 0;
+        while sum < v {
+            sum += func(k * (m + 1), k);
+            m += 1;
         }
-
-        if b <= n {
-            chmin!(ans, a * b);
-        }
+        chmax!(ans, k * m);
     }
-
-    if ans == usize::MAX {
-        println!("-1");
-    } else {
-        println!("{}", ans);
-    }
+    println!("{}", ans);
 }

@@ -495,19 +495,19 @@ impl V {
 }
 
 #[allow(dead_code)]
-fn lower_bound(a: u128, m: u128, n: u128) -> u128 {
-    let mut left = 0;
-    let mut right = n + 1;
+fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
+    let mut left = -1;
+    let mut right = arr.len() as isize;
 
     while right - left > 1 {
-        let b = left + (right - left) / 2;
-        if a * b >= m {
-            right = b;
+        let mid = left + (right - left) / 2;
+        if arr[mid as usize] >= x {
+            right = mid;
         } else {
-            left = b;
+            left = mid;
         }
     }
-    right
+    right as usize
 }
 
 #[allow(non_snake_case)]
@@ -515,26 +515,27 @@ fn lower_bound(a: u128, m: u128, n: u128) -> u128 {
 fn main() {
     input! {
         n: usize,
-        m: usize,
+        k: usize,
+        d: isize,
+        a: [isize; n],
     }
 
-    let mut ans = usize::MAX;
+    // dp[i][j][k] := i個目まで見てj個選んだうちのあまりがkになる最大値
+    let mut dp = vec![vec![vec![-1; 100]; 105]; 105];
+    dp[0][0][0] = 0;
 
-    for a in 1..=n {
-        let b = (m + a - 1) / a;
-
-        if b < a {
-            break;
+    for i in 0..n {
+        for j in 0..k + 1 {
+            for k in 0..d {
+                if dp[i][j][k as usize] == -1 {
+                    continue;
+                };
+                chmax!(dp[i + 1][j][k as usize], dp[i][j][k as usize]);
+                let new_num = dp[i][j][k as usize] + a[i];
+                chmax!(dp[i + 1][j + 1][(new_num % d) as usize], new_num);
+            }
         }
-
-        if b <= n {
-            chmin!(ans, a * b);
-        }
     }
 
-    if ans == usize::MAX {
-        println!("-1");
-    } else {
-        println!("{}", ans);
-    }
+    println!("{}", dp[n][k][0]);
 }
