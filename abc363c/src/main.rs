@@ -510,25 +510,42 @@ fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
     right as usize
 }
 
+fn is_palindrome(s: &[&char]) -> bool {
+    let len = s.len();
+    for i in 0..len / 2 {
+        if s[i] != s[len - i - 1] {
+            return false;
+        }
+    }
+    true
+}
+
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        m: usize,
-        a: [isize; n],
+        _n: usize,
+        k: usize,
+        s: Chars,
+    }
+    let permutations = s.iter().permutations(s.len());
+    let mut set = HashSet::new();
+
+    for perm in permutations {
+        set.insert(perm);
     }
 
-    let mut dp = vec![vec![-1_000_000_000_000; m + 1]; n + 1];
-    dp[0][0] = 0;
-
-    for i in 0..n {
-        for j in 0..=m {
-            chmax!(dp[i + 1][j], dp[i][j]);
-            if j > 0 {
-                chmax!(dp[i + 1][j], dp[i][j - 1] + a[i] * j as isize);
+    let mut palin = 0;
+    for v in &set {
+        let mut ok = true;
+        for window in v.windows(k) {
+            if is_palindrome(window) {
+                ok = false;
             }
         }
+        if !ok {
+            palin += 1;
+        }
     }
-    println!("{}", dp[n][m]);
+    println!("{:?}", set.len() - palin);
 }

@@ -516,19 +516,16 @@ fn main() {
     input! {
         n: usize,
         m: usize,
-        a: [isize; n],
+        a: [isize; n+1],
+        mut c: [isize; n+m+1],
     }
+    let mut b = vec![0; m + 1];
 
-    let mut dp = vec![vec![-1_000_000_000_000; m + 1]; n + 1];
-    dp[0][0] = 0;
-
-    for i in 0..n {
-        for j in 0..=m {
-            chmax!(dp[i + 1][j], dp[i][j]);
-            if j > 0 {
-                chmax!(dp[i + 1][j], dp[i][j - 1] + a[i] * j as isize);
-            }
+    for i in (0..=m).rev() {
+        b[i] = c[n + i] / a[n];
+        for j in 0..=n {
+            c[i + j] -= a[j] * b[i];
         }
     }
-    println!("{}", dp[n][m]);
+    println!("{}", b.iter().join(" "));
 }

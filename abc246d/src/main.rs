@@ -3,6 +3,7 @@ use itertools::Itertools;
 use proconio::{fastout, input, input_interactive, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
+use std::isize;
 
 #[allow(dead_code)]
 const MOD: usize = 1_000_000_000 + 7;
@@ -510,25 +511,30 @@ fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
     right as usize
 }
 
+fn func(a: isize, b: isize) -> isize {
+    a * a * a + a * a * b + a * b * b + b * b * b
+}
+
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        m: usize,
-        a: [isize; n],
+        n: isize,
     }
 
-    let mut dp = vec![vec![-1_000_000_000_000; m + 1]; n + 1];
-    dp[0][0] = 0;
-
-    for i in 0..n {
-        for j in 0..=m {
-            chmax!(dp[i + 1][j], dp[i][j]);
-            if j > 0 {
-                chmax!(dp[i + 1][j], dp[i][j - 1] + a[i] * j as isize);
+    let mut ans = isize::MAX;
+    for a in 0..=1_000_000 {
+        let mut ng = -1;
+        let mut ok = 1_000_000;
+        while ok - ng > 1 {
+            let b = (ok + ng) / 2;
+            if func(a, b) >= n {
+                ok = b;
+            } else {
+                ng = b;
             }
         }
+        chmin!(ans, func(a, ok));
     }
-    println!("{}", dp[n][m]);
+    println!("{}", ans);
 }

@@ -515,20 +515,27 @@ fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
 fn main() {
     input! {
         n: usize,
-        m: usize,
-        a: [isize; n],
     }
 
-    let mut dp = vec![vec![-1_000_000_000_000; m + 1]; n + 1];
-    dp[0][0] = 0;
+    let mut map = HashMap::new();
 
-    for i in 0..n {
-        for j in 0..=m {
-            chmax!(dp[i + 1][j], dp[i][j]);
-            if j > 0 {
-                chmax!(dp[i + 1][j], dp[i][j - 1] + a[i] * j as isize);
+    for i in 1..=n {
+        let mut vec: Vec<usize> = Vec::new();
+        let primes = prime_factors(i);
+
+        for (k, v) in primes {
+            if v % 2 == 1 {
+                vec.push(k);
             }
         }
+        vec.sort();
+        let entry = map.entry(vec).or_insert(0);
+        *entry += 1;
     }
-    println!("{}", dp[n][m]);
+    let mut ans = 0;
+    for (_k, v) in map {
+        ans += v * v;
+    }
+
+    println!("{}", ans);
 }

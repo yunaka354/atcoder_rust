@@ -511,24 +511,39 @@ fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
 }
 
 #[allow(non_snake_case)]
-#[fastout]
 fn main() {
     input! {
-        n: usize,
-        m: usize,
-        a: [isize; n],
+        mut n: usize,
     }
+    if n == 1 {
+        println!("0");
+        return;
+    }
+    n -= 1;
+    let mut keta = 1;
 
-    let mut dp = vec![vec![-1_000_000_000_000; m + 1]; n + 1];
-    dp[0][0] = 0;
-
-    for i in 0..n {
-        for j in 0..=m {
-            chmax!(dp[i + 1][j], dp[i][j]);
-            if j > 0 {
-                chmax!(dp[i + 1][j], dp[i][j - 1] + a[i] * j as isize);
-            }
+    loop {
+        let l = (keta + 1) / 2;
+        let mut num = 9;
+        for _ in 0..l - 1 {
+            num *= 10;
         }
+
+        // n:= keta数から何番目の回文数か
+        if n > num {
+            keta += 1;
+            n -= num;
+            continue;
+        }
+        n += num / 9 - 1;
+        let s = n.to_string();
+        let mut s: Vec<char> = s.chars().collect_vec();
+        let mut rs = s.clone();
+        rs.reverse();
+        if keta % 2 == 1 {
+            s.pop();
+        }
+        println!("{}{}", s.iter().join(""), rs.iter().join(""));
+        return;
     }
-    println!("{}", dp[n][m]);
 }

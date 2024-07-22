@@ -510,25 +510,80 @@ fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
     right as usize
 }
 
+struct Circle {
+    x: isize,
+    y: isize,
+    r: isize,
+}
+
+fn are_circles_intersecting(c1: &Circle, c2: &Circle) -> bool {
+    let dx = c2.x - c1.x;
+    let dy = c2.y - c1.y;
+
+    let distance_squared = dx * dx + dy * dy;
+    let radius_sum = c1.r + c2.r;
+    let radius_diff = (c1.r - c2.r).abs();
+
+    distance_squared <= radius_sum * radius_sum && distance_squared >= radius_diff * radius_diff
+}
+
+fn is_on_circle_perimeter(circle: &Circle, x: isize, y: isize) -> bool {
+    let dx = x - circle.x;
+    let dy = y - circle.y;
+
+    // 距離の二乗を計算して、半径の二乗と比較
+    let distance_squared = dx * dx + dy * dy;
+    let radius_squared = circle.r * circle.r;
+
+    distance_squared == radius_squared
+}
+
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
         n: usize,
-        m: usize,
-        a: [isize; n],
+        sx: isize,
+        sy: isize,
+        tx: isize,
+        ty: isize,
+        xyr: [(isize, isize, isize); n],
     }
 
-    let mut dp = vec![vec![-1_000_000_000_000; m + 1]; n + 1];
-    dp[0][0] = 0;
+    let mut circles = Vec::new();
+    let mut uf = UnionFind::new(n);
 
     for i in 0..n {
-        for j in 0..=m {
-            chmax!(dp[i + 1][j], dp[i][j]);
-            if j > 0 {
-                chmax!(dp[i + 1][j], dp[i][j - 1] + a[i] * j as isize);
+        circles.push(Circle {
+            x: xyr[i].0,
+            y: xyr[i].1,
+            r: xyr[i].2,
+        })
+    }
+
+    for i in 0..n {
+        for j in i + 1..n {
+            if are_circles_intersecting(&circles[i], &circles[j]) {
+                uf.unite(i, j);
             }
         }
     }
-    println!("{}", dp[n][m]);
+
+    let mut s_idx = 0;
+    let mut t_idx = 0;
+
+    for i in 0..n {
+        if is_on_circle_perimeter(&circles[i], sx, sy) {
+            s_idx = i;
+        }
+        if is_on_circle_perimeter(&circles[i], tx, ty) {
+            t_idx = i;
+        }
+    }
+
+    if uf.is_same(s_idx, t_idx) {
+        println!("Yes");
+    } else {
+        println!("No");
+    }
 }

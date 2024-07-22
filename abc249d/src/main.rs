@@ -515,20 +515,24 @@ fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
 fn main() {
     input! {
         n: usize,
-        m: usize,
-        a: [isize; n],
+        a: [usize; n],
     }
-
-    let mut dp = vec![vec![-1_000_000_000_000; m + 1]; n + 1];
-    dp[0][0] = 0;
+    let mut count = vec![0; 200005];
 
     for i in 0..n {
-        for j in 0..=m {
-            chmax!(dp[i + 1][j], dp[i][j]);
-            if j > 0 {
-                chmax!(dp[i + 1][j], dp[i][j - 1] + a[i] * j as isize);
-            }
+        count[a[i]] += 1;
+    }
+
+    let mut ans: usize = 0;
+    for i in 1..=200000 {
+        if count[i] == 0 {
+            continue;
+        }
+        let divs = calc_divisors(i);
+
+        for div in divs {
+            ans += count[i] * count[div] * count[i / div];
         }
     }
-    println!("{}", dp[n][m]);
+    println!("{}", ans);
 }

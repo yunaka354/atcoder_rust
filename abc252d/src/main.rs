@@ -515,20 +515,28 @@ fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
 fn main() {
     input! {
         n: usize,
-        m: usize,
-        a: [isize; n],
+        a: [usize; n],
     }
-
-    let mut dp = vec![vec![-1_000_000_000_000; m + 1]; n + 1];
-    dp[0][0] = 0;
+    let mut map: HashMap<usize, usize> = HashMap::new();
 
     for i in 0..n {
-        for j in 0..=m {
-            chmax!(dp[i + 1][j], dp[i][j]);
-            if j > 0 {
-                chmax!(dp[i + 1][j], dp[i][j - 1] + a[i] * j as isize);
-            }
-        }
+        let entry = map.entry(a[i]).or_insert(0);
+        *entry += 1;
     }
-    println!("{}", dp[n][m]);
+
+    let v = map.iter().map(|(_k, v)| *v).collect::<Vec<usize>>();
+    if v.len() < 3 {
+        println!("0");
+        return;
+    }
+    let mut cum = vec![0; v.len() + 1];
+    for i in 0..v.len() {
+        cum[i + 1] = cum[i] + v[i];
+    }
+
+    let mut ans = 0;
+    for i in 1..v.len() - 1 {
+        ans += cum[i] * v[i] * (cum[v.len()] - cum[i + 1]);
+    }
+    println!("{}", ans);
 }

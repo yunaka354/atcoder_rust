@@ -515,20 +515,21 @@ fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
 fn main() {
     input! {
         n: usize,
-        m: usize,
-        a: [isize; n],
+        t: usize,
+        p: usize,
+        mut l: [usize; n],
     }
-
-    let mut dp = vec![vec![-1_000_000_000_000; m + 1]; n + 1];
-    dp[0][0] = 0;
-
+    let mut days: Vec<usize> = Vec::new();
+    let ppl = l.iter().filter(|&&e| e >= t).count();
     for i in 0..n {
-        for j in 0..=m {
-            chmax!(dp[i + 1][j], dp[i][j]);
-            if j > 0 {
-                chmax!(dp[i + 1][j], dp[i][j - 1] + a[i] * j as isize);
-            }
+        if l[i] < t {
+            days.push(t - l[i]);
         }
     }
-    println!("{}", dp[n][m]);
+    days.sort();
+    if ppl >= p {
+        println!("0");
+    } else {
+        println!("{}", days[p - ppl - 1]);
+    }
 }

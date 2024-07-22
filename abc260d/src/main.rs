@@ -1,8 +1,9 @@
 #![allow(unused_imports)]
 use itertools::Itertools;
+use proconio::marker::Usize1;
 use proconio::{fastout, input, input_interactive, marker::Chars};
 use std::cmp::{max, min};
-use std::collections::{HashMap, HashSet, VecDeque};
+use std::collections::{BTreeSet, HashMap, HashSet, VecDeque};
 
 #[allow(dead_code)]
 const MOD: usize = 1_000_000_000 + 7;
@@ -515,20 +516,45 @@ fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
 fn main() {
     input! {
         n: usize,
-        m: usize,
-        a: [isize; n],
+        k: usize,
+        p: [Usize1; n],
     }
 
-    let mut dp = vec![vec![-1_000_000_000_000; m + 1]; n + 1];
-    dp[0][0] = 0;
+    let mut tops: BTreeSet<usize> = BTreeSet::new();
+    let mut next = vec![-1 as isize; n];
+    let mut num = vec![0; n];
+    let mut ans = vec![-1 as isize; n];
 
     for i in 0..n {
-        for j in 0..=m {
-            chmax!(dp[i + 1][j], dp[i][j]);
-            if j > 0 {
-                chmax!(dp[i + 1][j], dp[i][j - 1] + a[i] * j as isize);
+        let mut it = tops.range(p[i]..);
+        let nxt = it.next();
+        match nxt {
+            Some(value) => {
+                // p[i]以上で最小の値が見つかった時。
+                let x = *value;
+                tops.remove(&x);
+                tops.insert(p[i]);
+                num[p[i]] = num[x] + 1;
+                next[p[i]] = x as isize;
+            }
+            None => {
+                // p[i]以上の数字が無い。
+                num[p[i]] = 1;
+                tops.insert(p[i]);
+            }
+        }
+
+        if num[p[i]] == k {
+            tops.remove(&p[i]);
+            let mut x = p[i] as isize;
+            while x != -1 {
+                ans[x as usize] = (i + 1) as isize;
+                x = next[x as usize];
             }
         }
     }
-    println!("{}", dp[n][m]);
+
+    for i in 0..n {
+        println!("{}", ans[i]);
+    }
 }

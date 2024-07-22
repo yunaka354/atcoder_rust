@@ -515,20 +515,32 @@ fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
 fn main() {
     input! {
         n: usize,
-        m: usize,
-        a: [isize; n],
+        txa: [(isize, isize, isize); n],
     }
 
-    let mut dp = vec![vec![-1_000_000_000_000; m + 1]; n + 1];
+    let mut dp: Vec<Vec<isize>> = vec![vec![-1; 5]; n + 1];
     dp[0][0] = 0;
-
+    let mut time = 0;
     for i in 0..n {
-        for j in 0..=m {
-            chmax!(dp[i + 1][j], dp[i][j]);
-            if j > 0 {
-                chmax!(dp[i + 1][j], dp[i][j - 1] + a[i] * j as isize);
+        let (t, x, a) = txa[i];
+        for now in 0..(5 as isize) {
+            // ここには辿り着けない
+            if dp[i][now as usize] == -1 {
+                continue;
+            }
+            let distance_movable = t - time;
+            for to in max(now - distance_movable, 0)..=min(4, now + distance_movable) {
+                let point = if to == x { a } else { 0 };
+                chmax!(dp[i + 1][to as usize], dp[i][now as usize] + point);
             }
         }
+        time = t;
     }
-    println!("{}", dp[n][m]);
+
+    let mut ans = 0;
+    for j in 0..5 {
+        chmax!(ans, dp[n][j]);
+    }
+
+    println!("{}", ans);
 }
