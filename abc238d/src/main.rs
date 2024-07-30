@@ -2,7 +2,7 @@
 use itertools::Itertools;
 use proconio::{fastout, input, input_interactive, marker::Chars};
 use std::cmp::{max, min};
-use std::collections::{BTreeSet, HashMap, HashSet, VecDeque};
+use std::collections::{HashMap, HashSet, VecDeque};
 
 #[allow(dead_code)]
 const MOD: usize = 1_000_000_000 + 7;
@@ -510,70 +510,20 @@ fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
     right as usize
 }
 
-#[allow(dead_code)]
-fn upper_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
-    let mut left = -1;
-    let mut right = arr.len() as isize;
-
-    while right - left > 1 {
-        let mid = left + (right - left) / 2;
-        if arr[mid as usize] > x {
-            right = mid;
-        } else {
-            left = mid;
-        }
-    }
-    right as usize
-}
-
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
-        q: usize,
+        t: usize,
     }
-    let mut tree = BTreeSet::new();
 
-    for i in 0..q {
-        input! {query: usize}
-
-        if query == 1 {
-            input! {x: usize}
-            tree.insert((x, i));
-        } else if query == 2 {
-            input! {x: usize, k: usize}
-            let mut iter = tree.range(..=(x, usize::MAX));
-
-            for _ in 0..k - 1 {
-                iter.next_back();
-            }
-
-            let r = iter.next_back();
-            match r {
-                None => {
-                    println!("-1");
-                }
-                Some(num) => {
-                    println!("{}", num.0);
-                }
-            }
+    for _ in 0..t {
+        input! {a: isize, s: isize};
+        let ok = (s - 2 * a >= 0) & (a & (s - 2 * a) == 0);
+        if ok {
+            println!("Yes");
         } else {
-            input! {x: usize, k: usize}
-            let mut iter = tree.range((x, 0)..);
-
-            for _ in 0..k - 1 {
-                iter.next();
-            }
-
-            let r = iter.next();
-            match r {
-                None => {
-                    println!("-1");
-                }
-                Some(num) => {
-                    println!("{}", num.0);
-                }
-            }
+            println!("No");
         }
     }
 }
