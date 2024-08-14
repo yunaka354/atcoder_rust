@@ -3,7 +3,7 @@ use itertools::Itertools;
 use proconio::marker::Usize1;
 use proconio::{fastout, input, input_interactive, marker::Chars};
 use std::cmp::{max, min};
-use std::collections::{HashMap, HashSet, VecDeque};
+use std::collections::{BTreeSet, HashMap, HashSet, VecDeque};
 
 #[allow(dead_code)]
 const MOD: usize = 1_000_000_000 + 7;
@@ -510,73 +510,48 @@ fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
     }
     right as usize
 }
+
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
         n: usize,
+        q: usize,
+        mut a: [usize; n],
+        ix: [(Usize1, usize); q],
     }
-    let mut array = vec![vec![vec![0; n]; n]; n];
+
+    let mut set = BTreeSet::new();
+    let mut count = vec![0; n + 1];
+
+    for i in 0..=n {
+        set.insert(i);
+    }
 
     for i in 0..n {
-        for j in 0..n {
-            for k in 0..n {
-                input! {a: usize};
-                array[i][j][k] = a;
+        set.remove(&a[i]);
+        if a[i] <= n {
+            count[a[i]] += 1;
+        }
+    }
+
+    for (i, x) in ix {
+        if a[i] <= n {
+            count[a[i]] -= 1;
+            if count[a[i]] == 0 {
+                set.insert(a[i]);
             }
         }
-    }
 
-    // 3次元累積和を計算するための配列
-    let mut cum_sum = vec![vec![vec![0; n + 1]; n + 1]; n + 1];
+        a[i] = x;
 
-    // 3次元累積和の計算
-    for i in 1..=n {
-        for j in 1..=n {
-            for k in 1..=n {
-                cum_sum[i][j][k] = array[i - 1][j - 1][k - 1]
-                    + cum_sum[i - 1][j][k]
-                    + cum_sum[i][j - 1][k]
-                    + cum_sum[i][j][k - 1]
-                    - cum_sum[i - 1][j - 1][k]
-                    - cum_sum[i - 1][j][k - 1]
-                    - cum_sum[i][j - 1][k - 1]
-                    + cum_sum[i - 1][j - 1][k - 1];
+        if a[i] <= n {
+            if count[a[i]] == 0 {
+                set.remove(&a[i]);
             }
+            count[a[i]] += 1;
         }
-    }
 
-    // 任意の領域の合計を取得する関数
-    fn query_sum(
-        cum_sum: &Vec<Vec<Vec<usize>>>,
-        lx: usize,
-        ly: usize,
-        lz: usize,
-        rx: usize,
-        ry: usize,
-        rz: usize,
-    ) -> usize {
-        cum_sum[rx][ry][rz]
-            + cum_sum[lx - 1][ly - 1][rz]
-            + cum_sum[lx - 1][ry][lz - 1]
-            + cum_sum[rx][ly - 1][lz - 1]
-            - cum_sum[lx - 1][ry][rz]
-            - cum_sum[rx][ly - 1][rz]
-            - cum_sum[rx][ry][lz - 1]
-            - cum_sum[lx - 1][ly - 1][lz - 1]
-    }
-
-    input! {q: usize};
-
-    for _ in 0..q {
-        input! {
-            lx: usize,
-            rx: usize,
-            ly: usize,
-            ry: usize,
-            lz: usize,
-            rz: usize
-        }
-        println!("{}", query_sum(&cum_sum, lx, ly, lz, rx, ry, rz));
+        println!("{}", set.iter().next().unwrap());
     }
 }
