@@ -510,48 +510,38 @@ fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
     right as usize
 }
 
-fn solve(whole: &Vec<usize>, patty: &Vec<usize>, n: usize, x: usize) -> usize {
-    if n == 0 {
-        return 1;
-    }
-    if x == 1 {
-        return 0;
-    }
-    // 全部あるいは最後のバンズ以外を食べる場合
-    if whole[n] - 1 <= x {
-        return patty[n];
-    }
-    // 丁度真ん中のバンズまで食べる場合
-    if whole[n] / 2 + 1 == x {
-        // 前のレベルに一個真ん中のパティを食べる
-        return patty[n - 1] + 1;
-    }
-    // 真ん中より上を食べる場合
-    if whole[n] / 2 + 1 < x {
-        let bottom = patty[n - 1] + 1; // 真ん中より下側
-        let upper = solve(whole, patty, n - 1, x - (whole[n] / 2 + 1)); //上側。全体は必ず奇数なので2で割って真ん中のパティを足す。
-        return bottom + upper;
-    }
-    // 真ん中以下の場合
-    // 下のバンズを食べたらあとはn-1レベルを食べる話にできる。よってx-1する。
-    return solve(whole, patty, n - 1, x - 1);
-}
-
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        x: usize,
-    }
-    let mut whole = vec![0 as usize; 51];
-    let mut patty = vec![0 as usize; 51];
-    whole[0] = 1;
-    patty[0] = 1;
-    for i in 1..=50 {
-        whole[i] = whole[i - 1] * 2 + 3;
-        patty[i] = patty[i - 1] * 2 + 1;
+        h: usize,
+        w: usize,
+        mut a: [[usize; w]; h],
     }
 
-    println!("{}", solve(&whole, &patty, n, x));
+    let mut ans = Vec::new();
+
+    for i in 0..h {
+        for j in 0..w - 1 {
+            if a[i][j] % 2 == 1 {
+                a[i][j] -= 1;
+                a[i][j + 1] += 1;
+                ans.push((i + 1, j + 1, i + 1, j + 2));
+            }
+        }
+    }
+
+    for i in 0..h - 1 {
+        if a[i][w - 1] % 2 == 1 {
+            a[i][w - 1] -= 1;
+            a[i + 1][w - 1] += 1;
+            ans.push((i + 1, w, i + 2, w));
+        }
+    }
+
+    println!("{}", ans.len());
+    for i in 0..ans.len() {
+        let (a, b, c, d) = ans[i];
+        println!("{} {} {} {}", a, b, c, d);
+    }
 }
