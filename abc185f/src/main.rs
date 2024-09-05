@@ -1,5 +1,6 @@
 #![allow(unused_imports)]
 use itertools::Itertools;
+use proconio::marker::Usize1;
 use proconio::{fastout, input, input_interactive, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
@@ -534,6 +535,27 @@ fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        q: usize,
+        a: [usize; n],
+    }
+
+    let mut tree = SegmentTree::new(n);
+
+    for i in 0..n {
+        tree.update(i, a[i]);
+    }
+
+    for _ in 0..q {
+        input! {t: usize, x: Usize1, y: usize};
+        match t {
+            1 => {
+                let num = tree.get(x);
+                tree.update(x, num ^ y);
+            }
+            2 => {
+                println!("{}", tree.query(x, y, 0, tree.size, 0));
+            }
+            _ => panic!("error"),
+        }
     }
 }

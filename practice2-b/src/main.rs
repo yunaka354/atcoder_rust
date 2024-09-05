@@ -243,7 +243,7 @@ impl SegmentTree {
         // 上の階層をアップデートしていく
         while pos > 0 {
             pos = (pos - 1) / 2;
-            self.dat[pos] = self.dat[pos * 2 + 1] ^ self.dat[pos * 2 + 2];
+            self.dat[pos] = self.dat[pos * 2 + 1] + self.dat[pos * 2 + 2];
         }
     }
 
@@ -262,7 +262,7 @@ impl SegmentTree {
         let m = (a + b) / 2;
         let answer_l = self.query(l, r, a, m, u * 2 + 1);
         let answer_r = self.query(l, r, m, b, u * 2 + 2);
-        return answer_l ^ answer_r; // 問題によってこの部分は変更すること。
+        return answer_l + answer_r; // 問題によってこの部分は変更すること。
     }
 }
 
@@ -534,6 +534,27 @@ fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
 fn main() {
     input! {
         n: usize,
-        _a: [usize; n],
+        q: usize,
+        a: [usize; n],
+    }
+
+    let mut tree = SegmentTree::new(n);
+
+    for i in 0..n {
+        tree.update(i, a[i]);
+    }
+
+    for _ in 0..q {
+        input! {query: usize, i: usize, j: usize};
+        match query {
+            0 => {
+                let x = tree.get(i);
+                tree.update(i, x + j);
+            }
+            1 => {
+                println!("{}", tree.query(i, j, 0, tree.size, 0));
+            }
+            _ => panic!("error"),
+        }
     }
 }
