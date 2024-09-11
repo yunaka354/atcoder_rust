@@ -1,10 +1,8 @@
 #![allow(unused_imports)]
 use itertools::Itertools;
-use proconio::marker::Usize1;
 use proconio::{fastout, input, input_interactive, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
-use std::usize;
 
 #[allow(dead_code)]
 const MOD: usize = 1_000_000_000 + 7;
@@ -208,8 +206,7 @@ fn ncr(n: usize, r: usize) -> usize {
 
 #[allow(dead_code)]
 struct SegmentTree {
-    pub dat: Vec<isize>,
-    pub lazy: Vec<isize>,
+    pub dat: Vec<usize>,
     pub size: usize,
 }
 
@@ -225,54 +222,34 @@ impl SegmentTree {
         }
         SegmentTree {
             dat: vec![0; 2 * size - 1],
-            lazy: vec![-1; 2 * size - 1],
             size,
         }
     }
 
-    /// 遅延評価
-    fn eval(&mut self, pos: usize) {
-        // 更新するものが無ければ終了
-        if self.lazy[pos] == -1 {
-            return;
-        };
-        // 葉でなければ子に伝搬
-        if pos < 2 * self.size - 1 {
-            self.lazy[pos * 2 + 1] = self.lazy[pos];
-            self.lazy[pos * 2 + 2] = self.lazy[pos];
-        }
-        // 自身を更新
-        self.dat[pos] = self.lazy[pos];
-        self.lazy[pos] = -1;
-    }
-
     /// ノードの数字を取得する関数。
-    fn get(&mut self, pos: usize) -> isize {
+    fn get(&mut self, pos: usize) -> usize {
         self.dat[pos + self.size - 1]
     }
 
-    /// [a, b)はセルに対応する半開区間。[l, r)は求めたい半開区間。  
-    /// 半開区間[a, b)をアップデートしたいときはupdate(0, self.size, a, b, 0, x)を呼び出すこと。
+    /// pos: アップデートしたいノード  
     /// x: アップデートする値
-    fn update(&mut self, l: usize, r: usize, a: usize, b: usize, pos: usize, x: isize) {
-        self.eval(pos);
+    fn update(&mut self, mut pos: usize, x: usize) {
+        // posに対応する最下段のノードのインデックス番号を取得。
+        pos = pos + self.size - 1;
 
-        // 完全に内側の時
-        if a <= l && r <= b {
-            self.lazy[pos] = x;
-            self.eval(pos);
-        } else if a < r && l < b {
-            self.update(l, (l + r) / 2, a, b, pos * 2 + 1, x);
-            self.update((l + r) / 2, r, a, b, pos * 2 + 2, x);
-            self.dat[pos] = max(self.dat[pos * 2 + 1], self.dat[pos * 2 + 2]); // 問題によってこの部分は変更すること。
+        // 最下段のノードを更新。
+        self.dat[pos] = x;
+
+        // 上の階層をアップデートしていく
+        while pos > 0 {
+            pos = (pos - 1) / 2;
+            self.dat[pos] = self.dat[pos * 2 + 1] ^ self.dat[pos * 2 + 2];
         }
     }
 
     /// uは現在のセル番号。[a, b)はセルに対応する半開区間。[l, r)は求めたい半開区間。  
     /// 半開区間[l, r)の最大値を求めるには、query(l, r, 0, self.size, 0)を呼び出すこと。
-    fn query(&mut self, l: usize, r: usize, a: usize, b: usize, u: usize) -> isize {
-        self.eval(u);
-
+    fn query(&self, l: usize, r: usize, a: usize, b: usize, u: usize) -> usize {
         // 一切含まれない場合。
         if r <= a || b <= l {
             return 0; // 問題によってこの部分は変更すること。
@@ -285,7 +262,132 @@ impl SegmentTree {
         let m = (a + b) / 2;
         let answer_l = self.query(l, r, a, m, u * 2 + 1);
         let answer_r = self.query(l, r, m, b, u * 2 + 2);
-        return max(answer_l, answer_r); // 問題によってこの部分は変更すること。
+        return answer_l ^ answer_r; // 問題によってこの部分は変更すること。
+    }
+}
+
+#[allow(dead_code)]
+struct LazySegmentTree {
+    n: usize,
+    node: Vec<isize>,
+    lazy: Vec<Option<isize>>,
+}
+
+#[allow(dead_code)]
+impl LazySegmentTree {
+    fn new(v: Vec<isize>) -> Self {
+        let size = v.len();
+        let mut n = 1;
+        while n < size {
+            n *= 2;
+        }
+        let mut node = vec![0; 2 * n - 1];
+        let lazy = vec![None; 2 * n - 1];
+
+        // 末端ノードの更新
+        for i in 0..size {
+            node[i + n - 1] = v[i];
+        }
+
+        Self { n, node, lazy }
+    }
+
+    /// 遅延評価関数  
+    /// k番目のノードを評価する。
+    fn evaluation(&mut self, k: usize, left: usize, right: usize) {
+        if let Some(value) = self.lazy[k] {
+            self.node[k] += value;
+
+            // 最下段かどうかチェックする
+            // 子ノードは親ノードの1/2の範囲であるので、値も1/2にする。
+            if right - left > 1 {
+                // 左側の子ノード
+                match self.lazy[2 * k + 1] {
+                    Some(ref mut next) => {
+                        *next += value / 2;
+                    }
+                    None => {
+                        self.lazy[2 * k + 1] = Some(value / 2);
+                    }
+                }
+                // 右側の子ノード
+                match self.lazy[2 * k + 2] {
+                    Some(ref mut next) => {
+                        *next += value / 2;
+                    }
+                    None => {
+                        self.lazy[2 * k + 2] = Some(value / 2);
+                    }
+                }
+            }
+
+            // 電波が終わったので、遅延配列を空にする。
+            self.lazy[k] = None;
+        }
+    }
+
+    /// 範囲計算。
+    fn update(&mut self, a: usize, b: usize, value: isize) {
+        self.update_rec(a, b, value, 0, 0, self.n);
+    }
+
+    fn update_rec(
+        &mut self,
+        a: usize,
+        b: usize,
+        value: isize,
+        k: usize,
+        left: usize,
+        right: usize,
+    ) {
+        // k番目のノードに対して遅延評価を行う
+        self.evaluation(k, left, right);
+
+        // 範囲外なら何もしない
+        if b <= left || right <= a {
+            return;
+        }
+
+        // 完全に被覆しているならば、遅延配列に値を入れた後に評価
+        if a <= left && right <= b {
+            let add_value = (right - left) as isize * value;
+            match self.lazy[k] {
+                Some(ref mut current_value) => {
+                    *current_value += add_value;
+                }
+                None => {
+                    self.lazy[k] = Some(add_value);
+                }
+            }
+            return;
+        }
+
+        // 上記いずれでもなければ、子ノードの値を再帰的に計算して、計算済みの値をもらってくる。
+        self.update_rec(a, b, value, 2 * k + 1, left, (left + right) / 2);
+        self.update_rec(a, b, value, 2 * k + 2, (left + right) / 2, right);
+        self.node[k] = self.node[2 * k + 1] + self.node[2 * k + 2];
+    }
+
+    fn query(&mut self, a: usize, b: usize) -> isize {
+        self.query_rec(a, b, 0, 0, self.n)
+    }
+
+    fn query_rec(&mut self, a: usize, b: usize, k: usize, left: usize, right: usize) -> isize {
+        if b <= left || right <= a {
+            return 0;
+        }
+
+        // 関数が呼び出されたら評価
+        self.evaluation(k, left, right);
+
+        if a <= left && right <= b {
+            return self.node[k];
+        }
+
+        let value_left = self.query_rec(a, b, 2 * k + 1, left, (left + right) / 2);
+        let value_right = self.query_rec(a, b, 2 * k + 2, (left + right) / 2, right);
+
+        value_left + value_right
     }
 }
 
@@ -552,101 +654,19 @@ fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
     right as usize
 }
 
-struct LazySegmentTree {
-    n: usize,
-    data: Vec<i64>,
-    lazy: Vec<Option<i64>>, // Noneは遅延がないことを示す
-}
-
-impl LazySegmentTree {
-    fn new(size: usize) -> Self {
-        let n = size.next_power_of_two();
-        LazySegmentTree {
-            n,
-            data: vec![0; 2 * n],
-            lazy: vec![None; 2 * n],
-        }
-    }
-
-    // 遅延配列を伝播して適用
-    fn propagate(&mut self, node: usize, node_left: usize, node_right: usize) {
-        if let Some(value) = self.lazy[node] {
-            self.data[node] = value;
-            if node_left != node_right {
-                self.lazy[2 * node] = Some(value);
-                self.lazy[2 * node + 1] = Some(value);
-            }
-            self.lazy[node] = None;
-        }
-    }
-
-    // 範囲更新: 指定の範囲をvalueに設定
-    fn update_range(&mut self, left: usize, right: usize, value: i64) {
-        self.update_range_rec(left, right, value, 1, 0, self.n - 1);
-    }
-
-    fn update_range_rec(
-        &mut self,
-        left: usize,
-        right: usize,
-        value: i64,
-        node: usize,
-        node_left: usize,
-        node_right: usize,
-    ) {
-        self.propagate(node, node_left, node_right);
-        if right < node_left || node_right < left {
-            return;
-        }
-        if left <= node_left && node_right <= right {
-            self.lazy[node] = Some(value);
-            self.propagate(node, node_left, node_right);
-        } else {
-            let mid = (node_left + node_right) / 2;
-            self.update_range_rec(left, right, value, 2 * node, node_left, mid);
-            self.update_range_rec(left, right, value, 2 * node + 1, mid + 1, node_right);
-            self.data[node] = self.data[2 * node].max(self.data[2 * node + 1]);
-        }
-    }
-
-    // 範囲クエリ: 指定の範囲の最大値を取得
-    fn query_range(&mut self, left: usize, right: usize) -> i64 {
-        self.query_range_rec(left, right, 1, 0, self.n - 1)
-    }
-
-    fn query_range_rec(
-        &mut self,
-        left: usize,
-        right: usize,
-        node: usize,
-        node_left: usize,
-        node_right: usize,
-    ) -> i64 {
-        self.propagate(node, node_left, node_right);
-        if right < node_left || node_right < left {
-            return 0;
-        }
-        if left <= node_left && node_right <= right {
-            return self.data[node];
-        }
-        let mid = (node_left + node_right) / 2;
-        let left_res = self.query_range_rec(left, right, 2 * node, node_left, mid);
-        let right_res = self.query_range_rec(left, right, 2 * node + 1, mid + 1, node_right);
-        left_res.max(right_res)
-    }
-}
-
+#[allow(non_snake_case)]
+#[fastout]
 fn main() {
     input! {
-        w: usize,
-        n: usize,
-        lr: [(Usize1, Usize1); n],
-    };
-
-    let mut seg_tree = LazySegmentTree::new(w);
-    for &(l, r) in &lr {
-        let h = seg_tree.query_range(l, r);
-        println!("{}", h + 1);
-        seg_tree.update_range(l, r, h + 1);
+        s: Chars,
     }
+
+    let mut ans = 0;
+    for c in s {
+        if c == '1' {
+            ans += 1;
+        }
+    }
+
+    println!("{}", ans);
 }

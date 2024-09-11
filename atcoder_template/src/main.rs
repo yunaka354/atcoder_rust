@@ -266,6 +266,131 @@ impl SegmentTree {
     }
 }
 
+#[allow(dead_code)]
+struct LazySegmentTree {
+    n: usize,
+    node: Vec<isize>,
+    lazy: Vec<Option<isize>>,
+}
+
+#[allow(dead_code)]
+impl LazySegmentTree {
+    fn new(v: Vec<isize>) -> Self {
+        let size = v.len();
+        let mut n = 1;
+        while n < size {
+            n *= 2;
+        }
+        let mut node = vec![0; 2 * n - 1];
+        let lazy = vec![None; 2 * n - 1];
+
+        // 末端ノードの更新
+        for i in 0..size {
+            node[i + n - 1] = v[i];
+        }
+
+        Self { n, node, lazy }
+    }
+
+    /// 遅延評価関数  
+    /// k番目のノードを評価する。
+    fn evaluation(&mut self, k: usize, left: usize, right: usize) {
+        if let Some(value) = self.lazy[k] {
+            self.node[k] += value;
+
+            // 最下段かどうかチェックする
+            // 子ノードは親ノードの1/2の範囲であるので、値も1/2にする。
+            if right - left > 1 {
+                // 左側の子ノード
+                match self.lazy[2 * k + 1] {
+                    Some(ref mut next) => {
+                        *next += value / 2;
+                    }
+                    None => {
+                        self.lazy[2 * k + 1] = Some(value / 2);
+                    }
+                }
+                // 右側の子ノード
+                match self.lazy[2 * k + 2] {
+                    Some(ref mut next) => {
+                        *next += value / 2;
+                    }
+                    None => {
+                        self.lazy[2 * k + 2] = Some(value / 2);
+                    }
+                }
+            }
+
+            // 電波が終わったので、遅延配列を空にする。
+            self.lazy[k] = None;
+        }
+    }
+
+    /// 範囲計算。
+    fn update(&mut self, a: usize, b: usize, value: isize) {
+        self.update_rec(a, b, value, 0, 0, self.n);
+    }
+
+    fn update_rec(
+        &mut self,
+        a: usize,
+        b: usize,
+        value: isize,
+        k: usize,
+        left: usize,
+        right: usize,
+    ) {
+        // k番目のノードに対して遅延評価を行う
+        self.evaluation(k, left, right);
+
+        // 範囲外なら何もしない
+        if b <= left || right <= a {
+            return;
+        }
+
+        // 完全に被覆しているならば、遅延配列に値を入れた後に評価
+        if a <= left && right <= b {
+            let add_value = (right - left) as isize * value;
+            match self.lazy[k] {
+                Some(ref mut current_value) => {
+                    *current_value += add_value;
+                }
+                None => {
+                    self.lazy[k] = Some(add_value);
+                }
+            }
+            return;
+        }
+
+        // 上記いずれでもなければ、子ノードの値を再帰的に計算して、計算済みの値をもらってくる。
+        self.update_rec(a, b, value, 2 * k + 1, left, (left + right) / 2);
+        self.update_rec(a, b, value, 2 * k + 2, (left + right) / 2, right);
+        self.node[k] = self.node[2 * k + 1] + self.node[2 * k + 2];
+    }
+
+    fn query(&mut self, a: usize, b: usize) -> isize {
+        self.query_rec(a, b, 0, 0, self.n)
+    }
+
+    fn query_rec(&mut self, a: usize, b: usize, k: usize, left: usize, right: usize) -> isize {
+        if b <= left || right <= a {
+            return 0;
+        }
+
+        // 関数が呼び出されたら評価
+        self.evaluation(k, left, right);
+
+        if a <= left && right <= b {
+            return self.node[k];
+        }
+
+        let value_left = self.query_rec(a, b, 2 * k + 1, left, (left + right) / 2);
+        let value_right = self.query_rec(a, b, 2 * k + 2, (left + right) / 2, right);
+
+        value_left + value_right
+    }
+}
+
 #[derive(Clone, Debug)]
 #[allow(dead_code)]
 struct Edge {
