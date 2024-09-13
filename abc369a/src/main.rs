@@ -1,10 +1,8 @@
 #![allow(unused_imports)]
 use itertools::Itertools;
-use proconio::marker::Usize1;
 use proconio::{fastout, input, input_interactive, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
-use std::usize;
 
 #[allow(dead_code)]
 const MOD: usize = 1_000_000_000 + 7;
@@ -656,55 +654,19 @@ fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
     right as usize
 }
 
-fn dfs(g: &Vec<Vec<usize>>, dist: &mut Vec<usize>, from: usize, now: usize) {
-    if from != usize::MAX {
-        dist[now] = dist[from] + 1;
-    }
-
-    for next in &g[now] {
-        if *next == from {
-            continue;
-        }
-        dfs(g, dist, now, *next);
-    }
-}
-
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
-        n: usize,
-        uv: [(Usize1, Usize1); n-1],
+        a: isize,
+        b: isize,
     }
 
-    let mut g = vec![vec![]; n];
-
-    for i in 0..n - 1 {
-        let (u, v) = uv[i];
-        g[u].push(v);
-        g[v].push(u);
+    if a == b {
+        println!("1");
+    } else if (a - b) % 2 == 0 {
+        println!("3");
+    } else {
+        println!("2");
     }
-
-    let mut dist = vec![0; n];
-    let func = || {
-        for i in 0..n - 1 {
-            if g[i].len() == 1 {
-                return i;
-            }
-        }
-        panic!("error");
-    };
-    let start_idx = func();
-
-    dfs(&g, &mut dist, usize::MAX, start_idx);
-
-    let mut ans = Vec::new();
-    for i in 0..n {
-        if dist[i] % 3 == 1 {
-            ans.push(g[i].len());
-        }
-    }
-    ans.sort();
-
-    println!("{}", ans.iter().join(" "));
 }

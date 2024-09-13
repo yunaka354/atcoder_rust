@@ -4,7 +4,7 @@ use proconio::marker::Usize1;
 use proconio::{fastout, input, input_interactive, marker::Chars};
 use std::cmp::{max, min};
 use std::collections::{HashMap, HashSet, VecDeque};
-use std::usize;
+use std::hash::Hash;
 
 #[allow(dead_code)]
 const MOD: usize = 1_000_000_000 + 7;
@@ -656,55 +656,46 @@ fn lower_bound<T: Ord>(arr: &Vec<T>, x: T) -> usize {
     right as usize
 }
 
-fn dfs(g: &Vec<Vec<usize>>, dist: &mut Vec<usize>, from: usize, now: usize) {
-    if from != usize::MAX {
-        dist[now] = dist[from] + 1;
-    }
-
-    for next in &g[now] {
-        if *next == from {
-            continue;
-        }
-        dfs(g, dist, now, *next);
-    }
-}
-
 #[allow(non_snake_case)]
 #[fastout]
 fn main() {
     input! {
         n: usize,
-        uv: [(Usize1, Usize1); n-1],
+        m: usize
     }
 
     let mut g = vec![vec![]; n];
-
-    for i in 0..n - 1 {
-        let (u, v) = uv[i];
-        g[u].push(v);
-        g[v].push(u);
+    let mut deg = vec![0; n];
+    for _ in 0..m {
+        input! {x: Usize1, y: Usize1}
+        g[y].push(x);
+        deg[x] += 1;
     }
 
-    let mut dist = vec![0; n];
-    let func = || {
-        for i in 0..n - 1 {
-            if g[i].len() == 1 {
-                return i;
+    let mut que = VecDeque::new();
+
+    for i in 0..n {
+        if deg[i] == 0 {
+            que.push_back(i);
+        }
+    }
+
+    let mut ans = vec![0; n];
+    let mut na = n;
+    while let Some(node) = que.pop_front() {
+        if que.len() > 0 {
+            println!("No");
+            return;
+        }
+        ans[node] = na;
+        na -= 1;
+        for to in &g[node] {
+            deg[*to] -= 1;
+            if deg[*to] == 0 {
+                que.push_back(*to);
             }
         }
-        panic!("error");
-    };
-    let start_idx = func();
-
-    dfs(&g, &mut dist, usize::MAX, start_idx);
-
-    let mut ans = Vec::new();
-    for i in 0..n {
-        if dist[i] % 3 == 1 {
-            ans.push(g[i].len());
-        }
     }
-    ans.sort();
-
+    println!("Yes");
     println!("{}", ans.iter().join(" "));
 }
